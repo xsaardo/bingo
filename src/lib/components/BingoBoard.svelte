@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { boardStore } from '$lib/stores/board.ts';
+	import { boardStore } from '$lib/stores/board';
 	import GoalSquare from './GoalSquare.svelte';
 
 	let board = $state($boardStore);

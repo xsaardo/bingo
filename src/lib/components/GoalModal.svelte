@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { boardStore } from '$lib/stores/board.ts';
-	import { saveBoard } from '$lib/utils/storage.ts';
-	import type { Goal } from '$lib/types.ts';
+	import { boardStore } from '$lib/stores/board';
+	import type { Goal } from '$lib/types';
 
 	interface Props {
 		goal: Goal;
@@ -14,15 +13,7 @@
 	let notes = $state(goal.notes);
 
 	function handleSave() {
-		const currentBoard = $boardStore;
-		if (!currentBoard) return;
-
-		currentBoard.goals[index].title = title;
-		currentBoard.goals[index].notes = notes;
-		currentBoard.updatedAt = new Date().toISOString();
-
-		boardStore.set(currentBoard);
-		saveBoard(currentBoard);
+		boardStore.updateGoal(index, { title, notes });
 		onClose();
 	}
 
