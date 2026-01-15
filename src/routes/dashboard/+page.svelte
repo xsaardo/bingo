@@ -1,7 +1,43 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import AuthGuard from '$lib/components/AuthGuard.svelte';
 	import UserMenu from '$lib/components/UserMenu.svelte';
+	import BoardCard from '$lib/components/BoardCard.svelte';
+	import CreateBoardModal from '$lib/components/CreateBoardModal.svelte';
+	import DeleteBoardModal from '$lib/components/DeleteBoardModal.svelte';
 	import { currentUser } from '$lib/stores/auth';
+	import { boardsStore, boards, boardsLoading, hasBoards } from '$lib/stores/boards';
+	import type { Board } from '$lib/types';
+
+	let showCreateModal = $state(false);
+	let showDeleteModal = $state(false);
+	let boardToDelete: Board | null = $state(null);
+
+	// Fetch boards when component mounts
+	onMount(() => {
+		boardsStore.fetchBoards();
+	});
+
+	function handleCreateBoard() {
+		showCreateModal = true;
+	}
+
+	function handleCloseCreateModal() {
+		showCreateModal = false;
+	}
+
+	function handleDeleteBoard(boardId: string) {
+		const board = $boards.find((b) => b.id === boardId);
+		if (board) {
+			boardToDelete = board;
+			showDeleteModal = true;
+		}
+	}
+
+	function handleCloseDeleteModal() {
+		showDeleteModal = false;
+		boardToDelete = null;
+	}
 </script>
 
 <svelte:head>
@@ -40,164 +76,95 @@
 
 		<!-- Main Content -->
 		<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-			<!-- Welcome Section -->
-			<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-6">
-				<div class="text-center">
-					<div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-						<svg
-							class="w-8 h-8 text-green-600"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
-					</div>
-					<h2 class="text-2xl font-bold text-gray-900 mb-2">Welcome to your dashboard!</h2>
-					<p class="text-gray-600 mb-1">You're successfully authenticated as:</p>
-					<p class="text-lg font-semibold text-blue-600">{$currentUser?.email}</p>
+			<!-- Page Header -->
+			<div class="flex items-center justify-between mb-8">
+				<div>
+					<h2 class="text-3xl font-bold text-gray-900">My Boards</h2>
+					<p class="text-gray-600 mt-1">Create and manage your bingo boards</p>
 				</div>
+				<button
+					onclick={handleCreateBoard}
+					class="flex items-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+				>
+					<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+						/>
+					</svg>
+					New Board
+				</button>
 			</div>
 
-			<!-- Phase 2 Complete Card -->
-			<div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200 p-6 mb-6">
-				<div class="flex items-start">
-					<div class="flex-shrink-0">
-						<svg
-							class="w-6 h-6 text-blue-600"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
-					</div>
-					<div class="ml-3 flex-1">
-						<h3 class="text-lg font-semibold text-gray-900 mb-2">Phase 2 Complete! 🎉</h3>
-						<p class="text-sm text-gray-700 mb-4">
-							Authentication UI is now fully functional. You can sign in, view protected routes,
-							and sign out.
-						</p>
-						<div class="space-y-2">
-							<div class="flex items-center text-sm text-gray-700">
-								<svg
-									class="w-5 h-5 text-green-600 mr-2"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 13l4 4L19 7"
-									/>
-								</svg>
-								Magic link authentication working
-							</div>
-							<div class="flex items-center text-sm text-gray-700">
-								<svg
-									class="w-5 h-5 text-green-600 mr-2"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 13l4 4L19 7"
-									/>
-								</svg>
-								Auth store managing global state
-							</div>
-							<div class="flex items-center text-sm text-gray-700">
-								<svg
-									class="w-5 h-5 text-green-600 mr-2"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 13l4 4L19 7"
-									/>
-								</svg>
-								Protected routes with AuthGuard
-							</div>
-							<div class="flex items-center text-sm text-gray-700">
-								<svg
-									class="w-5 h-5 text-green-600 mr-2"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 13l4 4L19 7"
-									/>
-								</svg>
-								User menu with logout
-							</div>
+			<!-- Loading State -->
+			{#if $boardsLoading}
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{#each Array(3) as _}
+						<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 animate-pulse">
+							<div class="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+							<div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+							<div class="h-2 bg-gray-200 rounded w-full mb-2"></div>
+							<div class="h-4 bg-gray-200 rounded w-1/4"></div>
 						</div>
+					{/each}
+				</div>
+			{:else if !$hasBoards}
+				<!-- Empty State -->
+				<div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
+					<div class="max-w-md mx-auto">
+						<div class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6">
+							<svg
+								class="w-10 h-10 text-blue-600"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+								/>
+							</svg>
+						</div>
+						<h3 class="text-2xl font-bold text-gray-900 mb-2">No boards yet</h3>
+						<p class="text-gray-600 mb-6">
+							Create your first bingo board to start tracking your goals and achievements!
+						</p>
+						<button
+							onclick={handleCreateBoard}
+							class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-xl"
+						>
+							<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+								/>
+							</svg>
+							Create Your First Board
+						</button>
 					</div>
 				</div>
-			</div>
-
-			<!-- Next Steps Card -->
-			<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-				<h3 class="text-lg font-semibold text-gray-900 mb-4">What's Next: Phase 3</h3>
-				<p class="text-gray-700 mb-4">
-					In Phase 3, we'll implement multi-board support with server sync:
-				</p>
-				<ul class="space-y-2 text-sm text-gray-700">
-					<li class="flex items-start">
-						<span class="text-blue-600 mr-2">•</span>
-						<span>Board list showing all your boards</span>
-					</li>
-					<li class="flex items-start">
-						<span class="text-blue-600 mr-2">•</span>
-						<span>Create new boards with custom names</span>
-					</li>
-					<li class="flex items-start">
-						<span class="text-blue-600 mr-2">•</span>
-						<span>Delete boards you no longer need</span>
-					</li>
-					<li class="flex items-start">
-						<span class="text-blue-600 mr-2">•</span>
-						<span>Navigate to individual boards</span>
-					</li>
-					<li class="flex items-start">
-						<span class="text-blue-600 mr-2">•</span>
-						<span>Server-side persistence for all boards</span>
-					</li>
-				</ul>
-			</div>
-
-			<!-- Dev Links (only in development) -->
-			{#if import.meta.env.DEV}
-				<div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-					<h4 class="text-sm font-semibold text-yellow-900 mb-2">Development Tools:</h4>
-					<div class="flex space-x-4 text-sm">
-						<a href="/test-auth" class="text-blue-600 hover:text-blue-700">Test Auth Page</a>
-						<a href="/" class="text-blue-600 hover:text-blue-700">Old Main Page</a>
-					</div>
+			{:else}
+				<!-- Board Grid -->
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{#each $boards as board (board.id)}
+						<BoardCard {board} onDelete={handleDeleteBoard} />
+					{/each}
 				</div>
 			{/if}
 		</main>
 	</div>
+
+	<!-- Modals -->
+	<CreateBoardModal isOpen={showCreateModal} onClose={handleCloseCreateModal} />
+	<DeleteBoardModal
+		isOpen={showDeleteModal}
+		board={boardToDelete}
+		onClose={handleCloseDeleteModal}
+	/>
 </AuthGuard>
