@@ -2,14 +2,10 @@
 	import { onMount } from 'svelte';
 	import BoardSizeSelector from '$lib/components/BoardSizeSelector.svelte';
 	import BingoBoard from '$lib/components/BingoBoard.svelte';
-	import { boardStore } from '$lib/stores/board.ts';
-	import { loadBoard } from '$lib/utils/storage.ts';
+	import { boardStore } from '$lib/stores/board';
 
 	onMount(() => {
-		const savedBoard = loadBoard();
-		if (savedBoard) {
-			boardStore.set(savedBoard);
-		}
+		boardStore.init();
 	});
 </script>
 
