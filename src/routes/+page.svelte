@@ -1,6 +1,16 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import BoardSizeSelector from '$lib/components/BoardSizeSelector.svelte';
 	import BingoBoard from '$lib/components/BingoBoard.svelte';
+	import { boardStore } from '$lib/stores/board.ts';
+	import { loadBoard } from '$lib/utils/storage.ts';
+
+	onMount(() => {
+		const savedBoard = loadBoard();
+		if (savedBoard) {
+			boardStore.set(savedBoard);
+		}
+	});
 </script>
 
 <div class="min-h-screen bg-gray-50 p-8">
