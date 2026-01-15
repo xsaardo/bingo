@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { boardStore } from '$lib/stores/board.ts';
-	import { saveBoard } from '$lib/utils/storage.ts';
+	import { boardStore } from '$lib/stores/board';
 	import GoalModal from './GoalModal.svelte';
-	import type { Goal } from '$lib/types.ts';
+	import type { Goal } from '$lib/types';
 
 	interface Props {
 		goal: Goal;
@@ -14,14 +13,7 @@
 
 	function toggleComplete(e: Event) {
 		e.stopPropagation();
-		const currentBoard = $boardStore;
-		if (!currentBoard) return;
-
-		currentBoard.goals[index].completed = !currentBoard.goals[index].completed;
-		currentBoard.updatedAt = new Date().toISOString();
-
-		boardStore.set(currentBoard);
-		saveBoard(currentBoard);
+		boardStore.toggleComplete(index);
 	}
 
 	function openModal() {

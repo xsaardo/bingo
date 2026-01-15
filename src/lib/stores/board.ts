@@ -1,4 +1,87 @@
 import { writable } from 'svelte/store';
-import type { Board } from '$lib/types';
+import type { Board, Goal, BoardSize } from '$lib/types';
+import { saveBoard, loadBoard } from '$lib/utils/storage';
 
-export const boardStore = writable<Board | null>(null);
+function createBoardStore() {
+	const { subscribe, set, update } = writable<Board | null>(null);
+
+	return {
+		subscribe,
+
+		// Initialize the store with saved data
+		init: () => {
+			const savedBoard = loadBoard();
+			if (savedBoard) {
+				set(savedBoard);
+			}
+		},
+
+		// Create a new board with the specified size
+		createBoard: (size: BoardSize) => {
+			const totalSquares = size * size;
+			const goals: Goal[] = Array.from({ length: totalSquares }, (_, i) => ({
+				id: crypto.randomUUID(),
+				title: '',
+				notes: '',
+				completed: false
+			}));
+
+			const newBoard: Board = {
+				id: crypto.randomUUID(),
+				name: 'My Bingo Board',
+				size,
+				goals,
+				createdAt: new Date().toISOString(),
+				updatedAt: new Date().toISOString()
+			};
+
+			set(newBoard);
+		},
+
+		// Update a specific goal
+		updateGoal: (index: number, updates: Partial<Goal>) => {
+			update(board => {
+				if (!board) return board;
+
+				const updatedBoard = {
+					...board,
+					goals: board.goals.map((goal, i) =>
+						i === index ? { ...goal, ...updates } : goal
+					),
+					updatedAt: new Date().toISOString()
+				};
+
+				return updatedBoard;
+			});
+		},
+
+		// Toggle goal completion status
+		toggleComplete: (index: number) => {
+			update(board => {
+				if (!board) return board;
+
+				const updatedBoard = {
+					...board,
+					goals: board.goals.map((goal, i) =>
+						i === index ? { ...goal, completed: !goal.completed } : goal
+					),
+					updatedAt: new Date().toISOString()
+				};
+
+				return updatedBoard;
+			});
+		},
+
+		// Direct set (for loading saved boards)
+		set
+	};
+}
+
+export const boardStore = createBoardStore();
+
+// Auto-save: Subscribe to store changes and persist to localStorage
+boardStore.subscribe(board => {
+	if (board) {
+		saveBoard(board);
+	}
+});
