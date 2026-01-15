@@ -6,9 +6,10 @@
 	interface Props {
 		goal: Goal;
 		index: number;
+		isInBingo?: boolean;
 	}
 
-	let { goal, index }: Props = $props();
+	let { goal, index, isInBingo = false }: Props = $props();
 	let showModal = $state(false);
 
 	function toggleComplete(e: Event) {
@@ -26,9 +27,11 @@
 	tabindex="0"
 	onclick={openModal}
 	onkeydown={(e) => e.key === 'Enter' && openModal()}
-	class="aspect-square border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-md {goal.completed
-		? 'bg-green-50 border-green-500'
-		: 'bg-white border-gray-300 hover:border-blue-400'}"
+	class="aspect-square border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-md {isInBingo && goal.completed
+		? 'bg-yellow-50 border-yellow-500 shadow-lg ring-2 ring-yellow-400 ring-offset-2'
+		: goal.completed
+			? 'bg-green-50 border-green-500'
+			: 'bg-white border-gray-300 hover:border-blue-400'}"
 >
 	<div class="h-full flex flex-col justify-between">
 		<div class="flex-1 flex items-center justify-center text-center">
