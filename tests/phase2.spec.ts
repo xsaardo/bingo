@@ -14,9 +14,8 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Click the 3x3 button
 		await page.click('button:has-text("3×3")');
 
-		// Verify 9 goal squares are created
-		const squares = await page.locator('[role="button"]').count();
-		expect(squares).toBe(9);
+		// Wait for board to render and verify 9 goal squares are created
+		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 	});
 
 	test('should create a 4x4 board', async ({ page }) => {
@@ -25,9 +24,8 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Click the 4x4 button
 		await page.click('button:has-text("4×4")');
 
-		// Verify 16 goal squares are created
-		const squares = await page.locator('[role="button"]').count();
-		expect(squares).toBe(16);
+		// Wait for board to render and verify 16 goal squares are created
+		await expect(page.getByTestId('goal-square')).toHaveCount(16);
 	});
 
 	test('should create a 5x5 board', async ({ page }) => {
@@ -36,9 +34,8 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Click the 5x5 button
 		await page.click('button:has-text("5×5")');
 
-		// Verify 25 goal squares are created
-		const squares = await page.locator('[role="button"]').count();
-		expect(squares).toBe(25);
+		// Wait for board to render and verify 25 goal squares are created
+		await expect(page.getByTestId('goal-square')).toHaveCount(25);
 	});
 
 	test('should edit goal title and notes', async ({ page }) => {
@@ -47,8 +44,9 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Create a 3x3 board
 		await page.click('button:has-text("3×3")');
 
-		// Click the first goal square to open modal
-		await page.locator('[role="button"]').first().click();
+		// Wait for board to render, then click the first goal square to open modal
+		await expect(page.getByTestId('goal-square')).toHaveCount(9);
+		await page.getByTestId('goal-square').first().click();
 
 		// Wait for modal to appear
 		await expect(page.locator('h2:has-text("Edit Goal")')).toBeVisible();
@@ -70,17 +68,18 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Create a 3x3 board
 		await page.click('button:has-text("3×3")');
 
-		// Add a goal first
-		await page.locator('[role="button"]').first().click();
+		// Wait for board to render, then add a goal first
+		await expect(page.getByTestId('goal-square')).toHaveCount(9);
+		await page.getByTestId('goal-square').first().click();
 		await page.fill('#goal-title', 'Test Goal');
 		await page.click('button:has-text("Save")');
 
 		// Find and click the checkbox
-		const checkbox = page.locator('[role="button"]').first().locator('button').first();
+		const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
 		await checkbox.click();
 
 		// Verify the goal square has completed styling (green background)
-		const goalSquare = page.locator('[role="button"]').first();
+		const goalSquare = page.getByTestId('goal-square').first();
 		await expect(goalSquare).toHaveClass(/bg-green-50/);
 	});
 
@@ -90,8 +89,9 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Create a 3x3 board
 		await page.click('button:has-text("3×3")');
 
-		// Add a goal
-		await page.locator('[role="button"]').first().click();
+		// Wait for board to render, then add a goal
+		await expect(page.getByTestId('goal-square')).toHaveCount(9);
+		await page.getByTestId('goal-square').first().click();
 		await page.fill('#goal-title', 'Persistent Goal');
 		await page.fill('#goal-notes', 'This should persist');
 		await page.click('button:has-text("Save")');
@@ -113,7 +113,8 @@ test.describe('Phase 2: State & Persistence', () => {
 
 		// Create a 3x3 board with a goal
 		await page.click('button:has-text("3×3")');
-		await page.locator('[role="button"]').first().click();
+		await expect(page.getByTestId('goal-square')).toHaveCount(9);
+		await page.getByTestId('goal-square').first().click();
 		await page.fill('#goal-title', 'Reload Test');
 		await page.click('button:has-text("Save")');
 
@@ -122,7 +123,7 @@ test.describe('Phase 2: State & Persistence', () => {
 
 		// Verify the board is restored
 		await expect(page.locator('text=Reload Test').first()).toBeVisible();
-		const squares = await page.locator('[role="button"]').count();
+		const squares = await page.getByTestId('goal-square').count();
 		expect(squares).toBe(9);
 	});
 
@@ -131,12 +132,13 @@ test.describe('Phase 2: State & Persistence', () => {
 
 		// Create a board and add a goal
 		await page.click('button:has-text("3×3")');
-		await page.locator('[role="button"]').first().click();
+		await expect(page.getByTestId('goal-square')).toHaveCount(9);
+		await page.getByTestId('goal-square').first().click();
 		await page.fill('#goal-title', 'Auto-save Test');
 		await page.click('button:has-text("Save")');
 
 		// Toggle completion
-		const checkbox = page.locator('[role="button"]').first().locator('button').first();
+		const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
 		await checkbox.click();
 
 		// Wait a bit for auto-save
@@ -157,14 +159,15 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Create a board
 		await page.click('button:has-text("3×3")');
 
-		// Add a goal with notes
-		await page.locator('[role="button"]').first().click();
+		// Wait for board to render, then add a goal with notes
+		await expect(page.getByTestId('goal-square')).toHaveCount(9);
+		await page.getByTestId('goal-square').first().click();
 		await page.fill('#goal-title', 'Goal with Notes');
 		await page.fill('#goal-notes', 'These are my notes');
 		await page.click('button:has-text("Save")');
 
 		// Verify notes indicator (📝) is visible
-		const goalSquare = page.locator('[role="button"]').first();
+		const goalSquare = page.getByTestId('goal-square').first();
 		await expect(goalSquare.locator('text=📝')).toBeVisible();
 	});
 
@@ -173,7 +176,8 @@ test.describe('Phase 2: State & Persistence', () => {
 
 		// Create a board with a goal
 		await page.click('button:has-text("3×3")');
-		await page.locator('[role="button"]').first().click();
+		await expect(page.getByTestId('goal-square')).toHaveCount(9);
+		await page.getByTestId('goal-square').first().click();
 		await page.fill('#goal-title', 'Original Title');
 		await page.click('button:has-text("Save")');
 
