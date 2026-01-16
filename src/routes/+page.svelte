@@ -9,9 +9,9 @@
 	});
 </script>
 
-<div class="min-h-screen bg-gray-50 p-8">
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
 	<div class="max-w-4xl mx-auto">
-		<h1 class="text-4xl font-bold text-center mb-8 text-gray-900">
+		<h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 sm:mb-8 text-gray-900">
 			New Year Goals Bingo
 		</h1>
 
