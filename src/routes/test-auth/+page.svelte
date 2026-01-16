@@ -117,7 +117,7 @@
 		{:else}
 			<!-- Logged Out State -->
 			<form
-				on:submit|preventDefault={handleSendMagicLink}
+				onsubmit={(e) => { e.preventDefault(); handleSendMagicLink(); }}
 				class="space-y-4"
 			>
 				<div>

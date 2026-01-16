@@ -22,7 +22,9 @@
 		}
 	});
 
-	async function handleSubmit() {
+	async function handleSubmit(event: SubmitEvent) {
+		event.preventDefault();
+
 		// Validate
 		if (!name.trim()) {
 			error = 'Please enter a board name';
@@ -96,7 +98,7 @@
 			</div>
 
 			<!-- Form -->
-			<form onsubmit|preventDefault={handleSubmit} class="p-6 space-y-5">
+			<form onsubmit={handleSubmit} class="p-6 space-y-5">
 				<!-- Board Name -->
 				<div>
 					<label for="board-name" class="block text-sm font-medium text-gray-700 mb-2">
