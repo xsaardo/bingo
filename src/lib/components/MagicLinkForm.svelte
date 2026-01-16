@@ -77,7 +77,7 @@
 {:else}
 	<!-- Login Form -->
 	<form
-		on:submit|preventDefault={handleSubmit}
+		onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}
 		class="space-y-4"
 	>
 		<div>
