@@ -31,7 +31,11 @@
 	<div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
 		<div class="flex justify-between items-center mb-4">
 			<h2 class="text-2xl font-bold text-gray-900">Edit Goal</h2>
-			<button onclick={onClose} class="text-gray-500 hover:text-gray-700 text-2xl">
+			<button
+				data-testid="close-modal-button"
+				onclick={onClose}
+				class="text-gray-500 hover:text-gray-700 text-2xl"
+			>
 				×
 			</button>
 		</div>
