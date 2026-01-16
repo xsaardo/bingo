@@ -364,58 +364,6 @@ components/
 
 ---
 
-## Data Migration Strategy
-
-### Step 1: Detect Existing LocalStorage Data
-```typescript
-// On first login, check for existing board
-const existingBoard = localStorage.getItem('bingo-board');
-if (existingBoard) {
-  // Show migration prompt
-}
-```
-
-### Step 2: Migrate to Server
-```typescript
-async function migrateLocalBoard() {
-  const localBoard = loadBoard(); // from localStorage
-
-  if (localBoard) {
-    // Create board on server
-    const { data: newBoard } = await supabase
-      .from('boards')
-      .insert({
-        name: localBoard.name || 'My Board',
-        size: localBoard.size,
-        user_id: currentUser.id
-      })
-      .select()
-      .single();
-
-    // Migrate goals
-    const goals = localBoard.goals.map((goal, index) => ({
-      board_id: newBoard.id,
-      position: index,
-      title: goal.title,
-      notes: goal.notes,
-      completed: goal.completed
-    }));
-
-    await supabase.from('goals').insert(goals);
-
-    // Clear localStorage
-    localStorage.removeItem('bingo-board');
-  }
-}
-```
-
-### Step 3: Show Success Message
-```typescript
-// Display: "Your board has been migrated to your account!"
-```
-
----
-
 ## Implementation Phases
 
 ### Phase 1: Backend Setup (Days 1-2)
@@ -497,23 +445,20 @@ async function migrateLocalBoard() {
 
 ---
 
-### Phase 5: Migration & Polish (Days 9-10)
-**Goal:** Migrate existing users and polish UX
+### Phase 5: Polish & UX Improvements (Days 9-10)
+**Goal:** Polish the UX and add final touches
 
 **Tasks:**
-- [ ] Implement localStorage detection on login
-- [ ] Build migration flow UI
-- [ ] Add migration success message
 - [ ] Add loading skeletons for better UX
 - [ ] Add empty states (no boards yet)
 - [ ] Improve error messages
 - [ ] Add confirmation dialogs for destructive actions
-- [ ] Test migration flow thoroughly
+- [ ] Test complete user flows
 - [ ] Update documentation
 
 **Deliverables:**
-- Seamless migration for existing users
 - Polished UI with good loading/error states
+- Clear error messaging
 - Updated README with new features
 
 ---
@@ -615,7 +560,6 @@ CREATE POLICY "Users can manage goals in own boards"
 
 ### E2E Tests (Playwright)
 - Complete user journey: login → create board → edit goals → logout
-- Migration flow from localStorage
 - Multi-board management
 
 ---
@@ -623,10 +567,9 @@ CREATE POLICY "Users can manage goals in own boards"
 ## Rollback Plan
 
 ### If Issues Arise
-1. Keep localStorage code as fallback
-2. Add feature flag: `USE_SERVER_STORAGE`
-3. Allow users to export data before migration
-4. Maintain backup of localStorage data for 30 days
+1. Add feature flag: `USE_SERVER_STORAGE` to disable new features
+2. Allow users to export data as JSON
+3. Maintain database backups for 30 days
 
 ---
 
@@ -654,14 +597,14 @@ SUPABASE_SERVICE_ROLE_KEY=eyJxxx... (server-side only)
 
 ## Timeline Estimate
 
-**Total: 10-12 days**
+**Total: 8-10 days**
 
 - Phase 1: Backend Setup (2 days)
 - Phase 2: Auth UI (2 days)
 - Phase 3: Board List (2 days)
 - Phase 4: Board View (2 days)
-- Phase 5: Migration & Polish (2 days)
-- Buffer for testing and fixes (2 days)
+- Phase 5: Polish & UX (1-2 days)
+- Buffer for testing and fixes (1-2 days)
 
 ---
 
@@ -671,10 +614,9 @@ SUPABASE_SERVICE_ROLE_KEY=eyJxxx... (server-side only)
 - [ ] Login in < 30 seconds (including email check)
 - [ ] Board loads in < 1 second
 - [ ] Goal updates feel instant (optimistic)
-- [ ] No data loss during migration
+- [ ] No data loss
 
 ### Technical
-- [ ] 100% of localStorage data migrated successfully
 - [ ] < 100ms API response time for board list
 - [ ] < 200ms API response time for goal updates
 - [ ] Zero auth security vulnerabilities
@@ -705,7 +647,6 @@ SUPABASE_SERVICE_ROLE_KEY=eyJxxx... (server-side only)
 - This plan prioritizes **speed and simplicity** over perfect architecture
 - Magic links provide the most frictionless UX
 - Supabase dramatically reduces implementation time
-- Migration strategy ensures existing users don't lose data
 - Can always refactor to custom backend later if needed
 
-**Estimated Total Implementation Time: 10-12 development days**
+**Estimated Total Implementation Time: 8-10 development days**
