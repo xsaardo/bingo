@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { currentBoardStore } from '$lib/stores/currentBoard';
+	import { currentTheme } from '$lib/stores/theme';
 	import GoalModal from './GoalModal.svelte';
 	import type { Goal } from '$lib/types';
 
@@ -11,6 +12,7 @@
 
 	let { goal, index, isInBingo = false }: Props = $props();
 	let showModal = $state(false);
+	let theme = $derived($currentTheme);
 
 	async function toggleComplete(e: Event) {
 		e.stopPropagation();
@@ -23,45 +25,43 @@
 </script>
 
 <div
-	data-testid="goal-square"
 	role="button"
 	tabindex="0"
 	onclick={openModal}
 	onkeydown={(e) => e.key === 'Enter' && openModal()}
-	class="aspect-square border-2 rounded-lg p-2 sm:p-3 md:p-4 cursor-pointer transition-all duration-200 hover:shadow-md active:scale-95 {isInBingo && goal.completed
-		? 'bg-yellow-50 border-yellow-500 shadow-lg ring-2 ring-yellow-400 ring-offset-2'
+	class="aspect-square border-2 {theme.styles.borderRadius} p-4 cursor-pointer transition-all {theme.fonts.body} {isInBingo && goal.completed
+		? `${theme.colors.squareBingo} ${theme.colors.squareBingoBorder} ${theme.styles.shadowLg} ring-2 ring-offset-2`
 		: goal.completed
-			? 'bg-green-50 border-green-500'
-			: 'bg-white border-gray-300 hover:border-blue-400'}"
+			? `${theme.colors.squareCompleted} ${theme.colors.squareCompletedBorder}`
+			: `${theme.colors.squareDefault} ${theme.colors.squareBorder} ${theme.colors.squareHover}`}"
 >
 	<div class="h-full flex flex-col justify-between">
-		<div class="flex-1 flex items-center justify-center text-center px-1">
+		<div class="flex-1 flex items-center justify-center text-center">
 			{#if goal.title}
-				<p class="text-xs sm:text-sm md:text-base font-medium break-words {goal.completed ? 'text-green-900' : 'text-gray-900'}">
+				<p class="text-sm font-medium {theme.colors.text}">
 					{goal.title}
 				</p>
 			{:else}
-				<p class="text-[10px] sm:text-xs text-gray-400 italic">Click to add goal</p>
+				<p class="text-xs {theme.colors.textMuted} italic">Click to add goal</p>
 			{/if}
 		</div>
 
-		<div class="flex items-center justify-between mt-1 sm:mt-2">
+		<div class="flex items-center justify-between mt-2">
 			<button
-				data-testid="goal-checkbox"
 				onclick={toggleComplete}
-				class="w-4 h-4 sm:w-5 sm:h-5 rounded border-2 flex items-center justify-center transition-all active:scale-90 {goal.completed
-					? 'bg-green-500 border-green-500'
-					: 'border-gray-300 hover:border-green-500'}"
+				class="w-5 h-5 rounded border-2 flex items-center justify-center {goal.completed
+					? `${theme.colors.squareCompletedBorder} ${theme.colors.squareCompleted}`
+					: `${theme.colors.squareBorder} hover:${theme.colors.squareCompletedBorder}`}"
 			>
 				{#if goal.completed}
-					<svg class="w-2 h-2 sm:w-3 sm:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
 					</svg>
 				{/if}
 			</button>
 
 			{#if goal.notes}
-				<span class="text-[10px] sm:text-xs text-gray-500">📝</span>
+				<span class="text-xs {theme.colors.textMuted}">📝</span>
 			{/if}
 		</div>
 	</div>

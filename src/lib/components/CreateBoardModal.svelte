@@ -12,22 +12,17 @@
 	let size = $state(3);
 	let loading = $state(false);
 	let error = $state('');
-	let nameInput: HTMLInputElement;
 
-	// Reset form and focus when modal opens
+	// Reset form when modal opens
 	$effect(() => {
 		if (isOpen) {
 			name = '';
 			size = 3;
 			error = '';
-			// Focus the name input after a brief delay to ensure modal is rendered
-			setTimeout(() => nameInput?.focus(), 100);
 		}
 	});
 
-	async function handleSubmit(event: SubmitEvent) {
-		event.preventDefault();
-
+	async function handleSubmit() {
 		// Validate
 		if (!name.trim()) {
 			error = 'Please enter a board name';
@@ -101,14 +96,13 @@
 			</div>
 
 			<!-- Form -->
-			<form onsubmit={handleSubmit} class="p-6 space-y-5">
+			<form onsubmit={(e) => { e.preventDefault(); handleSubmit(e); }} class="p-6 space-y-5">
 				<!-- Board Name -->
 				<div>
 					<label for="board-name" class="block text-sm font-medium text-gray-700 mb-2">
 						Board Name <span class="text-red-500">*</span>
 					</label>
 					<input
-						bind:this={nameInput}
 						id="board-name"
 						type="text"
 						bind:value={name}
@@ -174,14 +168,9 @@
 
 				<!-- Error Message -->
 				{#if error}
-					<div
-						role="alert"
-						aria-live="polite"
-						class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start"
-					>
+					<div class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start">
 						<svg
 							class="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5"
-							aria-hidden="true"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -215,7 +204,6 @@
 						{#if loading}
 							<svg
 								class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-								aria-label="Creating board"
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"

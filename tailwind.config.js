@@ -2,7 +2,12 @@
 export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'retro': ['"Press Start 2P"', 'cursive'],
+        'pixel': ['VT323', 'monospace'],
+      },
+    },
   },
   plugins: [],
 }

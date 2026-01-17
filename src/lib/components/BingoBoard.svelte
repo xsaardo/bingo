@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { currentBoard } from '$lib/stores/currentBoard';
 	import { detectBingo, type BingoLine } from '$lib/utils/bingo';
+	import { currentTheme } from '$lib/stores/theme';
 	import GoalSquare from './GoalSquare.svelte';
 
 	let bingoLines = $derived<BingoLine[]>($currentBoard ? detectBingo($currentBoard) : []);
 	let hasBingo = $derived(bingoLines.length > 0);
 	let bingoIndices = $derived(new Set(bingoLines.flatMap((line) => line.indices)));
 	let isEmpty = $derived($currentBoard ? $currentBoard.goals.every((goal) => !goal.title.trim()) : false);
+	let theme = $derived($currentTheme);
 </script>
 
 <style>
@@ -27,13 +29,13 @@
 </style>
 
 {#if $currentBoard}
-	<div class="bg-white rounded-lg shadow-lg p-3 sm:p-4 md:p-6 relative">
+	<div class="{theme.colors.cardBg} {theme.styles.borderRadius} {theme.styles.shadowLg} p-3 sm:p-4 md:p-6 border-2 {theme.colors.cardBorder} relative">
 		{#if hasBingo}
 			<div
-				class="celebrate mb-3 sm:mb-4 p-3 sm:p-4 bg-gradient-to-r from-yellow-100 to-green-100 border-2 border-yellow-500 rounded-lg text-center shadow-md"
+				class="celebrate mb-3 sm:mb-4 p-3 sm:p-4 {theme.colors.bingoBanner} border-2 {theme.colors.bingoBannerBorder} {theme.styles.borderRadius} text-center {theme.styles.shadow} {theme.fonts.heading}"
 			>
-				<p class="text-xl sm:text-2xl font-bold text-yellow-800">🎉 BINGO! 🎉</p>
-				<p class="text-xs sm:text-sm text-yellow-700 mt-1">
+				<p class="text-xl sm:text-2xl font-bold {theme.colors.bingoText}">🎉 BINGO! 🎉</p>
+				<p class="text-xs sm:text-sm {theme.colors.bingoText} mt-1 {theme.fonts.body}">
 					You completed {bingoLines.length} {bingoLines.length === 1 ? 'line' : 'lines'}!
 				</p>
 			</div>
@@ -50,14 +52,14 @@
 
 		{#if isEmpty}
 			<div
-				class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-95 rounded-lg pointer-events-none"
+				class="absolute inset-0 flex items-center justify-center {theme.colors.cardBg} bg-opacity-95 {theme.styles.borderRadius} pointer-events-none"
 			>
 				<div class="text-center max-w-md px-6 py-8 animate-in fade-in duration-300">
 					<div
-						class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4"
+						class="inline-flex items-center justify-center w-16 h-16 {theme.colors.squareCompleted} rounded-full mb-4"
 					>
 						<svg
-							class="w-8 h-8 text-blue-600"
+							class="w-8 h-8 {theme.colors.text}"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -71,8 +73,8 @@
 							/>
 						</svg>
 					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-2">Your board is ready!</h3>
-					<p class="text-gray-600 text-sm">
+					<h3 class="text-xl {theme.fonts.heading} {theme.colors.text} mb-2">Your board is ready!</h3>
+					<p class="{theme.colors.textMuted} text-sm {theme.fonts.body}">
 						Click any square to add your first goal and start tracking your progress.
 					</p>
 				</div>
