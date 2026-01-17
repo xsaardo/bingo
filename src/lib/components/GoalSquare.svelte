@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { currentBoardStore } from '$lib/stores/currentBoard';
-	import GoalModal from './GoalModal.svelte';
+	import { uiStore } from '$lib/stores/board';
 	import type { Goal } from '$lib/types';
 
 	interface Props {
@@ -10,15 +10,14 @@
 	}
 
 	let { goal, index, isInBingo = false }: Props = $props();
-	let showModal = $state(false);
 
 	async function toggleComplete(e: Event) {
 		e.stopPropagation();
 		await currentBoardStore.toggleComplete(goal.id);
 	}
 
-	function openModal() {
-		showModal = true;
+	function selectGoal() {
+		uiStore.selectGoal(index);
 	}
 </script>
 
@@ -26,8 +25,8 @@
 	data-testid="goal-square"
 	role="button"
 	tabindex="0"
-	onclick={openModal}
-	onkeydown={(e) => e.key === 'Enter' && openModal()}
+	onclick={selectGoal}
+	onkeydown={(e) => e.key === 'Enter' && selectGoal()}
 	class="aspect-square border-2 rounded-lg p-2 sm:p-3 md:p-4 cursor-pointer transition-all duration-200 hover:shadow-md active:scale-95 {isInBingo && goal.completed
 		? 'bg-yellow-50 border-yellow-500 shadow-lg ring-2 ring-yellow-400 ring-offset-2'
 		: goal.completed
@@ -66,7 +65,3 @@
 		</div>
 	</div>
 </div>
-
-{#if showModal}
-	<GoalModal {goal} {index} onClose={() => (showModal = false)} />
-{/if}

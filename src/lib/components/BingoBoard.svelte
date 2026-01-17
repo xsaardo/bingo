@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { currentBoard } from '$lib/stores/currentBoard';
+	import { uiStore } from '$lib/stores/board';
 	import { detectBingo, type BingoLine } from '$lib/utils/bingo';
 	import GoalSquare from './GoalSquare.svelte';
+	import GoalSidebar from './GoalSidebar.svelte';
 
 	let bingoLines = $derived<BingoLine[]>($currentBoard ? detectBingo($currentBoard) : []);
 	let hasBingo = $derived(bingoLines.length > 0);
@@ -79,4 +81,12 @@
 			</div>
 		{/if}
 	</div>
+{/if}
+
+<!-- Goal Sidebar -->
+{#if $currentBoard && $uiStore.selectedGoalIndex !== null}
+	<GoalSidebar
+		goal={$currentBoard.goals[$uiStore.selectedGoalIndex]}
+		index={$uiStore.selectedGoalIndex}
+	/>
 {/if}
