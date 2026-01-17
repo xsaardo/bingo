@@ -5,8 +5,9 @@
 	import BoardCard from '$lib/components/BoardCard.svelte';
 	import CreateBoardModal from '$lib/components/CreateBoardModal.svelte';
 	import DeleteBoardModal from '$lib/components/DeleteBoardModal.svelte';
+	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
 	import { currentUser } from '$lib/stores/auth';
-	import { boardsStore, boards, boardsLoading, hasBoards } from '$lib/stores/boards';
+	import { boardsStore, boards, boardsLoading, boardsError, hasBoards } from '$lib/stores/boards';
 	import type { Board } from '$lib/types';
 
 	let showCreateModal = $state(false);
@@ -37,6 +38,10 @@
 	function handleCloseDeleteModal() {
 		showDeleteModal = false;
 		boardToDelete = null;
+	}
+
+	async function handleRetryFetch() {
+		await boardsStore.fetchBoards();
 	}
 </script>
 
@@ -98,9 +103,25 @@
 				</button>
 			</div>
 
-			<!-- Loading State -->
-			{#if $boardsLoading}
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			<!-- Error State -->
+			{#if $boardsError}
+				<div class="space-y-4 max-w-2xl mx-auto">
+					<ErrorAlert error={$boardsError} />
+					<div class="flex justify-center">
+						<button
+							onclick={handleRetryFetch}
+							class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+						>
+							Retry
+						</button>
+					</div>
+				</div>
+			{:else if $boardsLoading}
+				<!-- Loading State -->
+				<div
+					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+					aria-busy="true"
+				>
 					{#each Array(3) as _}
 						<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 animate-pulse">
 							<div class="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
