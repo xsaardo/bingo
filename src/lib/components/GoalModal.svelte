@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { currentBoardStore, currentBoardSaving } from '$lib/stores/currentBoard';
+	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
 	import type { Goal } from '$lib/types';
 
 	interface Props {
@@ -11,11 +13,16 @@
 	let { goal, index, onClose }: Props = $props();
 	let title = $state(goal.title);
 	let notes = $state(goal.notes);
+	let error = $state<string | null>(null);
+	let titleInput: HTMLInputElement;
 
 	async function handleSave() {
+		error = null;
 		const result = await currentBoardStore.saveGoal(goal.id, title, notes);
 		if (result.success) {
 			onClose();
+		} else {
+			error = result.error || 'Failed to save goal. Please try again.';
 		}
 	}
 
@@ -24,6 +31,11 @@
 			onClose();
 		}
 	}
+
+	onMount(() => {
+		// Auto-focus the title input when modal opens
+		titleInput?.focus();
+	});
 </script>
 
 <div
@@ -43,11 +55,16 @@
 		</div>
 
 		<div class="space-y-4">
+			{#if error}
+				<ErrorAlert error={error} onDismiss={() => (error = null)} />
+			{/if}
+
 			<div>
 				<label for="goal-title" class="block text-sm font-medium text-gray-700 mb-1">
 					Goal Title
 				</label>
 				<input
+					bind:this={titleInput}
 					id="goal-title"
 					type="text"
 					bind:value={title}
@@ -86,6 +103,7 @@
 				{#if $currentBoardSaving}
 					<svg
 						class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+						aria-label="Saving goal"
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
