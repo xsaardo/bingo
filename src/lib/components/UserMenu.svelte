@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { currentUser, authStore } from '$lib/stores/auth';
+	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 
 	let isOpen = false;
-	let loading = false;
+	let showLogoutConfirm = false;
 
 	function toggleMenu() {
 		isOpen = !isOpen;
@@ -13,17 +14,24 @@
 		isOpen = false;
 	}
 
+	function showLogoutConfirmation() {
+		showLogoutConfirm = true;
+		closeMenu();
+	}
+
 	async function handleLogout() {
-		loading = true;
 		const result = await authStore.logout();
-		loading = false;
 
 		if (result.success) {
-			closeMenu();
+			showLogoutConfirm = false;
 			goto('/auth/login');
 		} else {
 			alert(`Logout failed: ${result.error}`);
 		}
+	}
+
+	function handleCancelLogout() {
+		showLogoutConfirm = false;
 	}
 
 	// Close menu when clicking outside
@@ -134,9 +142,8 @@
 			<!-- Logout -->
 			<div class="border-t border-gray-100 py-1">
 				<button
-					onclick={handleLogout}
-					disabled={loading}
-					class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+					onclick={showLogoutConfirmation}
+					class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
 				>
 					<div class="flex items-center">
 						<svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,10 +154,21 @@
 								d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
 							/>
 						</svg>
-						{loading ? 'Signing out...' : 'Sign out'}
+						Sign out
 					</div>
 				</button>
 			</div>
 		</div>
 	{/if}
 </div>
+
+<!-- Logout Confirmation Modal -->
+<ConfirmationModal
+	isOpen={showLogoutConfirm}
+	title="Sign Out"
+	message="Are you sure you want to sign out?"
+	confirmText="Sign Out"
+	confirmVariant="danger"
+	onConfirm={handleLogout}
+	onCancel={handleCancelLogout}
+/>
