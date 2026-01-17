@@ -1,30 +1,43 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import AuthGuard from '$lib/components/AuthGuard.svelte';
 	import UserMenu from '$lib/components/UserMenu.svelte';
 	import BingoBoard from '$lib/components/BingoBoard.svelte';
-	import { currentBoardStore, currentBoard, currentBoardLoading } from '$lib/stores/currentBoard';
+	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
+	import { currentBoardStore, currentBoard, currentBoardLoading, currentBoardError } from '$lib/stores/currentBoard';
 
 	const boardId = $derived($page.params.id);
 
+	const fonts = [
+		{ name: 'Default', family: '' },
+		{ name: 'Chocolate Muffin', family: 'Chocolate Muffin, cursive' },
+		{ name: 'Inmyc', family: 'Inmyc, sans-serif' },
+		{ name: 'Explosion', family: 'Explosion, display' },
+		{ name: 'Eye Liner', family: 'Eye Liner, cursive' },
+		{ name: 'Amusement', family: 'Amusement, display' },
+		{ name: 'Walk The Walk', family: 'Walk The Walk, display' },
+		{ name: 'Decker', family: 'Decker, sans-serif' },
+		{ name: 'Duud', family: 'Duud, display' },
+		{ name: 'Double Letters', family: 'Double Letters, display' },
+		{ name: 'Please Explain', family: 'Please Explain, sans-serif' },
+	];
+
+	let selectedFont = $state('');
+
 	// Load board when component mounts
 	onMount(async () => {
-		const result = await currentBoardStore.loadBoard(boardId);
-
-		// If board not found, redirect to dashboard
-		if (!result.success) {
-			setTimeout(() => {
-				goto('/dashboard');
-			}, 2000);
-		}
+		await currentBoardStore.loadBoard(boardId);
 
 		// Cleanup when leaving
 		return () => {
 			currentBoardStore.clear();
 		};
 	});
+
+	async function handleRetry() {
+		await currentBoardStore.loadBoard(boardId);
+	}
 </script>
 
 <svelte:head>
@@ -37,7 +50,7 @@
 		<header class="bg-white border-b border-gray-200">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
 				<div class="flex items-center justify-between">
-					<div class="flex items-center space-x-4">
+					<div class="flex items-center space-x-4 flex-1">
 						<!-- Back Button -->
 						<a
 							href="/dashboard"
@@ -55,9 +68,9 @@
 						</a>
 
 						<!-- Board Info -->
-						<div>
+						<div class="flex-1">
 							{#if $currentBoard}
-								<h1 class="text-xl font-bold text-gray-900">{$currentBoard.name}</h1>
+								<h1 class="text-xl font-bold text-gray-900" style="font-family: {selectedFont || 'inherit'}">{$currentBoard.name}</h1>
 								<p class="text-sm text-gray-500">
 									{$currentBoard.size}×{$currentBoard.size} grid • {$currentBoard.goals.length} goals
 									• {$currentBoard.goals.filter((g) => g.completed).length} completed
@@ -65,6 +78,20 @@
 							{:else}
 								<div class="h-6 w-48 bg-gray-200 rounded animate-pulse"></div>
 							{/if}
+						</div>
+
+						<!-- Font Selector -->
+						<div class="flex items-center space-x-2">
+							<label for="font-select" class="text-sm font-medium text-gray-700">Font:</label>
+							<select
+								id="font-select"
+								bind:value={selectedFont}
+								class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+							>
+								{#each fonts as font}
+									<option value={font.family}>{font.name}</option>
+								{/each}
+							</select>
 						</div>
 					</div>
 
@@ -77,39 +104,38 @@
 		<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 			{#if $currentBoardLoading}
 				<!-- Loading State -->
-				<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+				<div
+					class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center"
+					aria-busy="true"
+				>
 					<div
 						class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
+						aria-label="Loading board"
 					></div>
 					<p class="text-gray-600">Loading board...</p>
 				</div>
-			{:else if !$currentBoard}
-				<!-- Board Not Found -->
-				<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-					<div
-						class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4"
-					>
-						<svg
-							class="w-8 h-8 text-red-600"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
+			{:else if $currentBoardError}
+				<!-- Error State -->
+				<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+					<div class="max-w-md mx-auto space-y-4">
+						<ErrorAlert error={$currentBoardError} />
+						<div class="flex justify-center space-x-3">
+							<button
+								onclick={handleRetry}
+								class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+							>
+								Retry
+							</button>
+							<a
+								href="/dashboard"
+								class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors"
+							>
+								Back to Dashboard
+							</a>
+						</div>
 					</div>
-					<h2 class="text-2xl font-bold text-gray-900 mb-2">Board Not Found</h2>
-					<p class="text-gray-600 mb-6">
-						This board doesn't exist or you don't have access to it.
-					</p>
-					<p class="text-sm text-gray-500">Redirecting to dashboard...</p>
 				</div>
-			{:else}
+			{:else if $currentBoard}
 				<!-- BingoBoard Component -->
 				<div class="max-w-4xl mx-auto">
 					<BingoBoard />
