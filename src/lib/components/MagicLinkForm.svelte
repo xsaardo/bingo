@@ -99,9 +99,14 @@
 		</div>
 
 		{#if error}
-			<div class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start">
+			<div
+				role="alert"
+				aria-live="polite"
+				class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start"
+			>
 				<svg
 					class="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5"
+					aria-hidden="true"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -125,6 +130,7 @@
 			{#if loading}
 				<svg
 					class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+					aria-label="Sending magic link"
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
 					viewBox="0 0 24 24"
