@@ -85,3 +85,22 @@ boardStore.subscribe(board => {
 		saveBoard(board);
 	}
 });
+
+// UI state store for selected goal
+function createUIStore() {
+	const { subscribe, set } = writable<{ selectedGoalIndex: number | null }>({
+		selectedGoalIndex: null
+	});
+
+	return {
+		subscribe,
+		selectGoal: (index: number | null) => {
+			set({ selectedGoalIndex: index });
+		},
+		clearSelection: () => {
+			set({ selectedGoalIndex: null });
+		}
+	};
+}
+
+export const uiStore = createUIStore();
