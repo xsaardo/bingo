@@ -17,26 +17,38 @@ export interface AuthResult {
  */
 export async function sendMagicLink(email: string, redirectTo?: string): Promise<AuthResult> {
 	try {
+		// Use the current domain for the callback URL
+		// This ensures preview branches redirect correctly
+		const callbackUrl = redirectTo || `${window.location.origin}/auth/callback`;
+
+		console.log('Sending magic link with redirect to:', callbackUrl);
+
 		const { data, error } = await supabase.auth.signInWithOtp({
 			email,
 			options: {
 				// URL to redirect to after clicking magic link
-				emailRedirectTo: redirectTo || `${window.location.origin}/auth/callback`
+				emailRedirectTo: callbackUrl,
+				// Prevent automatic redirect to avoid issues
+				shouldCreateUser: true
 			}
 		});
 
 		if (error) {
+			console.error('Magic link error:', error);
 			return {
 				success: false,
 				error: error.message
 			};
 		}
 
+		console.log('Magic link sent successfully to:', email);
+
 		return {
 			success: true,
 			user: data.user
 		};
 	} catch (err) {
+		console.error('Unexpected error sending magic link:', err);
 		return {
 			success: false,
 			error: err instanceof Error ? err.message : 'Unknown error occurred'
