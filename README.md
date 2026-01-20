@@ -281,6 +281,19 @@ The application can be deployed to:
 
 See the [SvelteKit deployment docs](https://kit.svelte.dev/docs/adapters) for platform-specific adapters.
 
+### Vercel Preview Branches
+
+When deploying to Vercel, preview branches need special configuration for magic link authentication to work correctly. See [VERCEL_PREVIEW_AUTH.md](./VERCEL_PREVIEW_AUTH.md) for detailed setup instructions.
+
+**Quick Setup:**
+1. Go to Supabase Dashboard → Authentication → URL Configuration
+2. Add to Redirect URLs:
+   ```
+   https://bingo-*.vercel.app/**
+   https://bingo-git-*.vercel.app/**
+   ```
+3. Magic links will now redirect to the correct preview branch URL
+
 ## Development Phases
 
 The application was developed in 5 phases:
