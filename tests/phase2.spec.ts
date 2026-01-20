@@ -44,19 +44,22 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Create a 3x3 board
 		await page.click('button:has-text("3×3")');
 
-		// Wait for board to render, then click the first goal square to open modal
+		// Wait for board to render, then click the first goal square to open sidebar
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 		await page.getByTestId('goal-square').first().click();
 
-		// Wait for modal to appear
-		await expect(page.locator('h2:has-text("Edit Goal")')).toBeVisible();
+		// Wait for sidebar to appear
+		await expect(page.locator('h2:has-text("Goal Details")')).toBeVisible();
 
 		// Enter title and notes
-		await page.fill('#goal-title', 'Learn TypeScript');
-		await page.fill('#goal-notes', 'Complete the official TypeScript tutorial');
+		await page.fill('#sidebar-goal-title', 'Learn TypeScript');
+		await page.fill('#sidebar-goal-notes', 'Complete the official TypeScript tutorial');
 
-		// Save the goal
-		await page.click('button:has-text("Save")');
+		// Wait for auto-save (500ms debounce + buffer)
+		await page.waitForTimeout(600);
+
+		// Close sidebar
+		await page.getByTestId('close-sidebar-button').click();
 
 		// Verify the goal title is displayed
 		await expect(page.locator('text=Learn TypeScript').first()).toBeVisible();
@@ -71,8 +74,13 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Wait for board to render, then add a goal first
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 		await page.getByTestId('goal-square').first().click();
-		await page.fill('#goal-title', 'Test Goal');
-		await page.click('button:has-text("Save")');
+		await page.fill('#sidebar-goal-title', 'Test Goal');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
+
+		// Close sidebar
+		await page.getByTestId('close-sidebar-button').click();
 
 		// Find and click the checkbox
 		const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
@@ -92,9 +100,11 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Wait for board to render, then add a goal
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 		await page.getByTestId('goal-square').first().click();
-		await page.fill('#goal-title', 'Persistent Goal');
-		await page.fill('#goal-notes', 'This should persist');
-		await page.click('button:has-text("Save")');
+		await page.fill('#sidebar-goal-title', 'Persistent Goal');
+		await page.fill('#sidebar-goal-notes', 'This should persist');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
 
 		// Check localStorage
 		const savedData = await page.evaluate(() => {
@@ -115,8 +125,10 @@ test.describe('Phase 2: State & Persistence', () => {
 		await page.click('button:has-text("3×3")');
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 		await page.getByTestId('goal-square').first().click();
-		await page.fill('#goal-title', 'Reload Test');
-		await page.click('button:has-text("Save")');
+		await page.fill('#sidebar-goal-title', 'Reload Test');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
 
 		// Reload the page
 		await page.reload();
@@ -134,8 +146,13 @@ test.describe('Phase 2: State & Persistence', () => {
 		await page.click('button:has-text("3×3")');
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 		await page.getByTestId('goal-square').first().click();
-		await page.fill('#goal-title', 'Auto-save Test');
-		await page.click('button:has-text("Save")');
+		await page.fill('#sidebar-goal-title', 'Auto-save Test');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
+
+		// Close sidebar
+		await page.getByTestId('close-sidebar-button').click();
 
 		// Toggle completion
 		const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
@@ -162,9 +179,14 @@ test.describe('Phase 2: State & Persistence', () => {
 		// Wait for board to render, then add a goal with notes
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 		await page.getByTestId('goal-square').first().click();
-		await page.fill('#goal-title', 'Goal with Notes');
-		await page.fill('#goal-notes', 'These are my notes');
-		await page.click('button:has-text("Save")');
+		await page.fill('#sidebar-goal-title', 'Goal with Notes');
+		await page.fill('#sidebar-goal-notes', 'These are my notes');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
+
+		// Close sidebar
+		await page.getByTestId('close-sidebar-button').click();
 
 		// Verify notes indicator (📝) is visible
 		const goalSquare = page.getByTestId('goal-square').first();
@@ -178,14 +200,26 @@ test.describe('Phase 2: State & Persistence', () => {
 		await page.click('button:has-text("3×3")');
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 		await page.getByTestId('goal-square').first().click();
-		await page.fill('#goal-title', 'Original Title');
-		await page.click('button:has-text("Save")');
+		await page.fill('#sidebar-goal-title', 'Original Title');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
+
+		// Close sidebar
+		await page.getByTestId('close-sidebar-button').click();
 
 		// Edit the goal
 		await page.locator('text=Original Title').click();
-		await page.fill('#goal-title', 'Updated Title');
-		await page.fill('#goal-notes', 'Added notes');
-		await page.click('button:has-text("Save")');
+
+		// Clear and update the title
+		await page.fill('#sidebar-goal-title', 'Updated Title');
+		await page.fill('#sidebar-goal-notes', 'Added notes');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
+
+		// Close sidebar
+		await page.getByTestId('close-sidebar-button').click();
 
 		// Verify changes are displayed
 		await expect(page.locator('text=Updated Title').first()).toBeVisible();

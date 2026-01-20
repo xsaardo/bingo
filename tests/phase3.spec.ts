@@ -19,8 +19,13 @@ test.describe('Phase 3: Bingo Detection & Visual Feedback', () => {
 		for (let i = 0; i < 3; i++) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			// Toggle completion
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
@@ -44,8 +49,13 @@ test.describe('Phase 3: Bingo Detection & Visual Feedback', () => {
 		for (const i of columnIndices) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
 			await checkbox.click();
@@ -68,8 +78,13 @@ test.describe('Phase 3: Bingo Detection & Visual Feedback', () => {
 		for (const i of diagonalIndices) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
 			await checkbox.click();
@@ -91,8 +106,13 @@ test.describe('Phase 3: Bingo Detection & Visual Feedback', () => {
 		for (const i of diagonalIndices) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
 			await checkbox.click();
@@ -113,8 +133,13 @@ test.describe('Phase 3: Bingo Detection & Visual Feedback', () => {
 		for (let i = 0; i < 3; i++) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
 			await checkbox.click();
@@ -139,8 +164,13 @@ test.describe('Phase 3: Bingo Detection & Visual Feedback', () => {
 		for (let i = 0; i < 9; i++) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
 			await checkbox.click();
@@ -161,8 +191,13 @@ test.describe('Phase 3: Bingo Detection & Visual Feedback', () => {
 		for (let i = 0; i < 3; i++) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
 			await checkbox.click();
@@ -190,8 +225,13 @@ test.describe('Phase 3: Bingo Detection & Visual Feedback', () => {
 		for (let i = 0; i < 4; i++) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
 			await checkbox.click();
@@ -212,8 +252,13 @@ test.describe('Phase 3: Bingo Detection & Visual Feedback', () => {
 		for (let i = 0; i < 5; i++) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
 			await checkbox.click();
