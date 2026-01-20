@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { boardStore } from '$lib/stores/board';
+	import { onMount } from 'svelte';
+	import { currentBoardStore, currentBoardSaving } from '$lib/stores/currentBoard';
+	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
 	import type { Goal } from '$lib/types';
 
 	interface Props {
@@ -11,17 +13,29 @@
 	let { goal, index, onClose }: Props = $props();
 	let title = $state(goal.title);
 	let notes = $state(goal.notes);
+	let error = $state<string | null>(null);
+	let titleInput: HTMLInputElement;
 
-	function handleSave() {
-		boardStore.updateGoal(index, { title, notes });
-		onClose();
+	async function handleSave() {
+		error = null;
+		const result = await currentBoardStore.saveGoal(goal.id, title, notes);
+		if (result.success) {
+			onClose();
+		} else {
+			error = result.error || 'Failed to save goal. Please try again.';
+		}
 	}
 
 	function handleBackdropClick(e: MouseEvent) {
-		if (e.target === e.currentTarget) {
+		if (e.target === e.currentTarget && !$currentBoardSaving) {
 			onClose();
 		}
 	}
+
+	onMount(() => {
+		// Auto-focus the title input when modal opens
+		titleInput?.focus();
+	});
 </script>
 
 <div
@@ -41,11 +55,16 @@
 		</div>
 
 		<div class="space-y-4">
+			{#if error}
+				<ErrorAlert error={error} onDismiss={() => (error = null)} />
+			{/if}
+
 			<div>
 				<label for="goal-title" class="block text-sm font-medium text-gray-700 mb-1">
 					Goal Title
 				</label>
 				<input
+					bind:this={titleInput}
 					id="goal-title"
 					type="text"
 					bind:value={title}
@@ -71,15 +90,42 @@
 		<div class="flex justify-end gap-3 mt-6">
 			<button
 				onclick={onClose}
-				class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+				disabled={$currentBoardSaving}
+				class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				Cancel
 			</button>
 			<button
 				onclick={handleSave}
-				class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+				disabled={$currentBoardSaving}
+				class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center"
 			>
-				Save
+				{#if $currentBoardSaving}
+					<svg
+						class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+						aria-label="Saving goal"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+					>
+						<circle
+							class="opacity-25"
+							cx="12"
+							cy="12"
+							r="10"
+							stroke="currentColor"
+							stroke-width="4"
+						/>
+						<path
+							class="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+						/>
+					</svg>
+					Saving...
+				{:else}
+					Save
+				{/if}
 			</button>
 		</div>
 	</div>

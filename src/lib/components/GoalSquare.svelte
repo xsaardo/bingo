@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { boardStore } from '$lib/stores/board';
+	import { currentBoardStore } from '$lib/stores/currentBoard';
 	import GoalModal from './GoalModal.svelte';
 	import type { Goal } from '$lib/types';
 
@@ -12,9 +12,9 @@
 	let { goal, index, isInBingo = false }: Props = $props();
 	let showModal = $state(false);
 
-	function toggleComplete(e: Event) {
+	async function toggleComplete(e: Event) {
 		e.stopPropagation();
-		boardStore.toggleComplete(index);
+		await currentBoardStore.toggleComplete(goal.id);
 	}
 
 	function openModal() {
