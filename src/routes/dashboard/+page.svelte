@@ -6,7 +6,6 @@
 	import BoardCard from '$lib/components/BoardCard.svelte';
 	import CreateBoardModal from '$lib/components/CreateBoardModal.svelte';
 	import DeleteBoardModal from '$lib/components/DeleteBoardModal.svelte';
-	import MigrationPrompt from '$lib/components/MigrationPrompt.svelte';
 	import { currentUser } from '$lib/stores/auth';
 	import { currentTheme } from '$lib/stores/theme';
 	import { boardsStore, boards, boardsLoading, hasBoards } from '$lib/stores/boards';
@@ -41,11 +40,6 @@
 	function handleCloseDeleteModal() {
 		showDeleteModal = false;
 		boardToDelete = null;
-	}
-
-	function handleMigrationComplete() {
-		// Refresh boards after migration
-		boardsStore.fetchBoards();
 	}
 </script>
 
@@ -109,9 +103,6 @@
 					New Board
 				</button>
 			</div>
-
-			<!-- Migration Prompt -->
-			<MigrationPrompt onComplete={handleMigrationComplete} />
 
 			<!-- Loading State -->
 			{#if $boardsLoading}
