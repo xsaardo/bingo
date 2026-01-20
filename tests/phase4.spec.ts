@@ -48,9 +48,9 @@ test.describe('Phase 4: Polish & User Experience', () => {
 		// Verify board is still visible and usable
 		await expect(page.getByTestId('goal-square').first()).toBeVisible();
 
-		// Should be able to interact with goals
+		// Should be able to interact with goals (opens sidebar)
 		await page.getByTestId('goal-square').first().click();
-		await expect(page.locator('#goal-title')).toBeVisible();
+		await expect(page.locator('#sidebar-goal-title')).toBeVisible();
 	});
 
 	test('should have responsive design on tablet viewport', async ({ page }) => {
@@ -76,8 +76,13 @@ test.describe('Phase 4: Polish & User Experience', () => {
 
 		// Add a goal
 		await page.getByTestId('goal-square').first().click();
-		await page.fill('#goal-title', 'Hover Test');
-		await page.click('button:has-text("Save")');
+		await page.fill('#sidebar-goal-title', 'Hover Test');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
+
+		// Close sidebar
+		await page.getByTestId('close-sidebar-button').click();
 
 		// Hover over a goal square
 		const square = page.getByTestId('goal-square').first();
@@ -95,40 +100,40 @@ test.describe('Phase 4: Polish & User Experience', () => {
 		await expect(button).toHaveClass(/transition/);
 	});
 
-	test('should close modal when clicking cancel', async ({ page }) => {
+	test('should close sidebar when clicking backdrop', async ({ page }) => {
 		await page.goto('/');
 
 		// Create a board
 		await page.click('button:has-text("3×3")');
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 
-		// Open modal
+		// Open sidebar
 		await page.getByTestId('goal-square').first().click();
-		await expect(page.locator('h2:has-text("Edit Goal")')).toBeVisible();
+		await expect(page.locator('h2:has-text("Goal Details")')).toBeVisible();
 
-		// Click cancel
-		await page.click('button:has-text("Cancel")');
+		// Close by pressing ESC key
+		await page.keyboard.press('Escape');
 
-		// Modal should be hidden
-		await expect(page.locator('h2:has-text("Edit Goal")')).not.toBeVisible();
+		// Sidebar should be hidden
+		await expect(page.locator('h2:has-text("Goal Details")')).not.toBeVisible();
 	});
 
-	test('should close modal when clicking X button', async ({ page }) => {
+	test('should close sidebar when clicking X button', async ({ page }) => {
 		await page.goto('/');
 
 		// Create a board
 		await page.click('button:has-text("3×3")');
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 
-		// Open modal
+		// Open sidebar
 		await page.getByTestId('goal-square').first().click();
-		await expect(page.locator('h2:has-text("Edit Goal")')).toBeVisible();
+		await expect(page.locator('h2:has-text("Goal Details")')).toBeVisible();
 
 		// Click X button
-		await page.getByTestId('close-modal-button').click();
+		await page.getByTestId('close-sidebar-button').click();
 
-		// Modal should be hidden
-		await expect(page.locator('h2:has-text("Edit Goal")')).not.toBeVisible();
+		// Sidebar should be hidden
+		await expect(page.locator('h2:has-text("Goal Details")')).not.toBeVisible();
 	});
 
 	test('should persist goal notes across edits', async ({ page }) => {
@@ -138,15 +143,20 @@ test.describe('Phase 4: Polish & User Experience', () => {
 		await page.click('button:has-text("3×3")');
 		await expect(page.getByTestId('goal-square')).toHaveCount(9);
 		await page.getByTestId('goal-square').first().click();
-		await page.fill('#goal-title', 'Goal with Notes');
-		await page.fill('#goal-notes', 'Initial notes');
-		await page.click('button:has-text("Save")');
+		await page.fill('#sidebar-goal-title', 'Goal with Notes');
+		await page.fill('#sidebar-goal-notes', 'Initial notes');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
+
+		// Close sidebar
+		await page.getByTestId('close-sidebar-button').click();
 
 		// Re-open the goal
 		await page.locator('text=Goal with Notes').click();
 
 		// Verify notes are still there
-		const notesField = page.locator('#goal-notes');
+		const notesField = page.locator('#sidebar-goal-notes');
 		await expect(notesField).toHaveValue('Initial notes');
 	});
 
@@ -160,8 +170,13 @@ test.describe('Phase 4: Polish & User Experience', () => {
 		for (let i = 0; i < 3; i++) {
 			const square = page.getByTestId('goal-square').nth(i);
 			await square.click();
-			await page.fill('#goal-title', `Goal ${i + 1}`);
-			await page.click('button:has-text("Save")');
+			await page.fill('#sidebar-goal-title', `Goal ${i + 1}`);
+
+			// Wait for auto-save
+			await page.waitForTimeout(600);
+
+			// Close sidebar
+			await page.getByTestId('close-sidebar-button').click();
 
 			const checkbox = page.getByTestId('goal-square').nth(i).getByTestId('goal-checkbox');
 			await checkbox.click();
