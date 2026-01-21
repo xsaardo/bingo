@@ -40,7 +40,7 @@
 		{/if}
 
 		<div
-			class="grid gap-2 sm:gap-3"
+			class="grid gap-2.5 sm:gap-3 md:gap-4"
 			style="grid-template-columns: repeat({$currentBoard.size}, minmax(0, 1fr));"
 		>
 			{#each $currentBoard.goals as goal, index}

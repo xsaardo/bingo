@@ -48,51 +48,48 @@
 	<div class="min-h-screen bg-gray-50">
 		<!-- Header -->
 		<header class="bg-white border-b border-gray-200">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-				<div class="flex items-center justify-between">
-					<div class="flex items-center space-x-4 flex-1">
-						<!-- Back Button -->
-						<a
-							href="/dashboard"
-							class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-							title="Back to dashboard"
+			<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
+				<div class="flex items-center justify-between gap-2 sm:gap-4">
+					<!-- Back Button -->
+					<a
+						href="/dashboard"
+						class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+						title="Back to dashboard"
+					>
+						<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M15 19l-7-7 7-7"
+							/>
+						</svg>
+					</a>
+
+					<!-- Board Info -->
+					<div class="flex-1 min-w-0">
+						{#if $currentBoard}
+							<h1 class="text-base sm:text-xl font-bold text-gray-900 truncate" style="font-family: {selectedFont || 'inherit'}">{$currentBoard.name}</h1>
+							<p class="text-xs sm:text-sm text-gray-500 truncate">
+								{$currentBoard.size}×{$currentBoard.size} grid • {$currentBoard.goals.filter((g) => g.completed).length}/{$currentBoard.goals.length} completed
+							</p>
+						{:else}
+							<div class="h-6 w-48 bg-gray-200 rounded animate-pulse"></div>
+						{/if}
+					</div>
+
+					<!-- Font Selector - Hidden on mobile -->
+					<div class="hidden sm:flex items-center space-x-2">
+						<label for="font-select" class="text-sm font-medium text-gray-700">Font:</label>
+						<select
+							id="font-select"
+							bind:value={selectedFont}
+							class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 						>
-							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M15 19l-7-7 7-7"
-								/>
-							</svg>
-						</a>
-
-						<!-- Board Info -->
-						<div class="flex-1">
-							{#if $currentBoard}
-								<h1 class="text-xl font-bold text-gray-900" style="font-family: {selectedFont || 'inherit'}">{$currentBoard.name}</h1>
-								<p class="text-sm text-gray-500">
-									{$currentBoard.size}×{$currentBoard.size} grid • {$currentBoard.goals.length} goals
-									• {$currentBoard.goals.filter((g) => g.completed).length} completed
-								</p>
-							{:else}
-								<div class="h-6 w-48 bg-gray-200 rounded animate-pulse"></div>
-							{/if}
-						</div>
-
-						<!-- Font Selector -->
-						<div class="flex items-center space-x-2">
-							<label for="font-select" class="text-sm font-medium text-gray-700">Font:</label>
-							<select
-								id="font-select"
-								bind:value={selectedFont}
-								class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-							>
-								{#each fonts as font}
-									<option value={font.family}>{font.name}</option>
-								{/each}
-							</select>
-						</div>
+							{#each fonts as font}
+								<option value={font.family}>{font.name}</option>
+							{/each}
+						</select>
 					</div>
 
 					<UserMenu />
@@ -101,7 +98,7 @@
 		</header>
 
 		<!-- Main Content -->
-		<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+		<main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
 			{#if $currentBoardLoading}
 				<!-- Loading State -->
 				<div
@@ -137,7 +134,7 @@
 				</div>
 			{:else if $currentBoard}
 				<!-- BingoBoard Component -->
-				<div class="max-w-4xl mx-auto">
+				<div class="w-full max-w-4xl mx-auto">
 					<BingoBoard />
 				</div>
 			{/if}
