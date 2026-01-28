@@ -12,7 +12,7 @@
 	let size = $state(3);
 	let loading = $state(false);
 	let error = $state('');
-	let nameInput: HTMLInputElement;
+	let nameInput = $state<HTMLInputElement | undefined>(undefined);
 
 	// Reset form and focus when modal opens
 	$effect(() => {
@@ -74,6 +74,7 @@
 		role="dialog"
 		aria-modal="true"
 		aria-labelledby="modal-title"
+		tabindex="-1"
 	>
 		<div
 			class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scale-in"
@@ -123,9 +124,9 @@
 
 				<!-- Board Size -->
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-3">
+					<div class="block text-sm font-medium text-gray-700 mb-3">
 						Board Size <span class="text-red-500">*</span>
-					</label>
+					</div>
 					<div class="grid grid-cols-3 gap-3">
 						{#each [3, 4, 5] as sizeOption}
 							<button

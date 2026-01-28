@@ -64,6 +64,7 @@
 		role="dialog"
 		aria-modal="true"
 		aria-labelledby="confirmation-modal-title"
+		tabindex="-1"
 	>
 		<div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scale-in">
 			<!-- Header with Icon -->

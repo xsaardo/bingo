@@ -11,10 +11,16 @@
 	}
 
 	let { goal, index, onClose }: Props = $props();
-	let title = $state(goal.title);
-	let notes = $state(goal.notes);
+	let title = $state('');
+	let notes = $state('');
 	let error = $state<string | null>(null);
 	let titleInput: HTMLInputElement;
+
+	// Sync local state with goal prop
+	$effect(() => {
+		title = goal.title;
+		notes = goal.notes;
+	});
 
 	async function handleSave() {
 		error = null;
@@ -40,6 +46,9 @@
 
 <div
 	onclick={handleBackdropClick}
+	onkeydown={(e) => e.key === 'Enter' && handleBackdropClick(e as any)}
+	role="button"
+	tabindex="-1"
 	class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
 >
 	<div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">

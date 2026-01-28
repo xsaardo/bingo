@@ -10,9 +10,15 @@
 	}
 
 	let { goal, index }: Props = $props();
-	let title = $state(goal.title);
-	let notes = $state(goal.notes);
+	let title = $state('');
+	let notes = $state('');
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	// Sync local state with goal prop
+	$effect(() => {
+		title = goal.title;
+		notes = goal.notes;
+	});
 
 	// Auto-save with debounce
 	function autoSave() {
