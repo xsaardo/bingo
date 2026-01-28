@@ -9,9 +9,11 @@
 	let message = '';
 	let messageType: 'success' | 'error' | 'info' = 'info';
 
-	onMount(async () => {
+	onMount(() => {
 		// Check if user is already logged in
-		user = await getCurrentUser();
+		getCurrentUser().then((currentUser) => {
+			user = currentUser;
+		});
 
 		// Listen for auth state changes
 		const unsubscribe = onAuthStateChange((newUser) => {

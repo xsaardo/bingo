@@ -7,7 +7,7 @@
 	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
 	import { currentBoardStore, currentBoard, currentBoardLoading, currentBoardError } from '$lib/stores/currentBoard';
 
-	const boardId = $derived($page.params.id);
+	const boardId = $derived($page.params.id!);
 
 	const fonts = [
 		{ name: 'Default', family: '' },
@@ -26,8 +26,8 @@
 	let selectedFont = $state('');
 
 	// Load board when component mounts
-	onMount(async () => {
-		await currentBoardStore.loadBoard(boardId);
+	onMount(() => {
+		currentBoardStore.loadBoard(boardId);
 
 		// Cleanup when leaving
 		return () => {
