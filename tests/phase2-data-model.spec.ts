@@ -4,46 +4,163 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Phase 2: Enhanced Data Model', () => {
-	test('TypeScript compilation passes with new data model', async () => {
-		// This is verified by npm run check in CI
-		// If we got this far, TypeScript is happy with the new types
-		expect(true).toBe(true);
+	let testBoardId: string;
+
+	// Create a fresh test board before each test
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/dashboard');
+
+		// Create a new board
+		await page.click('button:has-text("Create Board")');
+		await page.fill('input[id="board-name"]', `Test Board ${Date.now()}`);
+
+		// Select 3x3 size
+		const size3Button = page.locator('button').filter({ hasText: '3×3' });
+		await size3Button.click();
+
+		await page.click('button:has-text("Create")');
+
+		// Wait for redirect to board page and extract ID from URL
+		await page.waitForURL(/\/boards\/.+/);
+		const url = page.url();
+		testBoardId = url.split('/').pop()!;
+
+		// Wait for board to load
+		await page.waitForSelector('[data-testid="goal-square"]');
 	});
 
-	test.skip('new goal has correct default date fields', async ({ page }) => {
-		// TODO: Implement after authentication is set up in tests
-		// Will verify:
-		// - startedAt: null
-		// - completedAt: null
-		// - lastUpdatedAt: ISO timestamp
-		// - milestones: []
+	test('new goal has correct default date fields', async ({ page }) => {
+		// Get the first goal's data from the store
+		const goalData = await page.evaluate(() => {
+			// Access Svelte stores via window.__svelteStores (if exposed)
+			// Or query Supabase directly
+			return (window as any).__currentBoard?.goals?.[0];
+		});
+
+		// Alternative: Check via Supabase directly
+		const hasCorrectStructure = await page.evaluate(async (boardId) => {
+			const supabaseModule = await import('/src/lib/supabaseClient.ts');
+			const { supabase } = supabaseModule;
+
+			const { data, error } = await supabase
+				.from('goals')
+				.select('*')
+				.eq('board_id', boardId)
+				.limit(1)
+				.single();
+
+			if (error || !data) return false;
+
+			// Verify structure
+			return {
+				hasStartedAt: data.started_at === null, // Should be null initially
+				hasCompletedAt: data.completed_at === null, // Should be null initially
+				hasLastUpdatedAt: typeof data.last_updated_at === 'string', // Should exist
+				// Note: milestones will be loaded separately in later phases
+			};
+		}, testBoardId);
+
+		expect(hasCorrectStructure.hasStartedAt).toBe(true);
+		expect(hasCorrectStructure.hasCompletedAt).toBe(true);
+		expect(hasCorrectStructure.hasLastUpdatedAt).toBe(true);
 	});
 
-	test.skip('date fields persist after page reload', async ({ page }) => {
-		// TODO: Implement after authentication is set up in tests
-		// Will verify:
-		// - Create board with goal
-		// - Reload page
-		// - Verify lastUpdatedAt unchanged
-		// - Verify other fields still correct
+	test('date fields persist after page reload', async ({ page }) => {
+		// Get initial lastUpdatedAt
+		const initialData = await page.evaluate(async (boardId) => {
+			const supabaseModule = await import('/src/lib/supabaseClient.ts');
+			const { supabase } = supabaseModule;
+
+			const { data } = await supabase
+				.from('goals')
+				.select('last_updated_at')
+				.eq('board_id', boardId)
+				.limit(1)
+				.single();
+
+			return data?.last_updated_at;
+		}, testBoardId);
+
+		// Reload the page
+		await page.reload();
+		await page.waitForSelector('[data-testid="goal-square"]');
+
+		// Get lastUpdatedAt after reload
+		const afterReloadData = await page.evaluate(async (boardId) => {
+			const supabaseModule = await import('/src/lib/supabaseClient.ts');
+			const { supabase } = supabaseModule;
+
+			const { data } = await supabase
+				.from('goals')
+				.select('last_updated_at, started_at, completed_at')
+				.eq('board_id', boardId)
+				.limit(1)
+				.single();
+
+			return data;
+		}, testBoardId);
+
+		// Verify persistence
+		expect(afterReloadData.last_updated_at).toBe(initialData);
+		expect(afterReloadData.started_at).toBe(null);
+		expect(afterReloadData.completed_at).toBe(null);
 	});
 
-	test.skip('milestones array is always defined, never null', async ({ page }) => {
-		// TODO: Implement after authentication is set up in tests
-		// Will verify:
-		// - Create goal
-		// - Reload page
-		// - Verify milestones is [] not null/undefined
+	test('goals load without errors with new data model', async ({ page }) => {
+		// Monitor console for errors
+		const consoleErrors: string[] = [];
+		page.on('console', (msg) => {
+			if (msg.type() === 'error') {
+				consoleErrors.push(msg.text());
+			}
+		});
+
+		// Verify board loaded correctly
+		const goalCount = await page.getByTestId('goal-square').count();
+		expect(goalCount).toBe(9); // 3x3 board
+
+		// Verify no console errors
+		expect(consoleErrors).toHaveLength(0);
 	});
 
-	test.skip('can still create, edit, and complete goals with new data model', async ({ page }) => {
-		// TODO: Implement after authentication is set up in tests
-		// Will verify:
-		// - Create goal
-		// - Edit title and notes
-		// - Mark as complete
-		// - No console errors
-		// - Goal state updates correctly
+	test('can create, edit, and complete goals with new data model', async ({ page }) => {
+		const consoleErrors: string[] = [];
+		page.on('console', (msg) => {
+			if (msg.type() === 'error') {
+				consoleErrors.push(msg.text());
+			}
+		});
+
+		// Open sidebar for first goal
+		await page.getByTestId('goal-square').first().click();
+		await page.waitForSelector('[data-testid="goal-sidebar"]');
+
+		// Edit title
+		const titleInput = page.locator('input').first();
+		await titleInput.fill('Test Goal Title');
+
+		// Wait for auto-save
+		await page.waitForTimeout(600);
+
+		// Close sidebar
+		await page.keyboard.press('Escape');
+		await page.waitForTimeout(200);
+
+		// Verify title is displayed
+		await expect(page.locator('text=Test Goal Title').first()).toBeVisible();
+
+		// Toggle completion
+		await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
+
+		// Wait for update
+		await page.waitForTimeout(300);
+
+		// Verify completed styling
+		const goalSquare = page.getByTestId('goal-square').first();
+		await expect(goalSquare).toHaveClass(/bg-green-50/);
+
+		// Verify no console errors occurred
+		expect(consoleErrors).toHaveLength(0);
 	});
 });
 
