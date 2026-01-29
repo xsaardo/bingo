@@ -42,6 +42,21 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 		await page.waitForSelector('[data-testid="goal-square"]');
 	});
 
+	// Clean up test board after each test
+	test.afterEach(async ({ page }) => {
+		if (testBoardId) {
+			// Delete the test board via Supabase
+			await page.evaluate(async (boardId) => {
+				// @ts-expect-error - Browser import path, works at runtime via Vite
+				const supabaseModule = await import('/src/lib/supabaseClient');
+				const { supabase } = supabaseModule;
+
+				// Delete the board (goals and milestones will cascade delete)
+				await supabase.from('boards').delete().eq('id', boardId);
+			}, testBoardId);
+		}
+	});
+
 	test('new goal has correct default date fields', async ({ page }) => {
 		// Check via Supabase directly
 		const goalStructure = await page.evaluate(async (boardId) => {
