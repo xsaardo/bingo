@@ -43,16 +43,11 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 	});
 
 	test('new goal has correct default date fields', async ({ page }) => {
-		// Get the first goal's data from the store
-		const goalData = await page.evaluate(() => {
-			// Access Svelte stores via window.__svelteStores (if exposed)
-			// Or query Supabase directly
-			return (window as any).__currentBoard?.goals?.[0];
-		});
-
-		// Alternative: Check via Supabase directly
-		const hasCorrectStructure = await page.evaluate(async (boardId) => {
-			const supabaseModule = await import('/src/lib/supabaseClient.ts');
+		// Check via Supabase directly
+		const goalStructure = await page.evaluate(async (boardId) => {
+			// Use dynamic import with browser-compatible path
+			// @ts-expect-error - Browser import path, works at runtime via Vite
+			const supabaseModule = await import('/src/lib/supabaseClient');
 			const { supabase } = supabaseModule;
 
 			const { data, error } = await supabase
@@ -62,7 +57,9 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 				.limit(1)
 				.single();
 
-			if (error || !data) return false;
+			if (error || !data) {
+				return { error: error?.message || 'No data' };
+			}
 
 			// Verify structure
 			return {
@@ -73,15 +70,21 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 			};
 		}, testBoardId);
 
-		expect(hasCorrectStructure.hasStartedAt).toBe(true);
-		expect(hasCorrectStructure.hasCompletedAt).toBe(true);
-		expect(hasCorrectStructure.hasLastUpdatedAt).toBe(true);
+		// Type guard to check for error
+		if ('error' in goalStructure) {
+			throw new Error(`Failed to fetch goal: ${goalStructure.error}`);
+		}
+
+		expect(goalStructure.hasStartedAt).toBe(true);
+		expect(goalStructure.hasCompletedAt).toBe(true);
+		expect(goalStructure.hasLastUpdatedAt).toBe(true);
 	});
 
 	test('date fields persist after page reload', async ({ page }) => {
 		// Get initial lastUpdatedAt
 		const initialData = await page.evaluate(async (boardId) => {
-			const supabaseModule = await import('/src/lib/supabaseClient.ts');
+			// @ts-expect-error - Browser import path, works at runtime via Vite
+			const supabaseModule = await import('/src/lib/supabaseClient');
 			const { supabase } = supabaseModule;
 
 			const { data } = await supabase
@@ -100,7 +103,8 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 
 		// Get lastUpdatedAt after reload
 		const afterReloadData = await page.evaluate(async (boardId) => {
-			const supabaseModule = await import('/src/lib/supabaseClient.ts');
+			// @ts-expect-error - Browser import path, works at runtime via Vite
+			const supabaseModule = await import('/src/lib/supabaseClient');
 			const { supabase } = supabaseModule;
 
 			const { data } = await supabase
@@ -114,9 +118,10 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 		}, testBoardId);
 
 		// Verify persistence
-		expect(afterReloadData.last_updated_at).toBe(initialData);
-		expect(afterReloadData.started_at).toBe(null);
-		expect(afterReloadData.completed_at).toBe(null);
+		expect(afterReloadData).toBeTruthy();
+		expect(afterReloadData!.last_updated_at).toBe(initialData);
+		expect(afterReloadData!.started_at).toBe(null);
+		expect(afterReloadData!.completed_at).toBe(null);
 	});
 
 	test('goals load without errors with new data model', async ({ page }) => {
