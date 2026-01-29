@@ -9,16 +9,20 @@ setup('authenticate', async ({ page }) => {
 	// Navigate to login page
 	await page.goto('/auth/login');
 
+	// Get credentials from Node.js environment
+	const email = process.env.TEST_USER_EMAIL || 'test@example.com';
+	const password = process.env.TEST_USER_PASSWORD || 'test-password-123';
+
 	// Use Supabase password auth for testing (faster than magic link)
-	await page.evaluate(async () => {
+	await page.evaluate(async ({ email, password }) => {
 		// Dynamically import the supabase client
 		const supabaseModule = await import('/src/lib/supabaseClient.ts');
 		const { supabase } = supabaseModule;
 
 		// Sign in with test account
 		const { data, error } = await supabase.auth.signInWithPassword({
-			email: process.env.TEST_USER_EMAIL || 'test@example.com',
-			password: process.env.TEST_USER_PASSWORD || 'test-password-123'
+			email,
+			password
 		});
 
 		if (error) {
@@ -26,13 +30,13 @@ setup('authenticate', async ({ page }) => {
 		}
 
 		return data;
-	});
+	}, { email, password });
 
 	// Wait for redirect to dashboard (indicates successful login)
 	await page.waitForURL('/dashboard', { timeout: 10000 });
 
-	// Verify we're logged in by checking for user menu or create board button
-	await expect(page.locator('text=Create Board')).toBeVisible({ timeout: 5000 });
+	// Verify we're logged in by checking for the New Board button
+	await expect(page.locator('button:has-text("New Board")')).toBeVisible({ timeout: 5000 });
 
 	// Save authenticated state to file
 	await page.context().storageState({ path: authFile });
