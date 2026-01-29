@@ -15,8 +15,9 @@ setup('authenticate', async ({ page }) => {
 
 	// Use Supabase password auth for testing (faster than magic link)
 	await page.evaluate(async ({ email, password }) => {
-		// Dynamically import the supabase client
-		const supabaseModule = await import('/src/lib/supabaseClient.ts');
+		// Dynamically import the supabase client (use actual path for browser import)
+		// @ts-expect-error - Browser import path, works at runtime via Vite
+		const supabaseModule = await import('/src/lib/supabaseClient');
 		const { supabase } = supabaseModule;
 
 		// Sign in with test account
