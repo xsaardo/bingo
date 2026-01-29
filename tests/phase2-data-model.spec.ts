@@ -11,17 +11,30 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 		await page.goto('/dashboard');
 
 		// Create a new board
-		await page.click('button:has-text("Create Board")');
-		await page.fill('input[id="board-name"]', `Test Board ${Date.now()}`);
+		await page.click('button:has-text("New Board")');
+		await page.waitForSelector('input[id="board-name"]');
+
+		const boardName = `Test Board ${Date.now()}`;
+		await page.fill('input[id="board-name"]', boardName);
 
 		// Select 3x3 size
 		const size3Button = page.locator('button').filter({ hasText: '3×3' });
 		await size3Button.click();
 
-		await page.click('button:has-text("Create")');
+		// Click the Create Board button in the modal
+		await page.click('button[type="submit"]:has-text("Create Board")');
 
-		// Wait for redirect to board page and extract ID from URL
-		await page.waitForURL(/\/boards\/.+/);
+		// Wait for modal to close (board created successfully)
+		await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 5000 });
+
+		// Wait for the new board to appear in the list
+		await page.waitForSelector(`text=${boardName}`, { timeout: 5000 });
+
+		// Click on the newly created board to open it
+		await page.click(`text=${boardName}`);
+
+		// Wait for navigation to board page
+		await page.waitForURL(/\/boards\/.+/, { timeout: 10000 });
 		const url = page.url();
 		testBoardId = url.split('/').pop()!;
 
