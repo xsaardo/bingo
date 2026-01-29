@@ -26,12 +26,14 @@ DROP POLICY IF EXISTS "Users can insert their own milestones" ON milestones;
 DROP POLICY IF EXISTS "Users can update their own milestones" ON milestones;
 DROP POLICY IF EXISTS "Users can delete their own milestones" ON milestones;
 
--- Users can view their own milestones (via goals they own)
+-- Users can view their own milestones (via goals -> boards -> users)
 CREATE POLICY "Users can view their own milestones"
   ON milestones FOR SELECT
   USING (
     goal_id IN (
-      SELECT id FROM goals WHERE user_id = auth.uid()
+      SELECT g.id FROM goals g
+      INNER JOIN boards b ON g.board_id = b.id
+      WHERE b.user_id = auth.uid()
     )
   );
 
@@ -40,7 +42,9 @@ CREATE POLICY "Users can insert their own milestones"
   ON milestones FOR INSERT
   WITH CHECK (
     goal_id IN (
-      SELECT id FROM goals WHERE user_id = auth.uid()
+      SELECT g.id FROM goals g
+      INNER JOIN boards b ON g.board_id = b.id
+      WHERE b.user_id = auth.uid()
     )
   );
 
@@ -49,7 +53,9 @@ CREATE POLICY "Users can update their own milestones"
   ON milestones FOR UPDATE
   USING (
     goal_id IN (
-      SELECT id FROM goals WHERE user_id = auth.uid()
+      SELECT g.id FROM goals g
+      INNER JOIN boards b ON g.board_id = b.id
+      WHERE b.user_id = auth.uid()
     )
   );
 
@@ -58,6 +64,8 @@ CREATE POLICY "Users can delete their own milestones"
   ON milestones FOR DELETE
   USING (
     goal_id IN (
-      SELECT id FROM goals WHERE user_id = auth.uid()
+      SELECT g.id FROM goals g
+      INNER JOIN boards b ON g.board_id = b.id
+      WHERE b.user_id = auth.uid()
     )
   );
