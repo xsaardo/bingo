@@ -74,6 +74,9 @@ export const boardsStore = {
 						title,
 						notes,
 						completed,
+						started_at,
+						completed_at,
+						last_updated_at,
 						created_at,
 						updated_at
 					)
@@ -91,7 +94,18 @@ export const boardsStore = {
 				id: board.id,
 				name: board.name,
 				size: board.size,
-				goals: (board.goals || []).sort((a: any, b: any) => a.position - b.position),
+				goals: (board.goals || [])
+					.sort((a: any, b: any) => a.position - b.position)
+					.map((goal: any) => ({
+						id: goal.id,
+						title: goal.title,
+						notes: goal.notes || '',
+						completed: goal.completed,
+						startedAt: goal.started_at || null,
+						completedAt: goal.completed_at || null,
+						lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
+						milestones: []
+					})),
 				createdAt: board.created_at,
 				updatedAt: board.updated_at
 			}));
@@ -182,6 +196,9 @@ export const boardsStore = {
 						title,
 						notes,
 						completed,
+						started_at,
+						completed_at,
+						last_updated_at,
 						created_at,
 						updated_at
 					)
@@ -199,7 +216,18 @@ export const boardsStore = {
 				id: completeBoard.id,
 				name: completeBoard.name,
 				size: completeBoard.size,
-				goals: (completeBoard.goals || []).sort((a: any, b: any) => a.position - b.position),
+				goals: (completeBoard.goals || [])
+					.sort((a: any, b: any) => a.position - b.position)
+					.map((goal: any) => ({
+						id: goal.id,
+						title: goal.title,
+						notes: goal.notes || '',
+						completed: goal.completed,
+						startedAt: goal.started_at || null,
+						completedAt: goal.completed_at || null,
+						lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
+						milestones: []
+					})),
 				createdAt: completeBoard.created_at,
 				updatedAt: completeBoard.updated_at
 			};
