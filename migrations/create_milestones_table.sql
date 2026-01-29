@@ -20,8 +20,14 @@ CREATE INDEX IF NOT EXISTS idx_milestones_position ON milestones(goal_id, positi
 -- Add RLS policies (if using Row Level Security)
 ALTER TABLE milestones ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist (to allow re-running the migration)
+DROP POLICY IF EXISTS "Users can view their own milestones" ON milestones;
+DROP POLICY IF EXISTS "Users can insert their own milestones" ON milestones;
+DROP POLICY IF EXISTS "Users can update their own milestones" ON milestones;
+DROP POLICY IF EXISTS "Users can delete their own milestones" ON milestones;
+
 -- Users can view their own milestones (via goals they own)
-CREATE POLICY IF NOT EXISTS "Users can view their own milestones"
+CREATE POLICY "Users can view their own milestones"
   ON milestones FOR SELECT
   USING (
     goal_id IN (
@@ -30,7 +36,7 @@ CREATE POLICY IF NOT EXISTS "Users can view their own milestones"
   );
 
 -- Users can insert their own milestones
-CREATE POLICY IF NOT EXISTS "Users can insert their own milestones"
+CREATE POLICY "Users can insert their own milestones"
   ON milestones FOR INSERT
   WITH CHECK (
     goal_id IN (
@@ -39,7 +45,7 @@ CREATE POLICY IF NOT EXISTS "Users can insert their own milestones"
   );
 
 -- Users can update their own milestones
-CREATE POLICY IF NOT EXISTS "Users can update their own milestones"
+CREATE POLICY "Users can update their own milestones"
   ON milestones FOR UPDATE
   USING (
     goal_id IN (
@@ -48,7 +54,7 @@ CREATE POLICY IF NOT EXISTS "Users can update their own milestones"
   );
 
 -- Users can delete their own milestones
-CREATE POLICY IF NOT EXISTS "Users can delete their own milestones"
+CREATE POLICY "Users can delete their own milestones"
   ON milestones FOR DELETE
   USING (
     goal_id IN (
