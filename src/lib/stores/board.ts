@@ -19,11 +19,16 @@ function createBoardStore() {
 		// Create a new board with the specified size
 		createBoard: (size: BoardSize) => {
 			const totalSquares = size * size;
+			const now = new Date().toISOString();
 			const goals: Goal[] = Array.from({ length: totalSquares }, (_, i) => ({
 				id: crypto.randomUUID(),
 				title: '',
 				notes: '',
-				completed: false
+				completed: false,
+				startedAt: null,
+				completedAt: null,
+				lastUpdatedAt: now,
+				milestones: []
 			}));
 
 			const newBoard: Board = {

@@ -66,6 +66,9 @@ export const currentBoardStore = {
 						title,
 						notes,
 						completed,
+						started_at,
+						completed_at,
+						last_updated_at,
 						created_at,
 						updated_at
 					)
@@ -87,7 +90,18 @@ export const currentBoardStore = {
 				id: data.id,
 				name: data.name,
 				size: data.size,
-				goals: (data.goals || []).sort((a: any, b: any) => a.position - b.position),
+				goals: (data.goals || [])
+					.sort((a: any, b: any) => a.position - b.position)
+					.map((goal: any) => ({
+						id: goal.id,
+						title: goal.title,
+						notes: goal.notes || '',
+						completed: goal.completed,
+						startedAt: goal.started_at || null,
+						completedAt: goal.completed_at || null,
+						lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
+						milestones: [] // Will be populated when we implement milestone loading
+					})),
 				createdAt: data.created_at,
 				updatedAt: data.updated_at
 			};
@@ -136,13 +150,17 @@ export const currentBoardStore = {
 			});
 
 			// Update in database
+			const dbUpdates: any = {};
+			if (updates.title !== undefined) dbUpdates.title = updates.title;
+			if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
+			if (updates.completed !== undefined) dbUpdates.completed = updates.completed;
+			if (updates.startedAt !== undefined) dbUpdates.started_at = updates.startedAt;
+			if (updates.completedAt !== undefined) dbUpdates.completed_at = updates.completedAt;
+			if (updates.lastUpdatedAt !== undefined) dbUpdates.last_updated_at = updates.lastUpdatedAt;
+
 			const { error } = await supabase
 				.from('goals')
-				.update({
-					title: updates.title,
-					notes: updates.notes,
-					completed: updates.completed
-				})
+				.update(dbUpdates)
 				.eq('id', goalId);
 
 			if (error) {
