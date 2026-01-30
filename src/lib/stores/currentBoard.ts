@@ -202,15 +202,41 @@ export const currentBoardStore = {
 			}
 		})();
 
-		// Toggle it
-		return await this.updateGoal(goalId, { completed: !currentCompleted });
+		const newCompleted = !currentCompleted;
+		const updates: Partial<Goal> = {
+			completed: newCompleted,
+			// Set completedAt when marking complete, clear when unchecking
+			completedAt: newCompleted ? new Date().toISOString() : null,
+			// Always update lastUpdatedAt
+			lastUpdatedAt: new Date().toISOString()
+		};
+
+		return await this.updateGoal(goalId, updates);
 	},
 
 	/**
 	 * Update goal title and notes
 	 */
 	async saveGoal(goalId: string, title: string, notes: string) {
-		return await this.updateGoal(goalId, { title, notes });
+		const updates: Partial<Goal> = { title, notes };
+
+		// Auto-set startedAt on first edit (if title or notes has content and startedAt is null)
+		let shouldSetStartedAt = false;
+		currentBoardState.subscribe((state) => {
+			const goal = state.board?.goals.find((g) => g.id === goalId);
+			if (goal && !goal.startedAt && (title || notes)) {
+				shouldSetStartedAt = true;
+			}
+		})();
+
+		if (shouldSetStartedAt) {
+			updates.startedAt = new Date().toISOString();
+		}
+
+		// Always update lastUpdatedAt
+		updates.lastUpdatedAt = new Date().toISOString();
+
+		return await this.updateGoal(goalId, updates);
 	},
 
 	/**
