@@ -3,6 +3,7 @@
 	import { uiStore } from '$lib/stores/board';
 	import type { Goal } from '$lib/types';
 	import { onMount } from 'svelte';
+	import RichTextEditor from './RichTextEditor.svelte';
 
 	interface Props {
 		goal: Goal;
@@ -133,16 +134,14 @@
 
 		<!-- Progress Notes -->
 		<div class="flex-1 flex flex-col">
-			<label for="sidebar-goal-notes" class="block text-sm font-medium text-gray-700 mb-2">
-				Progress Notes
-			</label>
-			<textarea
-				id="sidebar-goal-notes"
-				bind:value={notes}
+			<label class="block text-sm font-medium text-gray-700 mb-2"> Progress Notes </label>
+			<RichTextEditor
+				content={notes}
 				placeholder="Track your progress, milestones, and reflections here..."
-				class="w-full h-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-colors"
-				data-testid="sidebar-notes-textarea"
-			></textarea>
+				onUpdate={(html) => {
+					notes = html;
+				}}
+			/>
 			<p class="text-xs text-gray-500 mt-2">
 				Changes are automatically saved
 			</p>
