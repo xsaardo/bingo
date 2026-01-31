@@ -3,6 +3,7 @@
 	import { uiStore } from '$lib/stores/board';
 	import type { Goal } from '$lib/types';
 	import { onMount } from 'svelte';
+	import { fly } from 'svelte/transition';
 	import RichTextEditor from './RichTextEditor.svelte';
 
 	interface Props {
@@ -67,21 +68,22 @@
 	});
 </script>
 
-<!-- Backdrop (mobile only) -->
+<!-- Backdrop -->
 <div
 	role="button"
 	tabindex="-1"
 	onclick={handleBackdropClick}
 	onkeydown={(e) => e.key === 'Escape' && handleClose()}
-	class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+	class="fixed inset-0 bg-black bg-opacity-50 lg:bg-transparent z-40"
+	transition:fly={{ x: 0, opacity: 0, duration: 300 }}
 ></div>
 
 <!-- Sidebar -->
 <div
 	class="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 flex flex-col
-	transform transition-transform duration-300 ease-in-out
 	lg:border-l lg:border-gray-200"
 	data-testid="goal-sidebar"
+	transition:fly={{ x: 400, duration: 300, opacity: 1 }}
 >
 	<!-- Header -->
 	<div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">

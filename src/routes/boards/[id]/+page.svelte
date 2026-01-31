@@ -137,7 +137,7 @@
 				</div>
 			{:else if $currentBoard}
 				<!-- BingoBoard Component -->
-				<div class="max-w-4xl mx-auto">
+				<div class="w-full mx-auto" style="max-width: min(56rem, calc(100vh - 12rem)); max-height: calc(100vh - 12rem);">
 					<BingoBoard />
 				</div>
 			{/if}
