@@ -11,8 +11,8 @@
 	}
 
 	let { goal, index }: Props = $props();
-	let title = $state('');
-	let notes = $state('');
+	let title = $state(goal.title);
+	let notes = $state(goal.notes);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	// Sync local state with goal prop
