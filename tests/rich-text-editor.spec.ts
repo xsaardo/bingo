@@ -94,8 +94,10 @@ test.describe('RichTextEditor Component', () => {
 
 				const editor = page.getByTestId('rich-text-editor');
 				await editor.click();
+				// Type text first, then convert to list
+				await page.keyboard.type('Item 1');
+				await page.keyboard.press('Meta+A');
 				await page.getByTestId(button).click();
-				await editor.type('Item 1');
 
 				const listElement = editor.locator(tag);
 				await expect(listElement).toBeVisible();
@@ -111,7 +113,7 @@ test.describe('RichTextEditor Component', () => {
 		const editor = page.getByTestId('rich-text-editor');
 		await editor.click();
 		await editor.type('This is bold');
-		await page.keyboard.press('Control+A');
+		await page.keyboard.press('Meta+A');
 		await page.getByTestId('editor-bold-button').click();
 
 		// Close sidebar to trigger save
@@ -134,7 +136,7 @@ test.describe('RichTextEditor Component', () => {
 		const editor = page.getByTestId('rich-text-editor');
 		await editor.click();
 		await editor.type('Database test');
-		await page.keyboard.press('Control+A');
+		await page.keyboard.press('Meta+A');
 		await page.getByTestId('editor-bold-button').click();
 
 		await closeSidebar(page);
@@ -167,7 +169,7 @@ test.describe('RichTextEditor Component', () => {
 		const editor = page.getByTestId('rich-text-editor');
 		await editor.click();
 		await editor.type('Text');
-		await page.keyboard.press('Control+A');
+		await page.keyboard.press('Meta+A');
 		await page.getByTestId('editor-bold-button').click();
 
 		// Bold button should show active state
