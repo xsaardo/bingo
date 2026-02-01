@@ -4,6 +4,7 @@
 	import { uiStore } from '$lib/stores/board';
 	import type { Goal } from '$lib/types';
 	import RichTextEditor from './RichTextEditor.svelte';
+	import DateMetadata from './DateMetadata.svelte';
 
 	interface Props {
 		goal: Goal;
@@ -140,6 +141,13 @@
 					data-testid="modal-title-input"
 				/>
 			</div>
+
+			<!-- Date Metadata -->
+			<DateMetadata
+				startedAt={goal.startedAt}
+				completedAt={goal.completedAt}
+				lastUpdatedAt={goal.lastUpdatedAt}
+			/>
 
 			<!-- Progress Notes -->
 			<div class="flex-1 flex flex-col">
