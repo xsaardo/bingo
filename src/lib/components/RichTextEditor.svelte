@@ -188,21 +188,6 @@
 					/>
 				</svg>
 			</button>
-
-			<!-- Clear formatting -->
-			<button
-				type="button"
-				onclick={() => editorState.editor?.chain().focus().unsetAllMarks().run()}
-				class={getButtonClass(false)}
-				data-testid="editor-clear-button"
-				title="Clear Formatting"
-			>
-				<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-					<path
-						d="m14.348 14.849-1.299-1.299-1.649 3.299h2.99l-.042-.42zm.712.033L11.684 11.5 9.212 6h1.736l1.947 4.412L14.812 6h1.735l-2.087 4.42m7.842-9.42L2.511 21.753l1.414 1.414L6.45 20.643l1.603 3.21h3.021L8.117 18.415l3.57-3.57.739 1.527L18.9 2.997h-1.737l-2.135 4.46-1.603-3.457h-3.022l1.81 3.696 1.315 2.696L9.823 7.968l-6-6-1.414 1.414 2.064 2.064L2.573 9.24l3.8 8.122-3.56 3.56z"
-					/>
-				</svg>
-			</button>
 		</div>
 	{/if}
 
