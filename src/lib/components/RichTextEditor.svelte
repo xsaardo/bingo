@@ -28,7 +28,19 @@
 				StarterKit.configure({
 					heading: false,
 					codeBlock: false,
-					code: false
+					code: false,
+					bulletList: {
+						keepMarks: true,
+						keepAttributes: false
+					},
+					orderedList: {
+						keepMarks: true,
+						keepAttributes: false
+					},
+					listItem: {
+						keepMarks: true,
+						keepAttributes: false
+					}
 				}),
 				Link.configure({
 					openOnClick: false,
@@ -56,7 +68,7 @@
 			},
 			editorProps: {
 				attributes: {
-					class: 'focus:outline-none min-h-[120px] px-3 py-2 text-sm text-gray-700',
+					class: 'prose prose-sm max-w-none focus:outline-none min-h-[120px] px-3 py-2 text-sm text-gray-700',
 					'data-testid': 'rich-text-editor'
 				}
 			}
@@ -88,6 +100,26 @@
 		color: #9ca3af;
 		pointer-events: none;
 		height: 0;
+	}
+
+	:global(.ProseMirror ul) {
+		list-style-type: disc;
+		padding-left: 1.5rem;
+		margin: 0.5rem 0;
+	}
+
+	:global(.ProseMirror ol) {
+		list-style-type: decimal;
+		padding-left: 1.5rem;
+		margin: 0.5rem 0;
+	}
+
+	:global(.ProseMirror li) {
+		margin: 0.25rem 0;
+	}
+
+	:global(.ProseMirror li p) {
+		margin: 0;
 	}
 </style>
 
