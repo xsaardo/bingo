@@ -95,14 +95,6 @@ export async function getGoalData<T = any>(page: Page, goalId: string, fields: s
 /**
  * Opens the modal for the first goal
  */
-export async function openFirstGoalSidebar(page: Page): Promise<void> {
-	await page.getByTestId('goal-square').first().click();
-	await page.waitForSelector('[data-testid="goal-modal"]');
-}
-
-/**
- * Opens the modal for the first goal (new name)
- */
 export async function openFirstGoalModal(page: Page): Promise<void> {
 	await page.getByTestId('goal-square').first().click();
 	await page.waitForSelector('[data-testid="goal-modal"]');
@@ -110,14 +102,6 @@ export async function openFirstGoalModal(page: Page): Promise<void> {
 
 /**
  * Closes the modal using Escape key
- */
-export async function closeSidebar(page: Page): Promise<void> {
-	await page.keyboard.press('Escape');
-	await page.waitForTimeout(200);
-}
-
-/**
- * Closes the modal using Escape key (new name)
  */
 export async function closeModal(page: Page): Promise<void> {
 	await page.keyboard.press('Escape');
