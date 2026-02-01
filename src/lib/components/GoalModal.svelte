@@ -78,7 +78,8 @@
 	tabindex="-1"
 	onclick={handleBackdropClick}
 	onkeydown={(e) => e.key === 'Escape' && handleClose()}
-	class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+	class="fixed inset-0 flex items-center justify-center z-50 p-4"
+	style="background-color: rgba(0, 0, 0, 0.3);"
 >
 	<!-- Modal -->
 	<div
