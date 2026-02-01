@@ -7,7 +7,7 @@
 
 import { writable, derived } from 'svelte/store';
 import { supabase } from '$lib/supabaseClient';
-import type { Board, Goal } from '$lib/types';
+import type { Board, Goal, Milestone } from '$lib/types';
 
 interface CurrentBoardState {
 	board: Board | null;
@@ -50,7 +50,7 @@ export const currentBoardStore = {
 		currentBoardState.update((state) => ({ ...state, loading: true, error: null }));
 
 		try {
-			// Fetch the board with its goals
+			// Fetch the board with its goals and milestones
 			const { data, error } = await supabase
 				.from('boards')
 				.select(
@@ -70,7 +70,16 @@ export const currentBoardStore = {
 						completed_at,
 						last_updated_at,
 						created_at,
-						updated_at
+						updated_at,
+						milestones (
+							id,
+							title,
+							notes,
+							completed,
+							completed_at,
+							created_at,
+							position
+						)
 					)
 				`
 				)
@@ -100,7 +109,17 @@ export const currentBoardStore = {
 						startedAt: goal.started_at || null,
 						completedAt: goal.completed_at || null,
 						lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
-						milestones: [] // Will be populated when we implement milestone loading
+						milestones: (goal.milestones || [])
+							.sort((a: any, b: any) => a.position - b.position)
+							.map((milestone: any) => ({
+								id: milestone.id,
+								title: milestone.title,
+								notes: milestone.notes || '',
+								completed: milestone.completed,
+								completedAt: milestone.completed_at || null,
+								createdAt: milestone.created_at,
+								position: milestone.position
+							}))
 					})),
 				createdAt: data.created_at,
 				updatedAt: data.updated_at
@@ -237,6 +256,267 @@ export const currentBoardStore = {
 		updates.lastUpdatedAt = new Date().toISOString();
 
 		return await this.updateGoal(goalId, updates);
+	},
+
+	/**
+	 * Add a new milestone to a goal
+	 */
+	async addMilestone(goalId: string, title: string) {
+		try {
+			// Get the current goal to determine next position
+			let nextPosition = 0;
+			currentBoardState.subscribe((state) => {
+				const goal = state.board?.goals.find((g) => g.id === goalId);
+				if (goal) {
+					nextPosition = goal.milestones.length;
+				}
+			})();
+
+			// Insert milestone into database
+			const { data: newMilestone, error } = await supabase
+				.from('milestones')
+				.insert({
+					goal_id: goalId,
+					title,
+					notes: '',
+					completed: false,
+					completed_at: null,
+					position: nextPosition,
+					created_at: new Date().toISOString()
+				})
+				.select()
+				.single();
+
+			if (error) throw error;
+
+			// Update local state
+			currentBoardState.update((state) => {
+				if (!state.board) return state;
+
+				const updatedGoals = state.board.goals.map((goal) => {
+					if (goal.id === goalId) {
+						return {
+							...goal,
+							milestones: [
+								...goal.milestones,
+								{
+									id: newMilestone.id,
+									title: newMilestone.title,
+									notes: newMilestone.notes || '',
+									completed: newMilestone.completed,
+									completedAt: newMilestone.completed_at || null,
+									createdAt: newMilestone.created_at,
+									position: newMilestone.position
+								}
+							],
+							lastUpdatedAt: new Date().toISOString()
+						};
+					}
+					return goal;
+				});
+
+				return {
+					...state,
+					board: {
+						...state.board,
+						goals: updatedGoals
+					}
+				};
+			});
+
+			// Update parent goal's lastUpdatedAt
+			await this.updateGoal(goalId, { lastUpdatedAt: new Date().toISOString() });
+
+			return { success: true };
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : 'Failed to add milestone';
+			return { success: false, error: errorMessage };
+		}
+	},
+
+	/**
+	 * Update a milestone
+	 */
+	async updateMilestone(goalId: string, milestoneId: string, updates: Partial<Milestone>) {
+		try {
+			// Update in database
+			const dbUpdates: any = {};
+			if (updates.title !== undefined) dbUpdates.title = updates.title;
+			if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
+			if (updates.completed !== undefined) dbUpdates.completed = updates.completed;
+			if (updates.completedAt !== undefined) dbUpdates.completed_at = updates.completedAt;
+			if (updates.position !== undefined) dbUpdates.position = updates.position;
+
+			const { error } = await supabase
+				.from('milestones')
+				.update(dbUpdates)
+				.eq('id', milestoneId);
+
+			if (error) throw error;
+
+			// Update local state
+			currentBoardState.update((state) => {
+				if (!state.board) return state;
+
+				const updatedGoals = state.board.goals.map((goal) => {
+					if (goal.id === goalId) {
+						const updatedMilestones = goal.milestones.map((milestone) =>
+							milestone.id === milestoneId ? { ...milestone, ...updates } : milestone
+						);
+						return {
+							...goal,
+							milestones: updatedMilestones,
+							lastUpdatedAt: new Date().toISOString()
+						};
+					}
+					return goal;
+				});
+
+				return {
+					...state,
+					board: {
+						...state.board,
+						goals: updatedGoals
+					}
+				};
+			});
+
+			// Update parent goal's lastUpdatedAt
+			await this.updateGoal(goalId, { lastUpdatedAt: new Date().toISOString() });
+
+			return { success: true };
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : 'Failed to update milestone';
+			return { success: false, error: errorMessage };
+		}
+	},
+
+	/**
+	 * Toggle milestone completion status
+	 */
+	async toggleMilestoneComplete(goalId: string, milestoneId: string) {
+		let currentCompleted = false;
+
+		// Get current completion status
+		currentBoardState.subscribe((state) => {
+			const goal = state.board?.goals.find((g) => g.id === goalId);
+			if (goal) {
+				const milestone = goal.milestones.find((m) => m.id === milestoneId);
+				if (milestone) {
+					currentCompleted = milestone.completed;
+				}
+			}
+		})();
+
+		const newCompleted = !currentCompleted;
+		const updates = {
+			completed: newCompleted,
+			completedAt: newCompleted ? new Date().toISOString() : null
+		};
+
+		return await this.updateMilestone(goalId, milestoneId, updates);
+	},
+
+	/**
+	 * Delete a milestone
+	 */
+	async deleteMilestone(goalId: string, milestoneId: string) {
+		try {
+			// Delete from database
+			const { error } = await supabase.from('milestones').delete().eq('id', milestoneId);
+
+			if (error) throw error;
+
+			// Update local state
+			currentBoardState.update((state) => {
+				if (!state.board) return state;
+
+				const updatedGoals = state.board.goals.map((goal) => {
+					if (goal.id === goalId) {
+						const updatedMilestones = goal.milestones.filter((m) => m.id !== milestoneId);
+						return {
+							...goal,
+							milestones: updatedMilestones,
+							lastUpdatedAt: new Date().toISOString()
+						};
+					}
+					return goal;
+				});
+
+				return {
+					...state,
+					board: {
+						...state.board,
+						goals: updatedGoals
+					}
+				};
+			});
+
+			// Update parent goal's lastUpdatedAt
+			await this.updateGoal(goalId, { lastUpdatedAt: new Date().toISOString() });
+
+			return { success: true };
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : 'Failed to delete milestone';
+			return { success: false, error: errorMessage };
+		}
+	},
+
+	/**
+	 * Reorder milestones
+	 */
+	async reorderMilestones(goalId: string, newOrder: string[]) {
+		try {
+			// Update positions in database
+			const updates = newOrder.map((milestoneId, index) => ({
+				id: milestoneId,
+				position: index
+			}));
+
+			for (const update of updates) {
+				await supabase
+					.from('milestones')
+					.update({ position: update.position })
+					.eq('id', update.id);
+			}
+
+			// Update local state
+			currentBoardState.update((state) => {
+				if (!state.board) return state;
+
+				const updatedGoals = state.board.goals.map((goal) => {
+					if (goal.id === goalId) {
+						const reorderedMilestones = newOrder
+							.map((id) => goal.milestones.find((m) => m.id === id))
+							.filter((m): m is Milestone => m !== undefined)
+							.map((m, index) => ({ ...m, position: index }));
+
+						return {
+							...goal,
+							milestones: reorderedMilestones,
+							lastUpdatedAt: new Date().toISOString()
+						};
+					}
+					return goal;
+				});
+
+				return {
+					...state,
+					board: {
+						...state.board,
+						goals: updatedGoals
+					}
+				};
+			});
+
+			// Update parent goal's lastUpdatedAt
+			await this.updateGoal(goalId, { lastUpdatedAt: new Date().toISOString() });
+
+			return { success: true };
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : 'Failed to reorder milestones';
+			return { success: false, error: errorMessage };
+		}
 	},
 
 	/**
