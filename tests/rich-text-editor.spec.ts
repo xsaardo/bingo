@@ -6,8 +6,8 @@ import {
 	createTestBoard,
 	deleteTestBoard,
 	getFirstGoalId,
-	openFirstGoalSidebar,
-	closeSidebar,
+	openFirstGoalModal,
+	closeModal,
 	waitForAutoSave,
 	getGoalData
 } from './test-helpers';
@@ -28,7 +28,7 @@ test.describe('RichTextEditor Component', () => {
 	});
 
 	test('should render editor with toolbar buttons', async ({ page }) => {
-		await openFirstGoalSidebar(page);
+		await openFirstGoalModal(page);
 
 		// Verify all toolbar buttons are present
 		const toolbarButtons = [
@@ -54,7 +54,7 @@ test.describe('RichTextEditor Component', () => {
 
 		for (const { name, button, tag, text } of formattingTests) {
 			test(`should apply ${name} formatting`, async ({ page }) => {
-				await openFirstGoalSidebar(page);
+				await openFirstGoalModal(page);
 
 				const editor = page.getByTestId('rich-text-editor');
 				await editor.click();
@@ -82,7 +82,7 @@ test.describe('RichTextEditor Component', () => {
 
 		for (const { name, button, tag } of listTests) {
 			test(`should create ${name}`, async ({ page }) => {
-				await openFirstGoalSidebar(page);
+				await openFirstGoalModal(page);
 
 				const editor = page.getByTestId('rich-text-editor');
 				await editor.click();
@@ -99,7 +99,7 @@ test.describe('RichTextEditor Component', () => {
 	});
 
 	test('should persist rich text formatting after close and reopen', async ({ page }) => {
-		await openFirstGoalSidebar(page);
+		await openFirstGoalModal(page);
 
 		// Add formatted text
 		const editor = page.getByTestId('rich-text-editor');
@@ -108,12 +108,12 @@ test.describe('RichTextEditor Component', () => {
 		await page.keyboard.press('Meta+A');
 		await page.getByTestId('editor-bold-button').click();
 
-		// Close sidebar to trigger save
-		await closeSidebar(page);
+		// Close modal to trigger save
+		await closeModal(page);
 		await waitForAutoSave(page);
 
-		// Reopen sidebar
-		await openFirstGoalSidebar(page);
+		// Reopen modal
+		await openFirstGoalModal(page);
 
 		// Verify formatting persists
 		const boldElement = page.getByTestId('rich-text-editor').locator('strong, b');
@@ -122,7 +122,7 @@ test.describe('RichTextEditor Component', () => {
 	});
 
 	test('should persist rich text HTML to database', async ({ page }) => {
-		await openFirstGoalSidebar(page);
+		await openFirstGoalModal(page);
 
 		// Add formatted text
 		const editor = page.getByTestId('rich-text-editor');
@@ -131,7 +131,7 @@ test.describe('RichTextEditor Component', () => {
 		await page.keyboard.press('Meta+A');
 		await page.getByTestId('editor-bold-button').click();
 
-		await closeSidebar(page);
+		await closeModal(page);
 		await waitForAutoSave(page);
 
 		// Check database contains HTML
@@ -141,7 +141,7 @@ test.describe('RichTextEditor Component', () => {
 	});
 
 	test('should handle keyboard shortcuts for formatting', async ({ page }) => {
-		await openFirstGoalSidebar(page);
+		await openFirstGoalModal(page);
 
 		const editor = page.getByTestId('rich-text-editor');
 		await editor.click();
@@ -156,7 +156,7 @@ test.describe('RichTextEditor Component', () => {
 	});
 
 	test('should show active state for formatting buttons', async ({ page }) => {
-		await openFirstGoalSidebar(page);
+		await openFirstGoalModal(page);
 
 		const editor = page.getByTestId('rich-text-editor');
 		await editor.click();
