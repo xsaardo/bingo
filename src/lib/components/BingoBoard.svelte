@@ -46,7 +46,7 @@
 			style="grid-template-columns: repeat({$currentBoard.size}, minmax(0, 1fr));"
 		>
 			{#each $currentBoard.goals as goal, index}
-				<GoalSquare {goal} {index} isInBingo={bingoIndices.has(index)} />
+				<GoalSquare {goal} {index} isInBingo={bingoIndices.has(index)} boardSize={$currentBoard.size} />
 			{/each}
 		</div>
 
