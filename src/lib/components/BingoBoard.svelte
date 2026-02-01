@@ -29,7 +29,7 @@
 </style>
 
 {#if $currentBoard}
-	<div class="bg-white rounded-lg shadow-lg p-3 sm:p-4 md:p-6 relative">
+	<div class="bg-white rounded-lg shadow-lg p-2 sm:p-3 md:p-4 relative">
 		{#if hasBingo}
 			<div
 				class="celebrate mb-3 sm:mb-4 p-3 sm:p-4 bg-gradient-to-r from-yellow-100 to-green-100 border-2 border-yellow-500 rounded-lg text-center shadow-md"

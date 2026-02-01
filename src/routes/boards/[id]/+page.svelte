@@ -101,7 +101,7 @@
 		</header>
 
 		<!-- Main Content -->
-		<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+		<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
 			{#if $currentBoardLoading}
 				<!-- Loading State -->
 				<div
@@ -137,7 +137,7 @@
 				</div>
 			{:else if $currentBoard}
 				<!-- BingoBoard Component -->
-				<div class="w-full mx-auto" style="max-width: min(56rem, calc(100vh - 12rem)); max-height: calc(100vh - 12rem);">
+				<div class="w-full mx-auto" style="max-width: min(56rem, calc(100vh - 8rem)); max-height: calc(100vh - 8rem);">
 					<BingoBoard />
 				</div>
 			{/if}
