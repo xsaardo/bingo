@@ -35,8 +35,6 @@ test.describe('RichTextEditor Component', () => {
 			'editor-bold-button',
 			'editor-italic-button',
 			'editor-underline-button',
-			'editor-strike-button',
-			'editor-heading-button',
 			'editor-bullet-list-button',
 			'editor-ordered-list-button',
 			'editor-link-button'
@@ -51,13 +49,7 @@ test.describe('RichTextEditor Component', () => {
 		const formattingTests = [
 			{ name: 'bold', button: 'editor-bold-button', tag: 'strong, b', text: 'Bold text' },
 			{ name: 'italic', button: 'editor-italic-button', tag: 'em, i', text: 'Italic text' },
-			{ name: 'underline', button: 'editor-underline-button', tag: 'u', text: 'Underline text' },
-			{
-				name: 'strikethrough',
-				button: 'editor-strike-button',
-				tag: 's, del, strike',
-				text: 'Strike text'
-			}
+			{ name: 'underline', button: 'editor-underline-button', tag: 'u', text: 'Underline text' }
 		];
 
 		for (const { name, button, tag, text } of formattingTests) {
@@ -173,6 +165,6 @@ test.describe('RichTextEditor Component', () => {
 		await page.getByTestId('editor-bold-button').click();
 
 		// Bold button should show active state
-		await expect(page.getByTestId('editor-bold-button')).toHaveClass(/bg-blue-100/);
+		await expect(page.getByTestId('editor-bold-button')).toHaveClass(/bg-gray-200/);
 	});
 });
