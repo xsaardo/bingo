@@ -91,10 +91,15 @@
 	}
 </style>
 
-<div class="bg-gray-50 rounded-lg overflow-hidden" data-testid="rich-text-editor-container">
+<div
+	class="border rounded-lg overflow-hidden transition-all {isFocused
+		? 'border-blue-500 ring-2 ring-blue-500'
+		: 'border-gray-300'}"
+	data-testid="rich-text-editor-container"
+>
 	{#if editorState.editor}
 		<!-- Toolbar -->
-		<div class="px-3 py-2 flex items-center gap-0.5">
+		<div class="px-3 py-2 flex items-center gap-0.5 bg-gray-50 border-b border-gray-200">
 			<!-- Bold -->
 			<button
 				type="button"
@@ -191,12 +196,8 @@
 		</div>
 	{/if}
 
-	<!-- Editor content area with focus border -->
-	<div
-		class="bg-white border-b-2 transition-colors {isFocused
-			? 'border-blue-500'
-			: 'border-gray-300'}"
-	>
+	<!-- Editor content area -->
+	<div class="bg-white">
 		<div bind:this={element}></div>
 	</div>
 </div>
