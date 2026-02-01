@@ -166,7 +166,7 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 
 		// Open sidebar for first goal
 		await page.getByTestId('goal-square').first().click();
-		await page.waitForSelector('[data-testid="goal-sidebar"]');
+		await page.waitForSelector('[data-testid="goal-modal"]');
 
 		// Edit title
 		const titleInput = page.locator('input').first();

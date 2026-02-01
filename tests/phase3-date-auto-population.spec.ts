@@ -91,7 +91,7 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 		test('should set on first title edit', async ({ page }) => {
 			// Open sidebar for first goal
 			await page.getByTestId('goal-square').first().click();
-			await page.waitForSelector('[data-testid="goal-sidebar"]');
+			await page.waitForSelector('[data-testid="goal-modal"]');
 
 			// Edit title
 			const titleInput = page.locator('input').first();
@@ -127,11 +127,12 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 		test('should set on first notes edit', async ({ page }) => {
 			// Open sidebar for first goal
 			await page.getByTestId('goal-square').first().click();
-			await page.waitForSelector('[data-testid="goal-sidebar"]');
+			await page.waitForSelector('[data-testid="goal-modal"]');
 
 			// Edit notes (skip title)
-			const notesTextarea = page.locator('textarea').first();
-			await notesTextarea.fill('These are my notes');
+			const richTextEditor = page.getByTestId('rich-text-editor');
+			await richTextEditor.click();
+			await richTextEditor.type('These are my notes');
 
 			// Wait for auto-save
 			await page.waitForTimeout(600);
@@ -151,14 +152,14 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 				return data;
 			}, firstGoalId);
 
-			expect(goalData?.notes).toBe('These are my notes');
+			expect(goalData?.notes).toContain('These are my notes');
 			expect(goalData?.started_at).not.toBe(null);
 		});
 
 		test('should NOT change on subsequent edits', async ({ page }) => {
 			// First edit - set title
 			await page.getByTestId('goal-square').first().click();
-			await page.waitForSelector('[data-testid="goal-sidebar"]');
+			await page.waitForSelector('[data-testid="goal-modal"]');
 
 			const titleInput = page.locator('input').first();
 			await titleInput.fill('Initial Title');
@@ -359,7 +360,7 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 
 			// Edit title
 			await page.getByTestId('goal-square').first().click();
-			await page.waitForSelector('[data-testid="goal-sidebar"]');
+			await page.waitForSelector('[data-testid="goal-modal"]');
 
 			const titleInput = page.locator('input').first();
 			await titleInput.fill('Changed Title');
@@ -410,10 +411,11 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 
 			// Edit notes
 			await page.getByTestId('goal-square').first().click();
-			await page.waitForSelector('[data-testid="goal-sidebar"]');
+			await page.waitForSelector('[data-testid="goal-modal"]');
 
-			const notesTextarea = page.locator('textarea').first();
-			await notesTextarea.fill('Updated notes');
+			const richTextEditor = page.getByTestId('rich-text-editor');
+			await richTextEditor.click();
+			await richTextEditor.type('Updated notes');
 			await page.waitForTimeout(600);
 
 			// Get updated lastUpdatedAt
