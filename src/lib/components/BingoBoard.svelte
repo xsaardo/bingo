@@ -3,7 +3,7 @@
 	import { uiStore } from '$lib/stores/board';
 	import { detectBingo, type BingoLine } from '$lib/utils/bingo';
 	import GoalSquare from './GoalSquare.svelte';
-	import GoalSidebar from './GoalSidebar.svelte';
+	import GoalModal from './GoalModal.svelte';
 
 	let bingoLines = $derived<BingoLine[]>($currentBoard ? detectBingo($currentBoard) : []);
 	let hasBingo = $derived(bingoLines.length > 0);
@@ -83,9 +83,9 @@
 	</div>
 {/if}
 
-<!-- Goal Sidebar -->
+<!-- Goal Modal -->
 {#if $currentBoard && $uiStore.selectedGoalIndex !== null}
-	<GoalSidebar
+	<GoalModal
 		goal={$currentBoard.goals[$uiStore.selectedGoalIndex]}
 		index={$uiStore.selectedGoalIndex}
 	/>
