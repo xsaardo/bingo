@@ -262,6 +262,7 @@ export const currentBoardStore = {
 	 * Add a new milestone to a goal
 	 */
 	async addMilestone(goalId: string, title: string) {
+		console.log('[Store] addMilestone called:', { goalId, title });
 		try {
 			// Get the current goal to determine next position
 			let nextPosition = 0;
@@ -270,8 +271,12 @@ export const currentBoardStore = {
 				if (goal) {
 					nextPosition = goal.milestones.length;
 				}
+				console.log('[Store] Current goal:', goal);
 			})();
 
+			const now = new Date().toISOString();
+
+			console.log('[Store] Inserting milestone with position:', nextPosition);
 			// Insert milestone into database
 			const { data: newMilestone, error } = await supabase
 				.from('milestones')
@@ -282,12 +287,21 @@ export const currentBoardStore = {
 					completed: false,
 					completed_at: null,
 					position: nextPosition,
-					created_at: new Date().toISOString()
+					created_at: now
 				})
 				.select()
 				.single();
 
+			console.log('[Store] Insert result:', { data: newMilestone, error });
 			if (error) throw error;
+
+			// Update parent goal's lastUpdatedAt in database
+			const { error: goalError } = await supabase
+				.from('goals')
+				.update({ last_updated_at: now })
+				.eq('id', goalId);
+
+			if (goalError) throw goalError;
 
 			// Update local state
 			currentBoardState.update((state) => {
@@ -309,7 +323,7 @@ export const currentBoardStore = {
 									position: newMilestone.position
 								}
 							],
-							lastUpdatedAt: new Date().toISOString()
+							lastUpdatedAt: now
 						};
 					}
 					return goal;
@@ -324,9 +338,6 @@ export const currentBoardStore = {
 				};
 			});
 
-			// Update parent goal's lastUpdatedAt
-			await this.updateGoal(goalId, { lastUpdatedAt: new Date().toISOString() });
-
 			return { success: true };
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'Failed to add milestone';
@@ -339,6 +350,8 @@ export const currentBoardStore = {
 	 */
 	async updateMilestone(goalId: string, milestoneId: string, updates: Partial<Milestone>) {
 		try {
+			const now = new Date().toISOString();
+
 			// Update in database
 			const dbUpdates: any = {};
 			if (updates.title !== undefined) dbUpdates.title = updates.title;
@@ -354,6 +367,14 @@ export const currentBoardStore = {
 
 			if (error) throw error;
 
+			// Update parent goal's lastUpdatedAt in database
+			const { error: goalError } = await supabase
+				.from('goals')
+				.update({ last_updated_at: now })
+				.eq('id', goalId);
+
+			if (goalError) throw goalError;
+
 			// Update local state
 			currentBoardState.update((state) => {
 				if (!state.board) return state;
@@ -366,7 +387,7 @@ export const currentBoardStore = {
 						return {
 							...goal,
 							milestones: updatedMilestones,
-							lastUpdatedAt: new Date().toISOString()
+							lastUpdatedAt: now
 						};
 					}
 					return goal;
@@ -380,9 +401,6 @@ export const currentBoardStore = {
 					}
 				};
 			});
-
-			// Update parent goal's lastUpdatedAt
-			await this.updateGoal(goalId, { lastUpdatedAt: new Date().toISOString() });
 
 			return { success: true };
 		} catch (error) {
@@ -422,10 +440,20 @@ export const currentBoardStore = {
 	 */
 	async deleteMilestone(goalId: string, milestoneId: string) {
 		try {
+			const now = new Date().toISOString();
+
 			// Delete from database
 			const { error } = await supabase.from('milestones').delete().eq('id', milestoneId);
 
 			if (error) throw error;
+
+			// Update parent goal's lastUpdatedAt in database
+			const { error: goalError } = await supabase
+				.from('goals')
+				.update({ last_updated_at: now })
+				.eq('id', goalId);
+
+			if (goalError) throw goalError;
 
 			// Update local state
 			currentBoardState.update((state) => {
@@ -437,7 +465,7 @@ export const currentBoardStore = {
 						return {
 							...goal,
 							milestones: updatedMilestones,
-							lastUpdatedAt: new Date().toISOString()
+							lastUpdatedAt: now
 						};
 					}
 					return goal;
@@ -452,9 +480,6 @@ export const currentBoardStore = {
 				};
 			});
 
-			// Update parent goal's lastUpdatedAt
-			await this.updateGoal(goalId, { lastUpdatedAt: new Date().toISOString() });
-
 			return { success: true };
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'Failed to delete milestone';
@@ -467,6 +492,8 @@ export const currentBoardStore = {
 	 */
 	async reorderMilestones(goalId: string, newOrder: string[]) {
 		try {
+			const now = new Date().toISOString();
+
 			// Update positions in database
 			const updates = newOrder.map((milestoneId, index) => ({
 				id: milestoneId,
@@ -479,6 +506,14 @@ export const currentBoardStore = {
 					.update({ position: update.position })
 					.eq('id', update.id);
 			}
+
+			// Update parent goal's lastUpdatedAt in database
+			const { error: goalError } = await supabase
+				.from('goals')
+				.update({ last_updated_at: now })
+				.eq('id', goalId);
+
+			if (goalError) throw goalError;
 
 			// Update local state
 			currentBoardState.update((state) => {
@@ -494,7 +529,7 @@ export const currentBoardStore = {
 						return {
 							...goal,
 							milestones: reorderedMilestones,
-							lastUpdatedAt: new Date().toISOString()
+							lastUpdatedAt: now
 						};
 					}
 					return goal;
@@ -508,9 +543,6 @@ export const currentBoardStore = {
 					}
 				};
 			});
-
-			// Update parent goal's lastUpdatedAt
-			await this.updateGoal(goalId, { lastUpdatedAt: new Date().toISOString() });
 
 			return { success: true };
 		} catch (error) {
