@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { currentBoardStore } from '$lib/stores/currentBoard';
+	import { currentBoardStore, currentBoard } from '$lib/stores/currentBoard';
 	import { uiStore } from '$lib/stores/board';
 	import type { Goal } from '$lib/types';
 	import RichTextEditor from './RichTextEditor.svelte';
@@ -12,13 +12,19 @@
 		index: number;
 	}
 
-	let { goal, index }: Props = $props();
+	let { goal: initialGoal, index }: Props = $props();
+
+	// Get reactive goal from store instead of relying only on prop
+	let goal = $derived(
+		$currentBoard?.goals.find(g => g.id === initialGoal.id) || initialGoal
+	);
+
 	let title = $state(goal.title);
 	let notes = $state(goal.notes);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 	let titleInput: HTMLInputElement;
 
-	// Sync local state with goal prop
+	// Sync local state with goal (from store)
 	$effect(() => {
 		title = goal.title;
 		notes = goal.notes;
