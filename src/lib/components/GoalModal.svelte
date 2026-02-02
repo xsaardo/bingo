@@ -5,6 +5,7 @@
 	import type { Goal } from '$lib/types';
 	import RichTextEditor from './RichTextEditor.svelte';
 	import DateMetadata from './DateMetadata.svelte';
+	import MilestoneList from './MilestoneList.svelte';
 
 	interface Props {
 		goal: Goal;
@@ -161,6 +162,9 @@
 				/>
 				<p class="text-xs text-gray-500 mt-2">Changes are automatically saved</p>
 			</div>
+
+			<!-- Milestones -->
+			<MilestoneList goalId={goal.id} milestones={goal.milestones} />
 		</div>
 	</div>
 </div>
