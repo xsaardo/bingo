@@ -2,6 +2,21 @@
 	import type { Milestone } from '$lib/types';
 	import MilestoneItem from './MilestoneItem.svelte';
 	import { currentBoardStore } from '$lib/stores/currentBoard';
+	import {
+		DndContext,
+		closestCenter,
+		KeyboardSensor,
+		PointerSensor,
+		useSensor,
+		useSensors,
+		type DragEndEvent
+	} from '@dnd-kit/core';
+	import {
+		SortableContext,
+		sortableKeyboardCoordinates,
+		verticalListSortingStrategy,
+		arrayMove
+	} from '@dnd-kit/sortable';
 
 	interface Props {
 		goalId: string;
@@ -9,6 +24,14 @@
 	}
 
 	let { goalId, milestones }: Props = $props();
+
+	// Set up sensors for mouse and keyboard
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates
+		})
+	);
 	let expandedIds = $state<Set<string>>(new Set());
 	let newMilestoneTitle = $state('');
 	let showAddInput = $state(false);
@@ -54,6 +77,26 @@
 		}
 		expandedIds = new Set(expandedIds); // Trigger reactivity
 	}
+
+	async function handleDragEnd(event: DragEndEvent) {
+		const { active, over } = event;
+
+		// If dropped outside list or in same position, do nothing
+		if (!over || active.id === over.id) return;
+
+		// Find old and new indices
+		const oldIndex = sortedMilestones.findIndex((m) => m.id === active.id);
+		const newIndex = sortedMilestones.findIndex((m) => m.id === over.id);
+
+		// Reorder the array
+		const reordered = arrayMove(sortedMilestones, oldIndex, newIndex);
+
+		// Extract new order of IDs
+		const newOrder = reordered.map((m) => m.id);
+
+		// Call store method to persist
+		await currentBoardStore.reorderMilestones(goalId, newOrder);
+	}
 </script>
 
 <div class="space-y-3">
@@ -93,18 +136,27 @@
 		</div>
 	{/if}
 
-	<div class="space-y-2">
-		{#each sortedMilestones as milestone (milestone.id)}
-			<MilestoneItem
-				{milestone}
-				expanded={expandedIds.has(milestone.id)}
-				onToggle={() => toggleExpand(milestone.id)}
-				onUpdate={(updates) => handleUpdate(milestone.id, updates)}
-				onDelete={() => handleDelete(milestone.id)}
-				onToggleComplete={() => handleToggleComplete(milestone.id)}
-			/>
-		{/each}
-	</div>
+	<DndContext
+		{sensors}
+		collisionDetection={closestCenter}
+		onDragEnd={handleDragEnd}
+	>
+		<!-- @ts-expect-error - SortableContext types not compatible with Svelte 5 -->
+		<SortableContext items={sortedMilestones.map((m) => m.id)} strategy={verticalListSortingStrategy}>
+			<div class="space-y-2">
+				{#each sortedMilestones as milestone (milestone.id)}
+					<MilestoneItem
+						{milestone}
+						expanded={expandedIds.has(milestone.id)}
+						onToggle={() => toggleExpand(milestone.id)}
+						onUpdate={(updates) => handleUpdate(milestone.id, updates)}
+						onDelete={() => handleDelete(milestone.id)}
+						onToggleComplete={() => handleToggleComplete(milestone.id)}
+					/>
+				{/each}
+			</div>
+		</SortableContext>
+	</DndContext>
 
 	{#if milestones.length === 0}
 		<p class="text-sm text-gray-500 text-center py-4">
