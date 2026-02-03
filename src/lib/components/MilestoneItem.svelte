@@ -2,6 +2,8 @@
 	import type { Milestone } from '$lib/types';
 	import RichTextEditor from './RichTextEditor.svelte';
 	import { format } from 'date-fns';
+	import { useSortable } from '@dnd-kit/sortable';
+	import { CSS } from '@dnd-kit/utilities';
 
 	interface Props {
 		milestone: Milestone;
@@ -13,6 +15,28 @@
 	}
 
 	let { milestone, expanded, onToggle, onUpdate, onDelete, onToggleComplete }: Props = $props();
+
+	// Set up sortable
+	const sortable = useSortable({
+		id: milestone.id
+	});
+
+	// Compute style for drag transform
+	const style = $derived(
+		sortable.transform
+			? `transform: ${CSS.Transform.toString(sortable.transform)}; transition: ${sortable.transition || ''};`
+			: ''
+	);
+
+	// Use action for setNodeRef
+	function setupSortable(node: HTMLElement) {
+		sortable.setNodeRef(node);
+		return {
+			destroy() {
+				sortable.setNodeRef(null);
+			}
+		};
+	}
 
 	let title = $state(milestone.title);
 	let notes = $state(milestone.notes);
@@ -49,10 +73,20 @@
 
 {#if expanded}
 	<!-- Expanded view -->
-	<div class="border border-gray-200 rounded-lg p-4 space-y-3 bg-white">
+	<div
+		use:setupSortable
+		{style}
+		class="border border-gray-200 rounded-lg p-4 space-y-3 bg-white {sortable.isDragging
+			? 'opacity-50'
+			: ''}"
+	>
 		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-2">
-				<span class="cursor-move text-gray-400 select-none" data-drag-handle>⋮</span>
+				<span
+					{...sortable.listeners}
+					{...sortable.attributes}
+					class="cursor-move text-gray-400 select-none"
+					data-drag-handle>⋮</span>
 				<button
 					onclick={onToggleComplete}
 					class="w-5 h-5 rounded border-2 flex items-center justify-center transition-all active:scale-90 {milestone.completed
@@ -108,9 +142,17 @@
 {:else}
 	<!-- Collapsed view -->
 	<div
-		class="border border-gray-200 rounded-lg p-3 flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors"
+		use:setupSortable
+		{style}
+		class="border border-gray-200 rounded-lg p-3 flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors {sortable.isDragging
+			? 'opacity-50'
+			: ''}"
 	>
-		<span class="cursor-move text-gray-400 select-none" data-drag-handle>⋮</span>
+		<span
+			{...sortable.listeners}
+			{...sortable.attributes}
+			class="cursor-move text-gray-400 select-none"
+			data-drag-handle>⋮</span>
 		<button
 			onclick={onToggleComplete}
 			class="w-5 h-5 rounded border-2 flex items-center justify-center transition-all active:scale-90 {milestone.completed
