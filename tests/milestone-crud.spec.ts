@@ -79,7 +79,7 @@ test.describe('Milestone CRUD Operations', () => {
 
 			// Enter milestone title and add
 			await page.fill('input[placeholder="New milestone..."]', 'First Milestone');
-			await page.click('button:has-text("Add")');
+			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
 			// Verify milestone appears in the list
@@ -115,13 +115,13 @@ test.describe('Milestone CRUD Operations', () => {
 			// Add first milestone
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Milestone 1');
-			await page.click('button:has-text("Add")');
+			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
 			// Add second milestone
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Milestone 2');
-			await page.click('button:has-text("Add")');
+			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
 			// Verify positions in database
@@ -168,7 +168,7 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.waitForSelector('[data-testid="goal-modal"]');
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Test Milestone');
-			await page.click('button:has-text("Add")');
+			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
 			// Get updated lastUpdatedAt
@@ -198,7 +198,7 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.waitForSelector('[data-testid="goal-modal"]');
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Original Title');
-			await page.click('button:has-text("Add")');
+			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
 			// Expand milestone
@@ -237,7 +237,7 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.waitForSelector('[data-testid="goal-modal"]');
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Test Milestone');
-			await page.click('button:has-text("Add")');
+			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
 			// Click milestone checkbox
@@ -274,7 +274,7 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.waitForSelector('[data-testid="goal-modal"]');
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Test Milestone');
-			await page.click('button:has-text("Add")');
+			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
 			// Check milestone
@@ -317,7 +317,7 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.waitForSelector('[data-testid="goal-modal"]');
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Test Milestone');
-			await page.click('button:has-text("Add")');
+			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
 			// Expand milestone
