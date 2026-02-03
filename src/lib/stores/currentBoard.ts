@@ -262,21 +262,19 @@ export const currentBoardStore = {
 	 * Add a new milestone to a goal
 	 */
 	async addMilestone(goalId: string, title: string) {
-		console.log('[Store] addMilestone called:', { goalId, title });
 		try {
 			// Get the current goal to determine next position
 			let nextPosition = 0;
-			currentBoardState.subscribe((state) => {
-				const goal = state.board?.goals.find((g) => g.id === goalId);
-				if (goal) {
-					nextPosition = goal.milestones.length;
+			const unsubscribe = currentBoardState.subscribe((state) => {
+				const currentGoal = state.board?.goals.find((g) => g.id === goalId);
+				if (currentGoal) {
+					nextPosition = currentGoal.milestones.length;
 				}
-				console.log('[Store] Current goal:', goal);
-			})();
+			});
+			unsubscribe();
 
 			const now = new Date().toISOString();
 
-			console.log('[Store] Inserting milestone with position:', nextPosition);
 			// Insert milestone into database
 			const { data: newMilestone, error } = await supabase
 				.from('milestones')
@@ -292,7 +290,6 @@ export const currentBoardStore = {
 				.select()
 				.single();
 
-			console.log('[Store] Insert result:', { data: newMilestone, error });
 			if (error) throw error;
 
 			// Update parent goal's lastUpdatedAt in database

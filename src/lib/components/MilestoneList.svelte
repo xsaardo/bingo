@@ -20,11 +20,10 @@
 
 	async function handleAdd() {
 		if (!newMilestoneTitle.trim()) return;
-		console.log('[MilestoneList] Adding milestone:', { goalId, title: newMilestoneTitle });
+
 		const result = await currentBoardStore.addMilestone(goalId, newMilestoneTitle);
-		console.log('[MilestoneList] Add result:', result);
 		if (!result.success) {
-			console.error('[MilestoneList] Failed to add milestone:', result.error);
+			console.error('Failed to add milestone:', result.error);
 			alert(`Failed to add milestone: ${result.error}`);
 			return;
 		}
