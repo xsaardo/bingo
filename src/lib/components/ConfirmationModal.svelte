@@ -9,7 +9,15 @@
 		onCancel: () => void;
 	}
 
-	let { isOpen, title, message, confirmText = 'Confirm', confirmVariant = 'danger', onConfirm, onCancel }: Props = $props();
+	let {
+		isOpen,
+		title,
+		message,
+		confirmText = 'Confirm',
+		confirmVariant = 'danger',
+		onConfirm,
+		onCancel
+	}: Props = $props();
 
 	let loading = $state(false);
 
@@ -43,17 +51,13 @@
 			: 'bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300'
 	);
 
-	const iconBgClass = $derived(
-		confirmVariant === 'danger' ? 'bg-red-100' : 'bg-blue-100'
-	);
+	const iconBgClass = $derived(confirmVariant === 'danger' ? 'bg-red-100' : 'bg-blue-100');
 
 	const headerBgClass = $derived(
 		confirmVariant === 'danger' ? 'bg-red-50 border-red-100' : 'bg-blue-50 border-blue-100'
 	);
 
-	const iconColorClass = $derived(
-		confirmVariant === 'danger' ? 'text-red-600' : 'text-blue-600'
-	);
+	const iconColorClass = $derived(confirmVariant === 'danger' ? 'text-red-600' : 'text-blue-600');
 </script>
 
 {#if isOpen}

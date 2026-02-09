@@ -12,7 +12,7 @@
 	interface Props {
 		content: string;
 		placeholder?: string;
-		onUpdate: (html: string) => void;
+		onUpdate: (_html: string) => void;
 	}
 
 	let { content, placeholder = 'Add description', onUpdate }: Props = $props();
@@ -68,7 +68,8 @@
 			},
 			editorProps: {
 				attributes: {
-					class: 'prose prose-sm max-w-none focus:outline-none min-h-[120px] px-3 py-2 text-sm text-gray-700',
+					class:
+						'prose prose-sm max-w-none focus:outline-none min-h-[120px] px-3 py-2 text-sm text-gray-700',
 					'data-testid': 'rich-text-editor'
 				}
 			}
@@ -92,36 +93,6 @@
 		}`;
 	}
 </script>
-
-<style>
-	:global(.ProseMirror p.is-editor-empty:first-child::before) {
-		content: attr(data-placeholder);
-		float: left;
-		color: #9ca3af;
-		pointer-events: none;
-		height: 0;
-	}
-
-	:global(.ProseMirror ul) {
-		list-style-type: disc;
-		padding-left: 1.5rem;
-		margin: 0.5rem 0;
-	}
-
-	:global(.ProseMirror ol) {
-		list-style-type: decimal;
-		padding-left: 1.5rem;
-		margin: 0.5rem 0;
-	}
-
-	:global(.ProseMirror li) {
-		margin: 0.25rem 0;
-	}
-
-	:global(.ProseMirror li p) {
-		margin: 0;
-	}
-</style>
 
 <div
 	class="border rounded-lg overflow-hidden transition-all {isFocused
@@ -233,3 +204,33 @@
 		<div bind:this={element}></div>
 	</div>
 </div>
+
+<style>
+	:global(.ProseMirror p.is-editor-empty:first-child::before) {
+		content: attr(data-placeholder);
+		float: left;
+		color: #9ca3af;
+		pointer-events: none;
+		height: 0;
+	}
+
+	:global(.ProseMirror ul) {
+		list-style-type: disc;
+		padding-left: 1.5rem;
+		margin: 0.5rem 0;
+	}
+
+	:global(.ProseMirror ol) {
+		list-style-type: decimal;
+		padding-left: 1.5rem;
+		margin: 0.5rem 0;
+	}
+
+	:global(.ProseMirror li) {
+		margin: 0.25rem 0;
+	}
+
+	:global(.ProseMirror li p) {
+		margin: 0;
+	}
+</style>
