@@ -12,28 +12,43 @@
 		onUpdate: (updates: Partial<Milestone>) => void;
 		onDelete: () => void;
 		onToggleComplete: () => void;
+		enableDragAndDrop?: boolean;
 	}
 
-	let { milestone, expanded, onToggle, onUpdate, onDelete, onToggleComplete }: Props = $props();
+	let {
+		milestone,
+		expanded,
+		onToggle,
+		onUpdate,
+		onDelete,
+		onToggleComplete,
+		enableDragAndDrop = false
+	}: Props = $props();
 
-	// Set up sortable
-	const sortable = useSortable({
-		id: milestone.id
-	});
+	// Set up sortable only if DnD is enabled
+	const sortable = enableDragAndDrop
+		? useSortable({
+				id: milestone.id
+			})
+		: null;
 
 	// Compute style for drag transform
 	const style = $derived(
-		sortable.transform
+		sortable?.transform
 			? `transform: ${CSS.Transform.toString(sortable.transform)}; transition: ${sortable.transition || ''};`
 			: ''
 	);
 
 	// Use action for setNodeRef
 	function setupSortable(node: HTMLElement) {
-		sortable.setNodeRef(node);
+		if (sortable) {
+			sortable.setNodeRef(node);
+		}
 		return {
 			destroy() {
-				sortable.setNodeRef(null);
+				if (sortable) {
+					sortable.setNodeRef(null);
+				}
 			}
 		};
 	}
@@ -76,22 +91,29 @@
 	<div
 		use:setupSortable
 		{style}
-		class="border border-gray-200 rounded-lg p-4 space-y-3 bg-white {sortable.isDragging
-			? 'opacity-50'
-			: ''}"
+		class="border border-gray-200 rounded-lg p-4 space-y-3 bg-white"
+		class:opacity-50={sortable?.isDragging}
 	>
-		<div class="flex items-center justify-between">
+		<div class="flex items-center justify-between cursor-pointer" onclick={onToggle}>
 			<div class="flex items-center gap-2">
-				<span
-					{...sortable.listeners}
-					{...sortable.attributes}
-					class="cursor-move text-gray-400 select-none"
-					data-drag-handle>⋮</span>
+				{#if enableDragAndDrop}
+					<span
+						{...(sortable?.listeners || {})}
+						{...(sortable?.attributes || {})}
+						onclick={(e) => e.stopPropagation()}
+						class="cursor-move text-gray-400 select-none"
+						data-drag-handle>⋮</span>
+				{/if}
 				<button
-					onclick={onToggleComplete}
-					class="w-5 h-5 rounded border-2 flex items-center justify-center transition-all active:scale-90 {milestone.completed
-						? 'bg-green-500 border-green-500'
-						: 'border-gray-300 hover:border-green-500'}"
+					onclick={(e) => {
+						e.stopPropagation();
+						onToggleComplete();
+					}}
+					class="w-5 h-5 rounded border-2 flex items-center justify-center transition-all active:scale-90"
+					class:bg-green-500={milestone.completed}
+					class:border-green-500={milestone.completed}
+					class:border-gray-300={!milestone.completed}
+					class:hover:border-green-500={!milestone.completed}
 					data-testid="milestone-checkbox"
 				>
 					{#if milestone.completed}
@@ -100,16 +122,12 @@
 						</svg>
 					{/if}
 				</button>
-				<button
-					onclick={onToggle}
-					class="text-gray-500 hover:text-gray-700 text-sm"
-					aria-label="Collapse milestone"
-				>
-					∨
-				</button>
 			</div>
 			<button
-				onclick={onDelete}
+				onclick={(e) => {
+					e.stopPropagation();
+					onDelete();
+				}}
 				class="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
 			>
 				Delete
@@ -144,17 +162,23 @@
 	<div
 		use:setupSortable
 		{style}
-		class="border border-gray-200 rounded-lg p-3 flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors {sortable.isDragging
-			? 'opacity-50'
-			: ''}"
+		onclick={onToggle}
+		class="border border-gray-200 rounded-lg p-3 flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors cursor-pointer"
+		class:opacity-50={sortable?.isDragging}
 	>
-		<span
-			{...sortable.listeners}
-			{...sortable.attributes}
-			class="cursor-move text-gray-400 select-none"
-			data-drag-handle>⋮</span>
+		{#if enableDragAndDrop}
+			<span
+				{...(sortable?.listeners || {})}
+				{...(sortable?.attributes || {})}
+				onclick={(e) => e.stopPropagation()}
+				class="cursor-move text-gray-400 select-none"
+				data-drag-handle>⋮</span>
+		{/if}
 		<button
-			onclick={onToggleComplete}
+			onclick={(e) => {
+				e.stopPropagation();
+				onToggleComplete();
+			}}
 			class="w-5 h-5 rounded border-2 flex items-center justify-center transition-all active:scale-90 {milestone.completed
 				? 'bg-green-500 border-green-500'
 				: 'border-gray-300 hover:border-green-500'}"
@@ -174,12 +198,5 @@
 				{format(new Date(milestone.completedAt), 'MMM d')}
 			</span>
 		{/if}
-		<button
-			onclick={onToggle}
-			class="text-gray-400 hover:text-gray-600 transition-colors"
-			aria-label="Expand milestone"
-		>
-			›
-		</button>
 	</div>
 {/if}
