@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { currentBoardStore } from '$lib/stores/currentBoard';
 	import { uiStore } from '$lib/stores/board';
+	import { formatRelativeTime } from '$lib/utils/dates';
 	import type { Goal } from '$lib/types';
 
 	interface Props {
@@ -51,6 +52,18 @@
 			: boardSize === 4
 				? 'text-[8px] sm:text-[10px] md:text-xs'
 				: 'text-[7px] sm:text-[8px] md:text-[10px]'
+	);
+
+	let lastUpdatedText = $derived(
+		goal.lastUpdatedAt ? formatRelativeTime(goal.lastUpdatedAt) : null
+	);
+
+	let timeTextSize = $derived(
+		boardSize === 3
+			? 'text-[10px]'
+			: boardSize === 4
+				? 'text-[10px]'
+				: 'text-[8px]'
 	);
 
 	async function toggleComplete(e: Event) {
@@ -117,7 +130,12 @@
 			</button>
 
 			{#if goal.notes}
-				<span class="{notesEmojiClass} text-gray-500 flex-shrink-0">📝</span>
+				<span class="flex items-center gap-0.5 sm:gap-1 text-gray-500 flex-shrink-0">
+					<span class="{notesEmojiClass}">📝</span>
+					{#if lastUpdatedText}
+						<span class="{timeTextSize}">{lastUpdatedText}</span>
+					{/if}
+				</span>
 			{/if}
 		</div>
 	</div>
