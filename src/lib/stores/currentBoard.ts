@@ -489,14 +489,18 @@ export const currentBoardStore = {
 		try {
 			const now = new Date().toISOString();
 
-			// Update positions in database
+			// Update positions in database with single batch upsert
 			const updates = newOrder.map((milestoneId, index) => ({
 				id: milestoneId,
 				position: index
 			}));
 
-			for (const update of updates) {
-				await supabase.from('milestones').update({ position: update.position }).eq('id', update.id);
+			const { error: upsertError } = await supabase
+				.from('milestones')
+				.upsert(updates, { onConflict: 'id' });
+
+			if (upsertError) {
+				throw new Error(`Failed to update milestone positions: ${upsertError.message}`);
 			}
 
 			// Database trigger will automatically update parent goal's last_updated_at
