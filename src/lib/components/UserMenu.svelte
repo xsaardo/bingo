@@ -58,7 +58,9 @@
 		aria-haspopup="true"
 	>
 		<!-- User Avatar -->
-		<div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+		<div
+			class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+		>
 			{$currentUser?.email?.charAt(0).toUpperCase() || 'U'}
 		</div>
 
@@ -99,7 +101,12 @@
 					class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
 				>
 					<div class="flex items-center">
-						<svg class="w-4 h-4 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg
+							class="w-4 h-4 mr-3 text-gray-500"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -119,7 +126,12 @@
 						class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
 					>
 						<div class="flex items-center">
-							<svg class="w-4 h-4 mr-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg
+								class="w-4 h-4 mr-3 text-gray-500"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"

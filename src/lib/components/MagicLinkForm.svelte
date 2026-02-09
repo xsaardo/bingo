@@ -45,12 +45,7 @@
 	<div class="space-y-6">
 		<div class="text-center">
 			<div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-				<svg
-					class="w-8 h-8 text-green-600"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
-				>
+				<svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
 						stroke-linecap="round"
 						stroke-linejoin="round"
@@ -77,14 +72,14 @@
 {:else}
 	<!-- Login Form -->
 	<form
-		onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}
+		onsubmit={(e) => {
+			e.preventDefault();
+			handleSubmit();
+		}}
 		class="space-y-4"
 	>
 		<div>
-			<label
-				for="email"
-				class="block text-sm font-medium text-gray-700 mb-2"
-			>
+			<label for="email" class="block text-sm font-medium text-gray-700 mb-2">
 				Email address
 			</label>
 			<input

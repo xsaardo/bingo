@@ -8,25 +8,10 @@
 	let bingoLines = $derived<BingoLine[]>($currentBoard ? detectBingo($currentBoard) : []);
 	let hasBingo = $derived(bingoLines.length > 0);
 	let bingoIndices = $derived(new Set(bingoLines.flatMap((line) => line.indices)));
-	let isEmpty = $derived($currentBoard ? $currentBoard.goals.every((goal) => !goal.title.trim()) : false);
+	let isEmpty = $derived(
+		$currentBoard ? $currentBoard.goals.every((goal) => !goal.title.trim()) : false
+	);
 </script>
-
-<style>
-	@keyframes pulse-celebration {
-		0%, 100% {
-			transform: scale(1);
-			opacity: 1;
-		}
-		50% {
-			transform: scale(1.02);
-			opacity: 0.95;
-		}
-	}
-
-	.celebrate {
-		animation: pulse-celebration 2s ease-in-out infinite;
-	}
-</style>
 
 {#if $currentBoard}
 	<div class="bg-white rounded-lg shadow-lg p-2 sm:p-3 md:p-4 relative">
@@ -36,7 +21,8 @@
 			>
 				<p class="text-xl sm:text-2xl font-bold text-yellow-800">🎉 BINGO! 🎉</p>
 				<p class="text-xs sm:text-sm text-yellow-700 mt-1">
-					You completed {bingoLines.length} {bingoLines.length === 1 ? 'line' : 'lines'}!
+					You completed {bingoLines.length}
+					{bingoLines.length === 1 ? 'line' : 'lines'}!
 				</p>
 			</div>
 		{/if}
@@ -46,7 +32,12 @@
 			style="grid-template-columns: repeat({$currentBoard.size}, minmax(0, 1fr));"
 		>
 			{#each $currentBoard.goals as goal, index}
-				<GoalSquare {goal} {index} isInBingo={bingoIndices.has(index)} boardSize={$currentBoard.size} />
+				<GoalSquare
+					{goal}
+					{index}
+					isInBingo={bingoIndices.has(index)}
+					boardSize={$currentBoard.size}
+				/>
 			{/each}
 		</div>
 
@@ -90,3 +81,21 @@
 		index={$uiStore.selectedGoalIndex}
 	/>
 {/if}
+
+<style>
+	@keyframes pulse-celebration {
+		0%,
+		100% {
+			transform: scale(1);
+			opacity: 1;
+		}
+		50% {
+			transform: scale(1.02);
+			opacity: 0.95;
+		}
+	}
+
+	.celebrate {
+		animation: pulse-celebration 2s ease-in-out infinite;
+	}
+</style>
