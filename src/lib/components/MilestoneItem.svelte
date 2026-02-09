@@ -2,6 +2,7 @@
 	import type { Milestone } from '$lib/types';
 	import RichTextEditor from './RichTextEditor.svelte';
 	import { format } from 'date-fns';
+	import { onDestroy } from 'svelte';
 
 	interface Props {
 		milestone: Milestone;
@@ -18,13 +19,16 @@
 	let notes = $state(milestone.notes);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	// Sync state with milestone prop
+	// Sync state with milestone prop when it changes externally
+	// Don't sync if user is actively editing (saveTimeout pending)
 	$effect(() => {
-		title = milestone.title;
-		notes = milestone.notes;
+		if (!saveTimeout) {
+			title = milestone.title;
+			notes = milestone.notes;
+		}
 	});
 
-	// Auto-save with debounce
+	// Auto-save with debounce when user makes changes
 	function autoSave() {
 		if (saveTimeout) clearTimeout(saveTimeout);
 
@@ -36,6 +40,9 @@
 			if (Object.keys(updates).length > 0) {
 				onUpdate(updates);
 			}
+
+			// Clear timeout after save completes to allow prop sync
+			saveTimeout = null;
 		}, 500);
 	}
 
@@ -43,6 +50,13 @@
 	$effect(() => {
 		if (title !== milestone.title || notes !== milestone.notes) {
 			autoSave();
+		}
+	});
+
+	// Cleanup timeout on component destroy
+	onDestroy(() => {
+		if (saveTimeout) {
+			clearTimeout(saveTimeout);
 		}
 	});
 </script>
