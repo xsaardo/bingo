@@ -17,6 +17,8 @@
 
 	let { milestone, expanded, onToggle, onUpdate, onDelete, onToggleComplete }: Props = $props();
 
+	const AUTO_SAVE_DELAY_MS = 500;
+
 	let title = $state(milestone.title);
 	let notes = $state(milestone.notes);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -45,7 +47,7 @@
 
 			// Clear timeout after save completes to allow prop sync
 			saveTimeout = null;
-		}, 500);
+		}, AUTO_SAVE_DELAY_MS);
 	}
 
 	// Watch for changes and trigger auto-save
@@ -128,7 +130,12 @@
 			}}
 			testid="milestone-checkbox"
 		/>
-		<span class="flex-1 text-sm {milestone.completed ? 'line-through text-gray-500' : 'text-gray-900'}">
+		<span
+			class="flex-1 text-sm"
+			class:line-through={milestone.completed}
+			class:text-gray-500={milestone.completed}
+			class:text-gray-900={!milestone.completed}
+		>
 			{milestone.title}
 		</span>
 		{#if milestone.completedAt}
