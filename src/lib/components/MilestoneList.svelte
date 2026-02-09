@@ -2,22 +2,8 @@
 	import type { Milestone } from '$lib/types';
 	import MilestoneItem from './MilestoneItem.svelte';
 	import { currentBoardStore } from '$lib/stores/currentBoard';
-	import {
-		DndContext,
-		closestCenter,
-		KeyboardSensor,
-		MouseSensor,
-		TouchSensor,
-		useSensor,
-		useSensors,
-		type DragEndEvent
-	} from '@dnd-kit/core';
-	import {
-		SortableContext,
-		sortableKeyboardCoordinates,
-		verticalListSortingStrategy,
-		arrayMove
-	} from '@dnd-kit/sortable';
+	import { dndzone } from 'svelte-dnd-action';
+	import { flip } from 'svelte/animate';
 
 	interface Props {
 		goalId: string;
@@ -26,40 +12,19 @@
 
 	let { goalId, milestones }: Props = $props();
 
-	// Initialize sensors once on component creation
-	let sensorsInitialized = $state(false);
-	let sensors = $state<ReturnType<typeof useSensors>>();
-
-	$effect(() => {
-		if (!sensorsInitialized) {
-			sensors = useSensors(
-				useSensor(MouseSensor, {
-					activationConstraint: {
-						distance: 8
-					}
-				}),
-				useSensor(TouchSensor, {
-					activationConstraint: {
-						delay: 250,
-						tolerance: 5
-					}
-				}),
-				useSensor(KeyboardSensor, {
-					coordinateGetter: sortableKeyboardCoordinates
-				})
-			);
-			sensorsInitialized = true;
-		}
-	});
-
 	let expandedIds = $state<Set<string>>(new Set());
 	let newMilestoneTitle = $state('');
 	let showAddInput = $state(false);
+	let items = $state<Milestone[]>([]);
 
 	// Derived state
 	let completedCount = $derived(milestones.filter((m) => m.completed).length);
 	let totalCount = $derived(milestones.length);
-	let sortedMilestones = $derived([...milestones].sort((a, b) => a.position - b.position));
+
+	// Sync items with milestones prop, sorted by position
+	$effect(() => {
+		items = [...milestones].sort((a, b) => a.position - b.position);
+	});
 
 	async function handleAdd() {
 		if (!newMilestoneTitle.trim()) return;
@@ -98,23 +63,14 @@
 		expandedIds = new Set(expandedIds); // Trigger reactivity
 	}
 
-	async function handleDragEnd(event: DragEndEvent) {
-		const { active, over } = event;
+	function handleConsider(e: CustomEvent<{ items: Milestone[]; info: { source: string } }>) {
+		items = e.detail.items;
+	}
 
-		// If dropped outside list or in same position, do nothing
-		if (!over || active.id === over.id) return;
+	async function handleFinalize(e: CustomEvent<{ items: Milestone[]; info: { source: string } }>) {
+		items = e.detail.items;
 
-		// Find old and new indices
-		const oldIndex = sortedMilestones.findIndex((m) => m.id === active.id);
-		const newIndex = sortedMilestones.findIndex((m) => m.id === over.id);
-
-		// Reorder the array
-		const reordered = arrayMove(sortedMilestones, oldIndex, newIndex);
-
-		// Extract new order of IDs
-		const newOrder = reordered.map((m) => m.id);
-
-		// Call store method to persist
+		const newOrder = items.map((m) => m.id);
 		await currentBoardStore.reorderMilestones(goalId, newOrder);
 	}
 </script>
@@ -156,33 +112,14 @@
 		</div>
 	{/if}
 
-	<!-- Only render DndContext after sensors are initialized -->
-	{#if sensorsInitialized && sensors}
-		<DndContext {sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-			<!-- @ts-expect-error - SortableContext types not compatible with Svelte 5 -->
-			<SortableContext
-				items={sortedMilestones.map((m) => m.id)}
-				strategy={verticalListSortingStrategy}
-			>
-				<div class="space-y-2">
-					{#each sortedMilestones as milestone (milestone.id)}
-						<MilestoneItem
-							{milestone}
-							expanded={expandedIds.has(milestone.id)}
-							onToggle={() => toggleExpand(milestone.id)}
-							onUpdate={(updates) => handleUpdate(milestone.id, updates)}
-							onDelete={() => handleDelete(milestone.id)}
-							onToggleComplete={() => handleToggleComplete(milestone.id)}
-							enableDragAndDrop={true}
-						/>
-					{/each}
-				</div>
-			</SortableContext>
-		</DndContext>
-	{:else}
-		<!-- Render without DnD while sensors initialize -->
-		<div class="space-y-2">
-			{#each sortedMilestones as milestone (milestone.id)}
+	<div
+		class="space-y-2"
+		use:dndzone={{ items, flipDurationMs: 200, dropTargetStyle: {} }}
+		onconsider={handleConsider}
+		onfinalize={handleFinalize}
+	>
+		{#each items as milestone (milestone.id)}
+			<div animate:flip={{ duration: 200 }}>
 				<MilestoneItem
 					{milestone}
 					expanded={expandedIds.has(milestone.id)}
@@ -190,11 +127,10 @@
 					onUpdate={(updates) => handleUpdate(milestone.id, updates)}
 					onDelete={() => handleDelete(milestone.id)}
 					onToggleComplete={() => handleToggleComplete(milestone.id)}
-					enableDragAndDrop={false}
 				/>
-			{/each}
-		</div>
-	{/if}
+			</div>
+		{/each}
+	</div>
 
 	{#if milestones.length === 0}
 		<p class="text-sm text-gray-500 text-center py-4">

@@ -2,8 +2,6 @@
 	import type { Milestone } from '$lib/types';
 	import RichTextEditor from './RichTextEditor.svelte';
 	import { format } from 'date-fns';
-	import { useSortable } from '@dnd-kit/sortable';
-	import { CSS } from '@dnd-kit/utilities';
 
 	interface Props {
 		milestone: Milestone;
@@ -12,46 +10,9 @@
 		onUpdate: (updates: Partial<Milestone>) => void;
 		onDelete: () => void;
 		onToggleComplete: () => void;
-		enableDragAndDrop?: boolean;
 	}
 
-	let {
-		milestone,
-		expanded,
-		onToggle,
-		onUpdate,
-		onDelete,
-		onToggleComplete,
-		enableDragAndDrop = false
-	}: Props = $props();
-
-	// Set up sortable only if DnD is enabled
-	const sortable = enableDragAndDrop
-		? useSortable({
-				id: milestone.id
-			})
-		: null;
-
-	// Compute style for drag transform
-	const style = $derived(
-		sortable?.transform
-			? `transform: ${CSS.Transform.toString(sortable.transform)}; transition: ${sortable.transition || ''};`
-			: ''
-	);
-
-	// Use action for setNodeRef
-	function setupSortable(node: HTMLElement) {
-		if (sortable) {
-			sortable.setNodeRef(node);
-		}
-		return {
-			destroy() {
-				if (sortable) {
-					sortable.setNodeRef(null);
-				}
-			}
-		};
-	}
+	let { milestone, expanded, onToggle, onUpdate, onDelete, onToggleComplete }: Props = $props();
 
 	let title = $state(milestone.title);
 	let notes = $state(milestone.notes);
@@ -88,22 +49,15 @@
 
 {#if expanded}
 	<!-- Expanded view -->
-	<div
-		use:setupSortable
-		{style}
-		class="border border-gray-200 rounded-lg p-4 space-y-3 bg-white"
-		class:opacity-50={sortable?.isDragging}
-	>
+	<div data-testid="milestone-item" class="border border-gray-200 rounded-lg p-4 space-y-3 bg-white">
 		<div class="flex items-center justify-between cursor-pointer" onclick={onToggle}>
 			<div class="flex items-center gap-2">
-				{#if enableDragAndDrop}
-					<span
-						{...(sortable?.listeners || {})}
-						{...(sortable?.attributes || {})}
-						onclick={(e) => e.stopPropagation()}
-						class="cursor-move text-gray-400 select-none"
-						data-drag-handle>⋮</span>
-				{/if}
+				<span
+					onclick={(e) => e.stopPropagation()}
+					class="cursor-move text-gray-400 select-none"
+					data-drag-handle
+					>⋮</span
+				>
 				<button
 					onclick={(e) => {
 						e.stopPropagation();
@@ -160,20 +114,16 @@
 {:else}
 	<!-- Collapsed view -->
 	<div
-		use:setupSortable
-		{style}
+		data-testid="milestone-item"
 		onclick={onToggle}
 		class="border border-gray-200 rounded-lg p-3 flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors cursor-pointer"
-		class:opacity-50={sortable?.isDragging}
 	>
-		{#if enableDragAndDrop}
-			<span
-				{...(sortable?.listeners || {})}
-				{...(sortable?.attributes || {})}
-				onclick={(e) => e.stopPropagation()}
-				class="cursor-move text-gray-400 select-none"
-				data-drag-handle>⋮</span>
-		{/if}
+		<span
+			onclick={(e) => e.stopPropagation()}
+			class="cursor-move text-gray-400 select-none"
+			data-drag-handle
+			>⋮</span
+		>
 		<button
 			onclick={(e) => {
 				e.stopPropagation();
