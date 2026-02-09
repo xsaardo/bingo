@@ -151,12 +151,18 @@ export const currentBoardStore = {
 		currentBoardState.update((state) => ({ ...state, saving: true }));
 
 		try {
+			// Optimistically set lastUpdatedAt in local state (database trigger will set the actual value)
+			const optimisticUpdates = {
+				...updates,
+				lastUpdatedAt: new Date().toISOString()
+			};
+
 			// Optimistic update
 			currentBoardState.update((state) => {
 				if (!state.board) return state;
 
 				const updatedGoals = state.board.goals.map((goal) =>
-					goal.id === goalId ? { ...goal, ...updates } : goal
+					goal.id === goalId ? { ...goal, ...optimisticUpdates } : goal
 				);
 
 				return {
@@ -168,19 +174,18 @@ export const currentBoardStore = {
 				};
 			});
 
-			// Update in database
-			const dbUpdates: any = {};
-			if (updates.title !== undefined) dbUpdates.title = updates.title;
-			if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
-			if (updates.completed !== undefined) dbUpdates.completed = updates.completed;
-			if (updates.startedAt !== undefined) dbUpdates.started_at = updates.startedAt;
-			if (updates.completedAt !== undefined) dbUpdates.completed_at = updates.completedAt;
-			if (updates.lastUpdatedAt !== undefined) dbUpdates.last_updated_at = updates.lastUpdatedAt;
+			// Update in database - database trigger will handle last_updated_at automatically
+			// Supabase filters out undefined values automatically
+			const dbUpdates = {
+				title: updates.title,
+				notes: updates.notes,
+				completed: updates.completed,
+				started_at: updates.startedAt,
+				completed_at: updates.completedAt
+				// last_updated_at is set by database trigger, not sent from application
+			};
 
-			const { error } = await supabase
-				.from('goals')
-				.update(dbUpdates)
-				.eq('id', goalId);
+			const { error } = await supabase.from('goals').update(dbUpdates).eq('id', goalId);
 
 			if (error) {
 				throw error;
@@ -225,9 +230,8 @@ export const currentBoardStore = {
 		const updates: Partial<Goal> = {
 			completed: newCompleted,
 			// Set completedAt when marking complete, clear when unchecking
-			completedAt: newCompleted ? new Date().toISOString() : null,
-			// Always update lastUpdatedAt
-			lastUpdatedAt: new Date().toISOString()
+			completedAt: newCompleted ? new Date().toISOString() : null
+			// lastUpdatedAt is set automatically by updateGoal
 		};
 
 		return await this.updateGoal(goalId, updates);
@@ -252,8 +256,7 @@ export const currentBoardStore = {
 			updates.startedAt = new Date().toISOString();
 		}
 
-		// Always update lastUpdatedAt
-		updates.lastUpdatedAt = new Date().toISOString();
+		// lastUpdatedAt is set automatically by updateGoal
 
 		return await this.updateGoal(goalId, updates);
 	},
@@ -292,13 +295,7 @@ export const currentBoardStore = {
 
 			if (error) throw error;
 
-			// Update parent goal's lastUpdatedAt in database
-			const { error: goalError } = await supabase
-				.from('goals')
-				.update({ last_updated_at: now })
-				.eq('id', goalId);
-
-			if (goalError) throw goalError;
+			// Database trigger will automatically update parent goal's last_updated_at
 
 			// Update local state
 			currentBoardState.update((state) => {
@@ -346,33 +343,12 @@ export const currentBoardStore = {
 	 * Update a milestone
 	 */
 	async updateMilestone(goalId: string, milestoneId: string, updates: Partial<Milestone>) {
+		currentBoardState.update((state) => ({ ...state, saving: true }));
+
 		try {
 			const now = new Date().toISOString();
 
-			// Update in database
-			const dbUpdates: any = {};
-			if (updates.title !== undefined) dbUpdates.title = updates.title;
-			if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
-			if (updates.completed !== undefined) dbUpdates.completed = updates.completed;
-			if (updates.completedAt !== undefined) dbUpdates.completed_at = updates.completedAt;
-			if (updates.position !== undefined) dbUpdates.position = updates.position;
-
-			const { error } = await supabase
-				.from('milestones')
-				.update(dbUpdates)
-				.eq('id', milestoneId);
-
-			if (error) throw error;
-
-			// Update parent goal's lastUpdatedAt in database
-			const { error: goalError } = await supabase
-				.from('goals')
-				.update({ last_updated_at: now })
-				.eq('id', goalId);
-
-			if (goalError) throw goalError;
-
-			// Update local state
+			// Optimistic update - update local state first
 			currentBoardState.update((state) => {
 				if (!state.board) return state;
 
@@ -399,9 +375,37 @@ export const currentBoardStore = {
 				};
 			});
 
+			// Update in database
+			const dbUpdates: any = {};
+			if (updates.title !== undefined) dbUpdates.title = updates.title;
+			if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
+			if (updates.completed !== undefined) dbUpdates.completed = updates.completed;
+			if (updates.completedAt !== undefined) dbUpdates.completed_at = updates.completedAt;
+			if (updates.position !== undefined) dbUpdates.position = updates.position;
+
+			const { error } = await supabase.from('milestones').update(dbUpdates).eq('id', milestoneId);
+
+			if (error) throw error;
+
+			// Database trigger will automatically update parent goal's last_updated_at
+
+			currentBoardState.update((state) => ({ ...state, saving: false }));
+
 			return { success: true };
 		} catch (error) {
+			// Revert optimistic update by reloading the board
+			const state = currentBoardState;
+			let boardId: string | undefined;
+			state.subscribe((s) => {
+				boardId = s.board?.id;
+			})();
+
+			if (boardId) {
+				await this.loadBoard(boardId);
+			}
+
 			const errorMessage = error instanceof Error ? error.message : 'Failed to update milestone';
+			currentBoardState.update((state) => ({ ...state, saving: false }));
 			return { success: false, error: errorMessage };
 		}
 	},
@@ -444,13 +448,7 @@ export const currentBoardStore = {
 
 			if (error) throw error;
 
-			// Update parent goal's lastUpdatedAt in database
-			const { error: goalError } = await supabase
-				.from('goals')
-				.update({ last_updated_at: now })
-				.eq('id', goalId);
-
-			if (goalError) throw goalError;
+			// Database trigger will automatically update parent goal's last_updated_at
 
 			// Update local state
 			currentBoardState.update((state) => {
@@ -498,19 +496,10 @@ export const currentBoardStore = {
 			}));
 
 			for (const update of updates) {
-				await supabase
-					.from('milestones')
-					.update({ position: update.position })
-					.eq('id', update.id);
+				await supabase.from('milestones').update({ position: update.position }).eq('id', update.id);
 			}
 
-			// Update parent goal's lastUpdatedAt in database
-			const { error: goalError } = await supabase
-				.from('goals')
-				.update({ last_updated_at: now })
-				.eq('id', goalId);
-
-			if (goalError) throw goalError;
+			// Database trigger will automatically update parent goal's last_updated_at
 
 			// Update local state
 			currentBoardState.update((state) => {

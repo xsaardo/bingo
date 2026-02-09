@@ -12,7 +12,7 @@
 		index: number;
 	}
 
-	let { goal: initialGoal, index }: Props = $props();
+	let { goal: initialGoal }: Props = $props();
 
 	// Get reactive goal from store instead of relying only on prop
 	let goal = $derived(
@@ -48,9 +48,14 @@
 	});
 
 	async function handleClose() {
-		// Save immediately on close
+		// Save immediately on close only if there are changes
 		if (saveTimeout) clearTimeout(saveTimeout);
-		await currentBoardStore.saveGoal(goal.id, title, notes);
+
+		// Only save if title or notes have changed
+		if (title !== goal.title || notes !== goal.notes) {
+			await currentBoardStore.saveGoal(goal.id, title, notes);
+		}
+
 		uiStore.clearSelection();
 	}
 
