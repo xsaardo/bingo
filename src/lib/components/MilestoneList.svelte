@@ -6,7 +6,8 @@
 		DndContext,
 		closestCenter,
 		KeyboardSensor,
-		PointerSensor,
+		MouseSensor,
+		TouchSensor,
 		useSensor,
 		useSensors,
 		type DragEndEvent
@@ -25,13 +26,32 @@
 
 	let { goalId, milestones }: Props = $props();
 
-	// Set up sensors for mouse and keyboard
-	const sensors = useSensors(
-		useSensor(PointerSensor),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates
-		})
-	);
+	// Initialize sensors once on component creation
+	let sensorsInitialized = $state(false);
+	let sensors = $state<ReturnType<typeof useSensors>>();
+
+	$effect(() => {
+		if (!sensorsInitialized) {
+			sensors = useSensors(
+				useSensor(MouseSensor, {
+					activationConstraint: {
+						distance: 8
+					}
+				}),
+				useSensor(TouchSensor, {
+					activationConstraint: {
+						delay: 250,
+						tolerance: 5
+					}
+				}),
+				useSensor(KeyboardSensor, {
+					coordinateGetter: sortableKeyboardCoordinates
+				})
+			);
+			sensorsInitialized = true;
+		}
+	});
+
 	let expandedIds = $state<Set<string>>(new Set());
 	let newMilestoneTitle = $state('');
 	let showAddInput = $state(false);
@@ -136,27 +156,45 @@
 		</div>
 	{/if}
 
-	<DndContext
-		{sensors}
-		collisionDetection={closestCenter}
-		onDragEnd={handleDragEnd}
-	>
-		<!-- @ts-expect-error - SortableContext types not compatible with Svelte 5 -->
-		<SortableContext items={sortedMilestones.map((m) => m.id)} strategy={verticalListSortingStrategy}>
-			<div class="space-y-2">
-				{#each sortedMilestones as milestone (milestone.id)}
-					<MilestoneItem
-						{milestone}
-						expanded={expandedIds.has(milestone.id)}
-						onToggle={() => toggleExpand(milestone.id)}
-						onUpdate={(updates) => handleUpdate(milestone.id, updates)}
-						onDelete={() => handleDelete(milestone.id)}
-						onToggleComplete={() => handleToggleComplete(milestone.id)}
-					/>
-				{/each}
-			</div>
-		</SortableContext>
-	</DndContext>
+	<!-- Only render DndContext after sensors are initialized -->
+	{#if sensorsInitialized && sensors}
+		<DndContext {sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+			<!-- @ts-expect-error - SortableContext types not compatible with Svelte 5 -->
+			<SortableContext
+				items={sortedMilestones.map((m) => m.id)}
+				strategy={verticalListSortingStrategy}
+			>
+				<div class="space-y-2">
+					{#each sortedMilestones as milestone (milestone.id)}
+						<MilestoneItem
+							{milestone}
+							expanded={expandedIds.has(milestone.id)}
+							onToggle={() => toggleExpand(milestone.id)}
+							onUpdate={(updates) => handleUpdate(milestone.id, updates)}
+							onDelete={() => handleDelete(milestone.id)}
+							onToggleComplete={() => handleToggleComplete(milestone.id)}
+							enableDragAndDrop={true}
+						/>
+					{/each}
+				</div>
+			</SortableContext>
+		</DndContext>
+	{:else}
+		<!-- Render without DnD while sensors initialize -->
+		<div class="space-y-2">
+			{#each sortedMilestones as milestone (milestone.id)}
+				<MilestoneItem
+					{milestone}
+					expanded={expandedIds.has(milestone.id)}
+					onToggle={() => toggleExpand(milestone.id)}
+					onUpdate={(updates) => handleUpdate(milestone.id, updates)}
+					onDelete={() => handleDelete(milestone.id)}
+					onToggleComplete={() => handleToggleComplete(milestone.id)}
+					enableDragAndDrop={false}
+				/>
+			{/each}
+		</div>
+	{/if}
 
 	{#if milestones.length === 0}
 		<p class="text-sm text-gray-500 text-center py-4">
