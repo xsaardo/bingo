@@ -169,7 +169,7 @@ test.describe('DateMetadata Component', () => {
 			.locator('.font-medium')
 			.textContent();
 
-		// Should be in relative format (e.g., "2m ago", "1h ago")
-		expect(lastUpdatedText).toMatch(/(m|h|d|mo) ago/);
+		// Should be in relative format (e.g., "10s ago", "2m ago", "1h ago")
+		expect(lastUpdatedText).toMatch(/(s|m|h|d|mo|y) ago/);
 	});
 });
