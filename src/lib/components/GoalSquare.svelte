@@ -69,7 +69,8 @@
 	tabindex="0"
 	onclick={selectGoal}
 	onkeydown={(e) => e.key === 'Enter' && selectGoal()}
-	class="aspect-square border-2 rounded-lg p-1 sm:p-2 md:p-3 lg:p-4 cursor-pointer transition-all duration-200 hover:shadow-md active:scale-95 overflow-hidden {isInBingo && goal.completed
+	class="aspect-square border-2 rounded-lg p-1 sm:p-2 md:p-3 lg:p-4 cursor-pointer transition-all duration-200 hover:shadow-md active:scale-95 overflow-hidden {isInBingo &&
+	goal.completed
 		? 'bg-yellow-50 border-yellow-500 shadow-lg ring-2 ring-yellow-400 ring-offset-2'
 		: goal.completed
 			? 'bg-green-50 border-green-500'
@@ -78,7 +79,11 @@
 	<div class="h-full flex flex-col justify-between min-h-0">
 		<div class="flex-1 flex items-center justify-center text-center px-1 overflow-hidden min-h-0">
 			{#if goal.title}
-				<p class="{titleTextClass} font-medium line-clamp-3 {goal.completed ? 'text-green-900' : 'text-gray-900'}">
+				<p
+					class="{titleTextClass} font-medium line-clamp-3 {goal.completed
+						? 'text-green-900'
+						: 'text-gray-900'}"
+				>
 					{goal.title}
 				</p>
 			{:else}
@@ -95,8 +100,18 @@
 					: 'border-gray-300 hover:border-green-500'}"
 			>
 				{#if goal.completed}
-					<svg class="{checkmarkSizeClass} text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+					<svg
+						class="{checkmarkSizeClass} text-white"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="3"
+							d="M5 13l4 4L19 7"
+						/>
 					</svg>
 				{/if}
 			</button>

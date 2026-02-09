@@ -60,9 +60,7 @@
 		aria-labelledby="delete-modal-title"
 		tabindex="-1"
 	>
-		<div
-			class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scale-in"
-		>
+		<div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scale-in">
 			<!-- Header with Warning Icon -->
 			<div class="bg-red-50 px-6 py-5 border-b border-red-100">
 				<div class="flex items-start">
@@ -84,9 +82,7 @@
 						</div>
 					</div>
 					<div class="ml-4 flex-1">
-						<h2 id="delete-modal-title" class="text-xl font-bold text-gray-900">
-							Delete Board?
-						</h2>
+						<h2 id="delete-modal-title" class="text-xl font-bold text-gray-900">Delete Board?</h2>
 						<p class="text-sm text-gray-600 mt-1">This action cannot be undone</p>
 					</div>
 					{#if !loading}
@@ -211,12 +207,7 @@
 							</svg>
 							Deleting...
 						{:else}
-							<svg
-								class="w-4 h-4 mr-2"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
+							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"

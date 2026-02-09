@@ -76,9 +76,7 @@
 		aria-labelledby="modal-title"
 		tabindex="-1"
 	>
-		<div
-			class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scale-in"
-		>
+		<div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scale-in">
 			<!-- Header -->
 			<div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5">
 				<div class="flex items-center justify-between">
