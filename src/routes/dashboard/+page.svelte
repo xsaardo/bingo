@@ -6,7 +6,6 @@
 	import CreateBoardModal from '$lib/components/CreateBoardModal.svelte';
 	import DeleteBoardModal from '$lib/components/DeleteBoardModal.svelte';
 	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
-	import { currentUser } from '$lib/stores/auth';
 	import { boardsStore, boards, boardsLoading, boardsError, hasBoards } from '$lib/stores/boards';
 	import type { Board } from '$lib/types';
 
@@ -57,12 +56,7 @@
 				<div class="flex items-center justify-between">
 					<div class="flex items-center space-x-3">
 						<div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-							<svg
-								class="w-6 h-6 text-white"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
+							<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -118,10 +112,7 @@
 				</div>
 			{:else if $boardsLoading}
 				<!-- Loading State -->
-				<div
-					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-					aria-busy="true"
-				>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-busy="true">
 					{#each Array(3) as _}
 						<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 animate-pulse">
 							<div class="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
@@ -135,7 +126,9 @@
 				<!-- Empty State -->
 				<div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
 					<div class="max-w-md mx-auto">
-						<div class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6">
+						<div
+							class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6"
+						>
 							<svg
 								class="w-10 h-10 text-blue-600"
 								fill="none"

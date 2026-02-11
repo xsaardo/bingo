@@ -241,11 +241,7 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.waitForTimeout(300);
 
 			// Click milestone checkbox
-			const milestoneCheckbox = page
-				.locator('text=Test Milestone')
-				.locator('..')
-				.locator('button')
-				.first();
+			const milestoneCheckbox = page.getByTestId('milestone-checkbox');
 			await milestoneCheckbox.click();
 			await page.waitForTimeout(300);
 
@@ -278,11 +274,7 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.waitForTimeout(300);
 
 			// Check milestone
-			const milestoneCheckbox = page
-				.locator('text=Test Milestone')
-				.locator('..')
-				.locator('button')
-				.first();
+			const milestoneCheckbox = page.getByTestId('milestone-checkbox');
 			await milestoneCheckbox.click();
 			await page.waitForTimeout(300);
 
@@ -338,10 +330,7 @@ test.describe('Milestone CRUD Operations', () => {
 				const supabaseModule = await import('/src/lib/supabaseClient');
 				const { supabase } = supabaseModule;
 
-				const { data } = await supabase
-					.from('milestones')
-					.select('*')
-					.eq('goal_id', goalId);
+				const { data } = await supabase.from('milestones').select('*').eq('goal_id', goalId);
 
 				return data;
 			}, firstGoalId);

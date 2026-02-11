@@ -46,12 +46,7 @@
 		{:else if status === 'success'}
 			<div class="space-y-4">
 				<div class="text-green-600">
-					<svg
-						class="w-16 h-16 mx-auto"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
+					<svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -66,12 +61,7 @@
 		{:else}
 			<div class="space-y-4">
 				<div class="text-red-600">
-					<svg
-						class="w-16 h-16 mx-auto"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
+					<svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"

@@ -7,7 +7,10 @@ import type { Page } from '@playwright/test';
  * Creates a new test board and navigates to it
  * Returns the board ID for cleanup
  */
-export async function createTestBoard(page: Page, size: '3×3' | '4×4' | '5×5' = '3×3'): Promise<string> {
+export async function createTestBoard(
+	page: Page,
+	size: '3×3' | '4×4' | '5×5' = '3×3'
+): Promise<string> {
 	await page.goto('/dashboard');
 
 	// Create a new board
@@ -73,14 +76,22 @@ export async function getFirstGoalId(page: Page, boardId: string): Promise<strin
 /**
  * Queries goal data from Supabase
  */
-export async function getGoalData<T = any>(page: Page, goalId: string, fields: string = '*'): Promise<T | null> {
+export async function getGoalData<T = any>(
+	page: Page,
+	goalId: string,
+	fields: string = '*'
+): Promise<T | null> {
 	return await page.evaluate(
 		async ({ id, selectFields }) => {
 			// @ts-expect-error - Browser import path, works at runtime via Vite
 			const supabaseModule = await import('/src/lib/supabaseClient');
 			const { supabase } = supabaseModule;
 
-			const { data, error } = await supabase.from('goals').select(selectFields).eq('id', id).single();
+			const { data, error } = await supabase
+				.from('goals')
+				.select(selectFields)
+				.eq('id', id)
+				.single();
 
 			if (error) {
 				throw new Error(error.message);

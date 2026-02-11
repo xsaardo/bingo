@@ -14,24 +14,27 @@ setup('authenticate', async ({ page }) => {
 	const password = process.env.TEST_USER_PASSWORD || 'test-password-123';
 
 	// Use Supabase password auth for testing (faster than magic link)
-	await page.evaluate(async ({ email, password }) => {
-		// Dynamically import the supabase client (use actual path for browser import)
-		// @ts-expect-error - Browser import path, works at runtime via Vite
-		const supabaseModule = await import('/src/lib/supabaseClient');
-		const { supabase } = supabaseModule;
+	await page.evaluate(
+		async ({ email, password }) => {
+			// Dynamically import the supabase client (use actual path for browser import)
+			// @ts-expect-error - Browser import path, works at runtime via Vite
+			const supabaseModule = await import('/src/lib/supabaseClient');
+			const { supabase } = supabaseModule;
 
-		// Sign in with test account
-		const { data, error } = await supabase.auth.signInWithPassword({
-			email,
-			password
-		});
+			// Sign in with test account
+			const { data, error } = await supabase.auth.signInWithPassword({
+				email,
+				password
+			});
 
-		if (error) {
-			throw new Error(`Auth failed: ${error.message}`);
-		}
+			if (error) {
+				throw new Error(`Auth failed: ${error.message}`);
+			}
 
-		return data;
-	}, { email, password });
+			return data;
+		},
+		{ email, password }
+	);
 
 	// Wait for redirect to dashboard (indicates successful login)
 	await page.waitForURL('/dashboard', { timeout: 10000 });

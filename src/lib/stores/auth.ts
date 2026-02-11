@@ -7,7 +7,6 @@
 
 import { writable, derived } from 'svelte/store';
 import type { User } from '@supabase/supabase-js';
-import { supabase } from '$lib/supabaseClient';
 import { getCurrentUser, onAuthStateChange, sendMagicLink, signOut } from '$lib/utils/auth';
 
 interface AuthState {
