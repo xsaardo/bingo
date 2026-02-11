@@ -15,6 +15,7 @@ Configure Supabase to allow redirects to your Vercel preview branch URLs using w
 ### 1. Get Your Vercel Project URL Pattern
 
 Your Vercel preview URLs follow this pattern:
+
 ```
 https://bingo-[hash]-xsaardo.vercel.app
 https://bingo-git-[branch-name]-xsaardo.vercel.app
@@ -47,6 +48,7 @@ http://localhost:5173/*
 ### 3. Update Site URL (Optional)
 
 In **Authentication** → **URL Configuration**:
+
 - **Site URL**: Set this to your production domain
   ```
   https://your-production-domain.com
@@ -55,6 +57,7 @@ In **Authentication** → **URL Configuration**:
 ### 4. Configure Additional Redirect URLs in Supabase
 
 In the same **URL Configuration** section, you can also add:
+
 ```
 # For main/master branch deployments
 https://bingo-xsaardo.vercel.app/auth/callback
@@ -81,6 +84,7 @@ const callbackUrl = redirectTo || `${window.location.origin}/auth/callback`;
 ```
 
 This means:
+
 - ✅ Production → redirects to production
 - ✅ Preview branch → redirects to that preview branch
 - ✅ Localhost → redirects to localhost
@@ -92,6 +96,7 @@ This means:
 While `https://*.vercel.app/*` is convenient, it's less secure because it allows any Vercel app to use your Supabase project for authentication.
 
 **More secure option**: Use project-specific wildcards:
+
 ```
 https://bingo-*.vercel.app/auth/callback
 https://bingo-git-*.vercel.app/auth/callback
@@ -102,6 +107,7 @@ This limits redirects to only your project's preview branches.
 ### Production Best Practice
 
 For production, always use exact URLs without wildcards:
+
 ```
 https://your-actual-domain.com/auth/callback
 https://www.your-actual-domain.com/auth/callback
@@ -129,6 +135,7 @@ https://www.your-actual-domain.com/auth/callback
 **Cause**: The redirect URL doesn't match any allowed pattern in Supabase
 
 **Fix**:
+
 1. Check the browser console for the actual redirect URL being used
 2. Add that specific URL or pattern to Supabase redirect URLs
 3. Wait a few minutes for Supabase to update (changes aren't instant)
@@ -144,6 +151,7 @@ https://www.your-actual-domain.com/auth/callback
 If you want to override the redirect URL per environment:
 
 1. **Add to `.env` files**:
+
 ```bash
 # .env.local (development)
 PUBLIC_AUTH_CALLBACK_URL=http://localhost:5173/auth/callback
@@ -153,13 +161,13 @@ PUBLIC_AUTH_CALLBACK_URL=https://your-domain.com/auth/callback
 ```
 
 2. **Update the code** to use the environment variable:
+
 ```typescript
 // src/lib/utils/auth.ts
 import { PUBLIC_AUTH_CALLBACK_URL } from '$env/static/public';
 
-const callbackUrl = redirectTo ||
-  PUBLIC_AUTH_CALLBACK_URL ||
-  `${window.location.origin}/auth/callback`;
+const callbackUrl =
+	redirectTo || PUBLIC_AUTH_CALLBACK_URL || `${window.location.origin}/auth/callback`;
 ```
 
 However, using `window.location.origin` (current approach) is simpler and works automatically for all environments.

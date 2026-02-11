@@ -26,11 +26,13 @@
 ## Step 3: Configure Local Environment
 
 1. Copy the example environment file:
+
    ```bash
    cp .env.example .env
    ```
 
 2. Edit `.env` and replace the placeholder values:
+
    ```bash
    PUBLIC_SUPABASE_URL=https://your-actual-project-id.supabase.co
    PUBLIC_SUPABASE_ANON_KEY=your-actual-anon-key
@@ -67,6 +69,7 @@ We'll create this migration file next!
 ## Step 7: Test the Setup
 
 Once the database schema is created, we'll test:
+
 - Magic link authentication
 - Creating a board
 - Saving goals
@@ -74,15 +77,18 @@ Once the database schema is created, we'll test:
 ## Troubleshooting
 
 ### "Invalid API key"
+
 - Double-check you copied the `anon` key, not the `service_role` key
 - Make sure there are no extra spaces in `.env`
 - Restart the dev server after changing `.env`
 
 ### "relation does not exist"
+
 - You haven't run the database migrations yet
 - Go to SQL Editor and run the schema creation script
 
 ### Email not sending
+
 - Check Supabase logs: **Authentication** → **Logs**
 - For development, magic links appear in the logs even if email fails
 - Free tier has email rate limits (consider using a custom email provider later)
@@ -90,6 +96,7 @@ Once the database schema is created, we'll test:
 ## Next Steps
 
 After setup is complete:
+
 - ✅ Supabase project created
 - ✅ API credentials in `.env`
 - ✅ Database schema created

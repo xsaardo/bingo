@@ -1,6 +1,7 @@
 # Phase 2: Authentication UI - COMPLETE ✅
 
 ## Overview
+
 Phase 2 builds on the backend infrastructure from Phase 1 by implementing a complete authentication user interface with magic link login, protected routes, and session management.
 
 ---
@@ -8,9 +9,11 @@ Phase 2 builds on the backend infrastructure from Phase 1 by implementing a comp
 ## What Was Implemented
 
 ### 1. Auth Store (`src/lib/stores/auth.ts`)
+
 Global authentication state management using Svelte stores.
 
 **Features:**
+
 - ✅ Centralized auth state (user, loading, initialized)
 - ✅ Auto-initialization on app startup
 - ✅ Real-time auth state synchronization
@@ -18,6 +21,7 @@ Global authentication state management using Svelte stores.
 - ✅ Magic link sending and logout methods
 
 **Usage:**
+
 ```typescript
 import { authStore, isAuthenticated, currentUser } from '$lib/stores/auth';
 
@@ -37,9 +41,11 @@ await authStore.logout();
 ---
 
 ### 2. MagicLinkForm Component (`src/lib/components/MagicLinkForm.svelte`)
+
 Reusable form component for passwordless authentication.
 
 **Features:**
+
 - ✅ Email input with validation
 - ✅ Loading states during submission
 - ✅ Success state with email confirmation
@@ -48,6 +54,7 @@ Reusable form component for passwordless authentication.
 - ✅ "Try different email" reset option
 
 **UI States:**
+
 1. **Initial**: Email input form
 2. **Loading**: Spinner while sending magic link
 3. **Success**: Confirmation message with email
@@ -56,9 +63,11 @@ Reusable form component for passwordless authentication.
 ---
 
 ### 3. Login Page (`src/routes/auth/login/+page.svelte`)
+
 Production-ready login page with beautiful UI.
 
 **Features:**
+
 - ✅ Gradient background design
 - ✅ Bingo Board branding
 - ✅ MagicLinkForm integration
@@ -67,6 +76,7 @@ Production-ready login page with beautiful UI.
 - ✅ Dev-only test auth page link
 
 **Flow:**
+
 1. User enters email
 2. Receives magic link
 3. Clicks link → redirected via `/auth/callback`
@@ -75,9 +85,11 @@ Production-ready login page with beautiful UI.
 ---
 
 ### 4. Auth Callback Page (`src/routes/auth/callback/+page.svelte`)
+
 Handles magic link verification and redirection.
 
 **Features:**
+
 - ✅ Session verification
 - ✅ Loading state with spinner
 - ✅ Success confirmation
@@ -89,9 +101,11 @@ Handles magic link verification and redirection.
 ---
 
 ### 5. UserMenu Component (`src/lib/components/UserMenu.svelte`)
+
 Dropdown menu showing user info and actions.
 
 **Features:**
+
 - ✅ User avatar with email initial
 - ✅ Truncated email display
 - ✅ Dropdown menu with click-outside handling
@@ -101,6 +115,7 @@ Dropdown menu showing user info and actions.
 - ✅ Responsive design (hides email on mobile)
 
 **Menu Items:**
+
 - My Boards (dashboard link)
 - Test Auth (dev only)
 - Sign out (red, destructive action)
@@ -108,9 +123,11 @@ Dropdown menu showing user info and actions.
 ---
 
 ### 6. AuthGuard Component (`src/lib/components/AuthGuard.svelte`)
+
 Protects routes from unauthenticated access.
 
 **Features:**
+
 - ✅ Automatic redirect to login if not authenticated
 - ✅ Loading state while checking auth
 - ✅ Configurable redirect URL
@@ -118,23 +135,26 @@ Protects routes from unauthenticated access.
 - ✅ Works with auth store reactivity
 
 **Usage:**
+
 ```svelte
 <AuthGuard>
-  <!-- Protected content here -->
+	<!-- Protected content here -->
 </AuthGuard>
 
 <!-- With custom redirect -->
 <AuthGuard redirectTo="/custom-login">
-  <!-- Protected content -->
+	<!-- Protected content -->
 </AuthGuard>
 ```
 
 ---
 
 ### 7. Logout Page (`src/routes/auth/logout/+page.svelte`)
+
 Dedicated logout page with confirmation.
 
 **Features:**
+
 - ✅ Automatic logout on page load
 - ✅ Loading → Success → Redirect flow
 - ✅ Error handling
@@ -144,9 +164,11 @@ Dedicated logout page with confirmation.
 ---
 
 ### 8. Dashboard Page (`src/routes/dashboard/+page.svelte`)
+
 Protected dashboard showing successful authentication.
 
 **Features:**
+
 - ✅ AuthGuard protection
 - ✅ Header with UserMenu
 - ✅ Welcome message with user email
@@ -161,9 +183,11 @@ Demonstrates that auth is working and serves as placeholder for Phase 3 board li
 ---
 
 ### 9. Updated Root Layout (`src/routes/+layout.svelte`)
+
 Initializes auth on app startup.
 
 **Changes:**
+
 - ✅ Import auth store
 - ✅ Call `authStore.init()` on mount
 - ✅ Ensures auth state available globally
@@ -171,9 +195,11 @@ Initializes auth on app startup.
 ---
 
 ### 10. Updated Landing Page (`src/routes/+page.svelte`)
+
 Smart redirection based on auth status.
 
 **Behavior:**
+
 - ✅ Shows loading spinner
 - ✅ Waits for auth to initialize
 - ✅ Redirects authenticated users → `/dashboard`
@@ -211,6 +237,7 @@ src/
 ## User Flow
 
 ### New User (First Time)
+
 1. Visit app → Redirected to `/auth/login`
 2. Enter email → Click "Send magic link"
 3. Check email → Click magic link
@@ -219,11 +246,13 @@ src/
 6. Click UserMenu → Can logout or navigate
 
 ### Returning User
+
 1. Visit app → Auth restores session automatically
 2. Redirected to `/dashboard` immediately
 3. Continue using app (Phase 3+ features)
 
 ### Logout Flow
+
 1. Click "Sign out" in UserMenu → Navigates to `/auth/logout`
 2. Session cleared → Success message
 3. Redirected to `/auth/login` after 1.5 seconds
@@ -235,6 +264,7 @@ src/
 ### Manual Testing Checklist
 
 #### 1. First-Time Login
+
 - [ ] Visit `http://localhost:5173`
 - [ ] Should redirect to `/auth/login`
 - [ ] Enter valid email
@@ -246,11 +276,13 @@ src/
 - [ ] See welcome message with your email
 
 #### 2. Protected Routes
+
 - [ ] Open incognito/private window
 - [ ] Visit `http://localhost:5173/dashboard` directly
 - [ ] Should redirect to `/auth/login`
 
 #### 3. Session Persistence
+
 - [ ] Login successfully
 - [ ] Refresh page
 - [ ] Should stay logged in (no redirect to login)
@@ -258,6 +290,7 @@ src/
 - [ ] Should still be logged in
 
 #### 4. UserMenu
+
 - [ ] Click user avatar/email in header
 - [ ] Menu should open
 - [ ] Click outside → menu closes
@@ -266,6 +299,7 @@ src/
 - [ ] Click "Sign out" → redirects to logout page
 
 #### 5. Logout
+
 - [ ] Click sign out
 - [ ] See "Signing you out..." message
 - [ ] See success confirmation
@@ -273,12 +307,14 @@ src/
 - [ ] Try visiting `/dashboard` → should redirect to login
 
 #### 6. Auto-Redirect
+
 - [ ] While logged in, visit `/auth/login`
 - [ ] Should auto-redirect to `/dashboard`
 - [ ] While logged out, visit `/`
 - [ ] Should redirect to `/auth/login`
 
 #### 7. Error Handling
+
 - [ ] Try invalid email format
 - [ ] Should see validation error
 - [ ] Try network error (disconnect wifi briefly)
@@ -289,6 +325,7 @@ src/
 ## Security Features
 
 ### Implemented
+
 - ✅ Row-level security via Supabase
 - ✅ HTTP-only session cookies
 - ✅ Auto token refresh
@@ -298,6 +335,7 @@ src/
 - ✅ No passwords to leak
 
 ### Best Practices
+
 - Environment variables not committed to git
 - User can only access their own data
 - Session tokens stored securely
@@ -309,6 +347,7 @@ src/
 ## Components API
 
 ### AuthGuard
+
 ```svelte
 <AuthGuard
   redirectTo="/auth/login"  // Optional, defaults to /auth/login
@@ -319,12 +358,14 @@ src/
 ```
 
 ### MagicLinkForm
+
 ```svelte
 <MagicLinkForm />
 <!-- No props needed, fully self-contained -->
 ```
 
 ### UserMenu
+
 ```svelte
 <UserMenu />
 <!-- No props needed, uses auth store -->
@@ -335,17 +376,22 @@ src/
 ## Store API
 
 ### Auth Store
+
 ```typescript
 // Initialization (call once in root layout)
 authStore.init();
 
 // Send magic link
 const result = await authStore.sendMagicLink('user@example.com');
-if (result.success) { /* ... */ }
+if (result.success) {
+	/* ... */
+}
 
 // Logout
 const result = await authStore.logout();
-if (result.success) { /* ... */ }
+if (result.success) {
+	/* ... */
+}
 
 // Set user manually (testing/edge cases)
 authStore.setUser(user);
@@ -355,6 +401,7 @@ authStore.setLoading(true);
 ```
 
 ### Derived Stores
+
 ```typescript
 // Check if authenticated
 $isAuthenticated; // boolean
@@ -374,6 +421,7 @@ $isAuthInitialized; // boolean
 ## Known Limitations & Future Improvements
 
 ### Current Limitations
+
 1. **No email verification**: Users auto-created on first login (acceptable for MVP)
 2. **No password option**: Magic link only (by design)
 3. **No social auth**: Email-only (can add later)
@@ -381,6 +429,7 @@ $isAuthInitialized; // boolean
 5. **Dashboard is placeholder**: Will be replaced with board list in Phase 3
 
 ### Future Enhancements (Not in Scope)
+
 - Social login (Google, GitHub)
 - Email/password option
 - Two-factor authentication
@@ -411,24 +460,28 @@ All goals achieved:
 ## Troubleshooting
 
 ### "Redirecting to login..." loops
+
 - Check that Supabase credentials are in `.env`
 - Verify database migration ran successfully
 - Check browser console for errors
 - Try clearing localStorage and cookies
 
 ### Magic link not received
+
 - Check Supabase Dashboard → Authentication → Logs
 - Verify email provider settings
 - Magic links appear in logs even if email fails
 - Free tier has rate limits (wait a minute between sends)
 
 ### "Invalid session" errors
+
 - Clear browser storage
 - Re-login
 - Check Supabase service status
 - Verify RLS policies in database
 
 ### UserMenu not opening
+
 - Check browser console for errors
 - Verify `currentUser` has value
 - Try hard refresh (Ctrl+Shift+R)
@@ -440,6 +493,7 @@ All goals achieved:
 Phase 3 will implement multi-board support:
 
 ### Features to Build
+
 1. **Boards Store** (`src/lib/stores/boards.ts`)
    - Fetch user's boards from Supabase
    - Create/delete board methods
@@ -472,6 +526,7 @@ Phase 3 will implement multi-board support:
 ## Phase 2 Complete! 🎉
 
 Authentication is fully functional. Users can:
+
 - Sign in with magic links
 - Access protected pages
 - See their email in the header
@@ -485,6 +540,7 @@ Authentication is fully functional. Users can:
 ## Quick Reference
 
 ### Key URLs
+
 - `/` - Smart redirect (login or dashboard)
 - `/auth/login` - Login page
 - `/auth/logout` - Logout page
@@ -493,12 +549,14 @@ Authentication is fully functional. Users can:
 - `/test-auth` - Dev test page (from Phase 1)
 
 ### Key Files
+
 - `src/lib/stores/auth.ts` - Auth state
 - `src/lib/components/AuthGuard.svelte` - Route protection
 - `src/lib/components/MagicLinkForm.svelte` - Login form
 - `src/lib/components/UserMenu.svelte` - User dropdown
 
 ### Key Commands
+
 ```bash
 # Start dev server
 npm run dev
@@ -511,4 +569,5 @@ npm run check
 ```
 
 ### Testing Tip
+
 Keep the `/test-auth` page for debugging. It shows raw auth state and is useful when things go wrong.

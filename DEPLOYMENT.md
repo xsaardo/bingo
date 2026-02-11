@@ -12,6 +12,7 @@ This guide covers deploying the Bingo Board app to Vercel.
 ### Option 1: Deploy via Vercel Dashboard (Recommended)
 
 1. **Push this branch to GitHub**
+
    ```bash
    git push -u origin deploy/public-hosting
    ```
@@ -37,19 +38,23 @@ This guide covers deploying the Bingo Board app to Vercel.
 ### Option 2: Deploy via Vercel CLI
 
 1. **Install Vercel CLI**
+
    ```bash
    npm install -g vercel
    ```
 
 2. **Login to Vercel**
+
    ```bash
    vercel login
    ```
 
 3. **Deploy**
+
    ```bash
    vercel
    ```
+
    - Follow the prompts to configure your project
    - For production deployment: `vercel --prod`
 
@@ -68,6 +73,7 @@ After deployment, you can add a custom domain:
 ## Automatic Deployments
 
 Once connected to GitHub, Vercel will automatically:
+
 - Deploy every push to the production branch
 - Create preview deployments for pull requests
 - Run builds and checks before deploying
@@ -75,11 +81,13 @@ Once connected to GitHub, Vercel will automatically:
 ## Troubleshooting
 
 ### Build Fails
+
 - Check build logs in Vercel dashboard
 - Ensure all dependencies are in `package.json`
 - Run `npm run build` locally to test
 
 ### App Doesn't Load
+
 - Check browser console for errors
 - Verify the build output in Vercel dashboard
 - Ensure localStorage is enabled in browser settings
@@ -87,6 +95,7 @@ Once connected to GitHub, Vercel will automatically:
 ## Local Preview
 
 To preview the production build locally:
+
 ```bash
 npm run build
 npm run preview
