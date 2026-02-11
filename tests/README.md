@@ -21,12 +21,14 @@ Tests use a dedicated test user account with password authentication (instead of
 3. **Set environment variables:**
 
    Create a `.env.test` file in the project root:
+
    ```bash
    TEST_USER_EMAIL=test@example.com
    TEST_USER_PASSWORD=your-test-password-here
    ```
 
    Or export them in your shell:
+
    ```bash
    export TEST_USER_EMAIL=test@example.com
    export TEST_USER_PASSWORD=your-test-password-here
@@ -60,15 +62,18 @@ npm run test:ui
 ### Troubleshooting
 
 **"Auth failed" error:**
+
 - Verify test user exists in Supabase
 - Check email/password are correct in environment variables
 - Ensure password auth is enabled in Supabase
 
 **Tests timing out:**
+
 - Check dev server is running (`npm run dev`)
 - Verify `http://localhost:5173` is accessible
 - Check Supabase connection in browser console
 
 **Auth state stale:**
+
 - Delete `tests/.auth/user.json`
 - Re-run tests to regenerate auth state

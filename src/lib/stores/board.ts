@@ -20,7 +20,7 @@ function createBoardStore() {
 		createBoard: (size: BoardSize) => {
 			const totalSquares = size * size;
 			const now = new Date().toISOString();
-			const goals: Goal[] = Array.from({ length: totalSquares }, (_, i) => ({
+			const goals: Goal[] = Array.from({ length: totalSquares }, () => ({
 				id: crypto.randomUUID(),
 				title: '',
 				notes: '',
@@ -45,14 +45,12 @@ function createBoardStore() {
 
 		// Update a specific goal
 		updateGoal: (index: number, updates: Partial<Goal>) => {
-			update(board => {
+			update((board) => {
 				if (!board) return board;
 
 				const updatedBoard = {
 					...board,
-					goals: board.goals.map((goal, i) =>
-						i === index ? { ...goal, ...updates } : goal
-					),
+					goals: board.goals.map((goal, i) => (i === index ? { ...goal, ...updates } : goal)),
 					updatedAt: new Date().toISOString()
 				};
 
@@ -62,7 +60,7 @@ function createBoardStore() {
 
 		// Toggle goal completion status
 		toggleComplete: (index: number) => {
-			update(board => {
+			update((board) => {
 				if (!board) return board;
 
 				const updatedBoard = {
@@ -85,7 +83,7 @@ function createBoardStore() {
 export const boardStore = createBoardStore();
 
 // Auto-save: Subscribe to store changes and persist to localStorage
-boardStore.subscribe(board => {
+boardStore.subscribe((board) => {
 	if (board) {
 		saveBoard(board);
 	}

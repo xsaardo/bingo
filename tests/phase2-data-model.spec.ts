@@ -80,7 +80,7 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 			return {
 				hasStartedAt: data.started_at === null, // Should be null initially
 				hasCompletedAt: data.completed_at === null, // Should be null initially
-				hasLastUpdatedAt: typeof data.last_updated_at === 'string', // Should exist
+				hasLastUpdatedAt: typeof data.last_updated_at === 'string' // Should exist
 				// Note: milestones will be loaded separately in later phases
 			};
 		}, testBoardId);
@@ -196,4 +196,3 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 		expect(consoleErrors).toHaveLength(0);
 	});
 });
-

@@ -7,7 +7,6 @@
 
 import { writable, derived } from 'svelte/store';
 import { supabase } from '$lib/supabaseClient';
-import { currentUser } from '$lib/stores/auth';
 import type { Board } from '$lib/types';
 
 interface BoardsState {
