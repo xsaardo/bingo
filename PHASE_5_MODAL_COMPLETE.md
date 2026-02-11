@@ -11,6 +11,7 @@ Successfully pivoted from sidebar implementation to Google Calendar-style center
 ## What Was Built
 
 ### Enhanced GoalModal Component
+
 - **Centered overlay**: Modal appears in center with semi-transparent backdrop
 - **Auto-save**: 500ms debounce for automatic saving (no explicit Save button needed)
 - **Completion toggle**: Checkbox at top of modal for marking goals complete
@@ -21,6 +22,7 @@ Successfully pivoted from sidebar implementation to Google Calendar-style center
 - **Keyboard support**: Escape key to close, auto-focus on title input
 
 ### Updated Components
+
 1. **BingoBoard.svelte**: Now renders GoalModal instead of GoalSidebar
 2. **Test helpers**: Updated to reference `goal-modal` instead of `goal-sidebar`
 3. **Test files**: Updated to work with RichTextEditor (HTML content) instead of plain textarea
@@ -28,6 +30,7 @@ Successfully pivoted from sidebar implementation to Google Calendar-style center
 ## Design Pattern
 
 The modal follows the Google Calendar event creation pattern:
+
 - Clean header with title and close button (×)
 - Sections organized vertically with clear spacing
 - Icon indicators (📝 for Progress Notes)
@@ -37,31 +40,33 @@ The modal follows the Google Calendar event creation pattern:
 ## Technical Implementation
 
 ### Key Features
+
 ```typescript
 interface Props {
-  goal: Goal;
-  index: number;
+	goal: Goal;
+	index: number;
 }
 
 // Auto-save logic
 let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
 function autoSave() {
-  if (saveTimeout) clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(async () => {
-    await currentBoardStore.saveGoal(goal.id, title, notes);
-  }, 500);
+	if (saveTimeout) clearTimeout(saveTimeout);
+	saveTimeout = setTimeout(async () => {
+		await currentBoardStore.saveGoal(goal.id, title, notes);
+	}, 500);
 }
 
 // Immediate save on close
 async function handleClose() {
-  if (saveTimeout) clearTimeout(saveTimeout);
-  await currentBoardStore.saveGoal(goal.id, title, notes);
-  uiStore.clearSelection();
+	if (saveTimeout) clearTimeout(saveTimeout);
+	await currentBoardStore.saveGoal(goal.id, title, notes);
+	uiStore.clearSelection();
 }
 ```
 
 ### Accessibility Features
+
 - `role="dialog"` for screen reader support
 - `aria-labelledby` pointing to modal title
 - `tabindex="0"` for keyboard focus
@@ -69,6 +74,7 @@ async function handleClose() {
 - Backdrop click to close
 
 ### Responsive Layout
+
 - **Desktop**: `max-w-2xl` (672px) centered
 - **Tablet**: `max-w-xl` (576px) centered
 - **Mobile**: Full width with padding
@@ -79,20 +85,24 @@ async function handleClose() {
 **Overall**: 74/76 tests passing (97.4% pass rate)
 
 **Passing test suites:**
+
 - ✅ Phase 2: Data Model (all tests passing)
 - ✅ Phase 3: Date Auto-Population (all tests passing on chromium/firefox)
 - ✅ Rich Text Editor (all tests passing)
 
 **Known issues:**
+
 - 2 flaky tests in webkit browser (timing-related, pass when run individually)
 - Related to RichTextEditor interaction in webkit
 
 ## Files Changed
 
 ### New Files
+
 - `docs/plans/modal-notes-pivot.md` - Strategy document for sidebar → modal pivot
 
 ### Modified Files
+
 - `src/lib/components/GoalModal.svelte` - Enhanced with RichTextEditor and auto-save
 - `src/lib/components/BingoBoard.svelte` - Switched from GoalSidebar to GoalModal
 - `tests/test-helpers.ts` - Added modal-specific helper functions
@@ -121,12 +131,14 @@ async function handleClose() {
 ## Notes
 
 The pivot to a modal was a good decision:
+
 1. **Better UX**: Centered modals feel more intentional and focused
 2. **More space**: Can make modal wider without blocking the board
 3. **Familiar**: Users understand modal interaction patterns
 4. **Responsive**: Easier to handle mobile (full-screen) vs desktop (centered)
 
 The implementation reused all the good parts from the sidebar:
+
 - Auto-save logic copied directly
 - RichTextEditor integration unchanged
 - Store methods work the same way

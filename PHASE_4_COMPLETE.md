@@ -1,6 +1,7 @@
 # Phase 4: Individual Board View & Real-time Sync - COMPLETE ✅
 
 ## Overview
+
 Phase 4 integrates the existing BingoBoard component with Supabase, enabling full goal editing, completion tracking, bingo detection, and real-time server synchronization.
 
 ---
@@ -8,9 +9,11 @@ Phase 4 integrates the existing BingoBoard component with Supabase, enabling ful
 ## What Was Implemented
 
 ### 1. Current Board Store (`src/lib/stores/currentBoard.ts`)
+
 Single board state management with Supabase integration.
 
 **Features:**
+
 - ✅ Load individual board by ID
 - ✅ Update goal title and notes
 - ✅ Toggle goal completion status
@@ -20,6 +23,7 @@ Single board state management with Supabase integration.
 - ✅ Derived stores (`currentBoard`, `currentBoardLoading`, `currentBoardSaving`, `currentBoardError`)
 
 **Key Methods:**
+
 ```typescript
 // Load a board
 await currentBoardStore.loadBoard(boardId);
@@ -38,6 +42,7 @@ currentBoardStore.clear();
 ```
 
 **Optimistic Updates:**
+
 - UI updates immediately when user makes changes
 - If server update fails, board reloads from server (rollback)
 - Smooth experience even on slow connections
@@ -45,15 +50,18 @@ currentBoardStore.clear();
 ---
 
 ### 2. Updated BingoBoard Component (`src/lib/components/BingoBoard.svelte`)
+
 Refactored to use `currentBoard` store instead of old `board` store.
 
 **Changes:**
+
 - ✅ Uses `currentBoard` from `currentBoard` store
 - ✅ Bingo detection works with server data
 - ✅ Celebration animation for completed lines
 - ✅ Visual highlighting for goals in bingo lines
 
 **Bingo Detection:**
+
 - Checks rows, columns, and diagonals
 - Highlights completed lines with yellow border
 - Shows "🎉 BINGO! 🎉" celebration message
@@ -62,9 +70,11 @@ Refactored to use `currentBoard` store instead of old `board` store.
 ---
 
 ### 3. Updated GoalSquare Component (`src/lib/components/GoalSquare.svelte`)
+
 Refactored to use goal IDs instead of indices.
 
 **Changes:**
+
 - ✅ Uses `currentBoardStore` for updates
 - ✅ Toggle completion with goal ID
 - ✅ Async toggle operation
@@ -72,6 +82,7 @@ Refactored to use goal IDs instead of indices.
 - ✅ Bingo line highlighting
 
 **Features:**
+
 - Click to open edit modal
 - Checkbox to toggle completion
 - Shows note indicator (📝) if goal has notes
@@ -81,9 +92,11 @@ Refactored to use goal IDs instead of indices.
 ---
 
 ### 4. Updated GoalModal Component (`src/lib/components/GoalModal.svelte`)
+
 Refactored to save to Supabase instead of localStorage.
 
 **Changes:**
+
 - ✅ Uses `currentBoardStore.saveGoal()`
 - ✅ Saves to Supabase on submit
 - ✅ Loading state during save
@@ -91,6 +104,7 @@ Refactored to save to Supabase instead of localStorage.
 - ✅ Uses goal ID instead of index
 
 **UI Improvements:**
+
 - Save button shows spinner while saving
 - Cancel and Save buttons disabled during save
 - Cannot close modal by clicking outside during save
@@ -99,9 +113,11 @@ Refactored to save to Supabase instead of localStorage.
 ---
 
 ### 5. Updated Individual Board Route (`src/routes/boards/[id]/+page.svelte`)
+
 Fully functional board editor with BingoBoard component.
 
 **Features:**
+
 - ✅ Loads board from Supabase using currentBoardStore
 - ✅ Displays BingoBoard component
 - ✅ Back button to dashboard
@@ -111,6 +127,7 @@ Fully functional board editor with BingoBoard component.
 - ✅ Cleanup on unmount (clears currentBoard store)
 
 **Flow:**
+
 1. Component mounts → Loads board by ID
 2. If found → Displays BingoBoard
 3. User edits goals → Saves to Supabase
@@ -144,6 +161,7 @@ src/
 ## User Flows
 
 ### Viewing a Board
+
 1. User clicks board card on dashboard
 2. Navigates to `/boards/[id]`
 3. Board loads from Supabase
@@ -151,6 +169,7 @@ src/
 5. All goals rendered with current state
 
 ### Editing a Goal
+
 1. User clicks on a goal square
 2. GoalModal opens with current title/notes
 3. User edits text
@@ -161,6 +180,7 @@ src/
 8. Grid updates immediately
 
 ### Completing a Goal
+
 1. User clicks checkbox on goal square
 2. Checkbox updates immediately (optimistic)
 3. Request sent to Supabase
@@ -174,6 +194,7 @@ src/
 ## Data Flow
 
 ### Goal Update Flow
+
 ```
 User clicks goal
 → GoalModal opens
@@ -188,6 +209,7 @@ User clicks goal
 ```
 
 ### Completion Toggle Flow
+
 ```
 User clicks checkbox
 → currentBoardStore.toggleComplete()
@@ -206,31 +228,30 @@ User clicks checkbox
 ### Queries Used
 
 **Load Board:**
+
 ```typescript
 const { data } = await supabase
-  .from('boards')
-  .select(`
+	.from('boards')
+	.select(
+		`
     id, name, size, created_at, updated_at,
     goals (id, position, title, notes, completed, created_at, updated_at)
-  `)
-  .eq('id', boardId)
-  .single();
+  `
+	)
+	.eq('id', boardId)
+	.single();
 ```
 
 **Update Goal:**
+
 ```typescript
-await supabase
-  .from('goals')
-  .update({ title, notes, completed })
-  .eq('id', goalId);
+await supabase.from('goals').update({ title, notes, completed }).eq('id', goalId);
 ```
 
 **Toggle Completion:**
+
 ```typescript
-await supabase
-  .from('goals')
-  .update({ completed: !currentCompleted })
-  .eq('id', goalId);
+await supabase.from('goals').update({ completed: !currentCompleted }).eq('id', goalId);
 ```
 
 ---
@@ -238,6 +259,7 @@ await supabase
 ## Performance Optimizations
 
 ### Implemented
+
 - ✅ Optimistic updates (instant UI feedback)
 - ✅ Single query for board + goals
 - ✅ Cleanup on unmount (prevents memory leaks)
@@ -245,6 +267,7 @@ await supabase
 - ✅ Rollback on error (data consistency)
 
 ### Future Enhancements
+
 - Debounced text field updates (save after user stops typing)
 - Local caching with IndexedDB
 - Offline mode with sync queue
@@ -256,6 +279,7 @@ await supabase
 ## Security
 
 ### Data Protection
+
 - ✅ Row-level security (RLS) enforced by Supabase
 - ✅ Users can only update their own goals
 - ✅ Users can only view their own boards
@@ -264,6 +288,7 @@ await supabase
 - ✅ XSS protection (Svelte auto-escaping)
 
 ### Best Practices
+
 - Goal IDs used (not array indices)
 - Protected routes (AuthGuard)
 - Input validation on client and server
@@ -275,6 +300,7 @@ await supabase
 ## Testing Checklist
 
 ### Goal Editing
+
 - [ ] Click goal square
 - [ ] Modal opens with current data
 - [ ] Edit title
@@ -286,6 +312,7 @@ await supabase
 - [ ] Reload page → changes persisted
 
 ### Goal Completion
+
 - [ ] Click checkbox on empty goal
 - [ ] Checkbox fills immediately
 - [ ] Reload page → still checked
@@ -294,6 +321,7 @@ await supabase
 - [ ] Reload page → still unchecked
 
 ### Bingo Detection
+
 - [ ] Complete a row → See bingo banner
 - [ ] Complete a column → See bingo banner
 - [ ] Complete a diagonal → See bingo banner
@@ -302,6 +330,7 @@ await supabase
 - [ ] Uncheck goal → Bingo disappears
 
 ### Navigation
+
 - [ ] Click board from dashboard
 - [ ] Board loads correctly
 - [ ] Back button returns to dashboard
@@ -311,6 +340,7 @@ await supabase
 - [ ] Auto-redirects after 2 seconds
 
 ### Error Handling
+
 - [ ] Disconnect wifi
 - [ ] Try to save goal → Error
 - [ ] Reconnect wifi
@@ -323,12 +353,14 @@ await supabase
 ## Known Limitations
 
 ### Current Limitations
+
 1. **No conflict resolution**: Last write wins if multiple devices edit simultaneously
 2. **No undo/redo**: Once saved, can't revert changes
 3. **No draft state**: Changes save immediately
 4. **No offline mode**: Requires internet connection
 
 ### Intentional Design Decisions
+
 - Optimistic updates for better UX (acceptable trade-off)
 - No real-time sync yet (Phase 5 feature)
 - Goal IDs used instead of indices (more robust)
@@ -357,12 +389,14 @@ All goals achieved:
 ## Troubleshooting
 
 ### "Board not found" error
+
 - Check board ID in URL is valid
 - Verify user owns the board
 - Check Supabase RLS policies
 - Look at browser console for errors
 
 ### Changes not saving
+
 - Check internet connection
 - Check browser console for errors
 - Verify Supabase credentials in `.env`
@@ -370,12 +404,14 @@ All goals achieved:
 - Try hard refresh (Ctrl+Shift+R)
 
 ### Bingo not detecting
+
 - Verify all goals in line are marked complete
 - Check browser console for errors
 - Ensure bingo detection logic is working
 - Try refreshing the page
 
 ### Optimistic updates not working
+
 - Goal updates immediately but reverts
 - Check network tab for failed requests
 - Verify Supabase credentials
@@ -386,26 +422,29 @@ All goals achieved:
 ## Architecture Highlights
 
 ### Store Separation
+
 - `boards.ts` - Manages list of all boards
 - `currentBoard.ts` - Manages single board being edited
 - Clear separation of concerns
 - No conflicts between stores
 
 ### Optimistic Updates Pattern
+
 ```typescript
 // 1. Update UI immediately
 updateLocalState();
 
 // 2. Send to server
 try {
-  await supabase.update();
+	await supabase.update();
 } catch (error) {
-  // 3. Rollback on error
-  reloadFromServer();
+	// 3. Rollback on error
+	reloadFromServer();
 }
 ```
 
 ### Component Hierarchy
+
 ```
 /boards/[id]/+page.svelte
 └── BingoBoard.svelte
@@ -453,25 +492,28 @@ Potential future improvements:
 ## Quick Reference
 
 ### Key URLs
+
 - `/dashboard` - Board list
 - `/boards/[id]` - Board editor
 
 ### Key Components
+
 ```svelte
 <!-- Current Board Display -->
 <BingoBoard />
 
 <!-- Individual Goal -->
-<GoalSquare goal={goal} index={index} isInBingo={false} />
+<GoalSquare {goal} {index} isInBingo={false} />
 
 <!-- Goal Edit Modal -->
-<GoalModal goal={goal} index={index} onClose={() => {}} />
+<GoalModal {goal} {index} onClose={() => {}} />
 
 <!-- Migration Prompt -->
 <MigrationPrompt onComplete={() => {}} />
 ```
 
 ### Key Store Methods
+
 ```typescript
 // Load board
 await currentBoardStore.loadBoard(boardId);
@@ -494,6 +536,7 @@ currentBoardStore.clear();
 ## Phase 4 Complete! 🎉
 
 All features working:
+
 - ✅ Full goal editing with Supabase
 - ✅ Completion toggling
 - ✅ Bingo detection and celebration

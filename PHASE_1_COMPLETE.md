@@ -3,14 +3,17 @@
 ## What Was Implemented
 
 ### 1. Package Dependencies
+
 - ✅ Installed `@supabase/supabase-js` (v2.x)
 
 ### 2. Configuration Files
+
 - ✅ `.env.example` - Template for environment variables
 - ✅ `SUPABASE_SETUP.md` - Step-by-step setup guide
 - ✅ `src/lib/supabaseClient.ts` - Supabase client configuration with TypeScript types
 
 ### 3. Database Schema
+
 - ✅ `supabase/migrations/001_initial_schema.sql` - Complete database schema including:
   - `boards` table (user_id, name, size, timestamps)
   - `goals` table (board_id, position, title, notes, completed, timestamps)
@@ -19,6 +22,7 @@
   - Triggers for auto-updating timestamps
 
 ### 4. Authentication Utilities
+
 - ✅ `src/lib/utils/auth.ts` - Magic link auth functions:
   - `sendMagicLink(email)` - Send passwordless login link
   - `signOut()` - Log out user
@@ -27,6 +31,7 @@
   - `onAuthStateChange()` - Listen for auth state changes
 
 ### 5. Test Pages
+
 - ✅ `src/routes/test-auth/+page.svelte` - Auth testing interface
 - ✅ `src/routes/auth/callback/+page.svelte` - Magic link callback handler
 
@@ -53,6 +58,7 @@ cp .env.example .env
 ```
 
 Your `.env` should look like:
+
 ```bash
 PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
 PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...your-key-here
@@ -84,6 +90,7 @@ open http://localhost:5173/test-auth
 ```
 
 **Test flow:**
+
 1. Enter your email address
 2. Click "Send Magic Link"
 3. Check your email (or Supabase logs if email fails)
@@ -122,6 +129,7 @@ bingo/
 ### Tables Created
 
 #### `boards`
+
 ```sql
 - id (UUID, primary key)
 - user_id (UUID, references auth.users)
@@ -132,6 +140,7 @@ bingo/
 ```
 
 #### `goals`
+
 ```sql
 - id (UUID, primary key)
 - board_id (UUID, references boards)
@@ -161,26 +170,23 @@ import { supabase } from '$lib/supabaseClient';
 
 // Create a board
 const { data: board, error } = await supabase
-  .from('boards')
-  .insert({
-    user_id: user.id,
-    name: 'My Bingo Board',
-    size: 5
-  })
-  .select()
-  .single();
+	.from('boards')
+	.insert({
+		user_id: user.id,
+		name: 'My Bingo Board',
+		size: 5
+	})
+	.select()
+	.single();
 
 // Get user's boards
 const { data: boards } = await supabase
-  .from('boards')
-  .select('*')
-  .order('created_at', { ascending: false });
+	.from('boards')
+	.select('*')
+	.order('created_at', { ascending: false });
 
 // Update a goal
-await supabase
-  .from('goals')
-  .update({ completed: true })
-  .eq('id', goalId);
+await supabase.from('goals').update({ completed: true }).eq('id', goalId);
 ```
 
 ---
@@ -188,20 +194,24 @@ await supabase
 ## Troubleshooting
 
 ### "Invalid API key"
+
 - Check `.env` file has correct values
 - Restart dev server after changing `.env`
 - Make sure you copied the `anon` key, not `service_role`
 
 ### "relation does not exist"
+
 - You haven't run the database migration yet
 - Go to SQL Editor and run `001_initial_schema.sql`
 
 ### Magic link not received
+
 - Check Supabase Dashboard → Authentication → Logs
 - Free tier has email limits (consider custom SMTP provider later)
 - For testing, magic links appear in logs even if email fails
 
 ### CORS errors
+
 - Make sure you're using the correct Supabase URL
 - Check Project Settings → API → URL matches your `.env`
 
@@ -260,6 +270,7 @@ Phase 1 is complete when:
 ## Questions or Issues?
 
 If you run into problems:
+
 1. Check `SUPABASE_SETUP.md` for detailed instructions
 2. Review Supabase logs: Dashboard → Authentication → Logs
 3. Verify RLS policies: Dashboard → Authentication → Policies
