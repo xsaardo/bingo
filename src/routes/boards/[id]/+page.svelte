@@ -5,7 +5,12 @@
 	import UserMenu from '$lib/components/UserMenu.svelte';
 	import BingoBoard from '$lib/components/BingoBoard.svelte';
 	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
-	import { currentBoardStore, currentBoard, currentBoardLoading, currentBoardError } from '$lib/stores/currentBoard';
+	import {
+		currentBoardStore,
+		currentBoard,
+		currentBoardLoading,
+		currentBoardError
+	} from '$lib/stores/currentBoard';
 
 	const boardId = $derived($page.params.id!);
 
@@ -20,7 +25,7 @@
 		{ name: 'Decker', family: 'Decker, sans-serif' },
 		{ name: 'Duud', family: 'Duud, display' },
 		{ name: 'Double Letters', family: 'Double Letters, display' },
-		{ name: 'Please Explain', family: 'Please Explain, sans-serif' },
+		{ name: 'Please Explain', family: 'Please Explain, sans-serif' }
 	];
 
 	let selectedFont = $state('');
@@ -70,7 +75,12 @@
 						<!-- Board Info -->
 						<div class="flex-1">
 							{#if $currentBoard}
-								<h1 class="text-xl font-bold text-gray-900" style="font-family: {selectedFont || 'inherit'}">{$currentBoard.name}</h1>
+								<h1
+									class="text-xl font-bold text-gray-900"
+									style="font-family: {selectedFont || 'inherit'}"
+								>
+									{$currentBoard.name}
+								</h1>
 								<p class="text-sm text-gray-500">
 									{$currentBoard.size}×{$currentBoard.size} grid • {$currentBoard.goals.length} goals
 									• {$currentBoard.goals.filter((g) => g.completed).length} completed
@@ -137,7 +147,10 @@
 				</div>
 			{:else if $currentBoard}
 				<!-- BingoBoard Component -->
-				<div class="w-full mx-auto" style="max-width: min(56rem, calc(100vh - 8rem)); max-height: calc(100vh - 8rem);">
+				<div
+					class="w-full mx-auto"
+					style="max-width: min(56rem, calc(100vh - 8rem)); max-height: calc(100vh - 8rem);"
+				>
 					<BingoBoard />
 				</div>
 			{/if}

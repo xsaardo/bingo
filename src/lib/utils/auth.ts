@@ -3,7 +3,7 @@
  */
 
 import { supabase } from '$lib/supabaseClient';
-import type { User, AuthError } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 
 export interface AuthResult {
 	success: boolean;

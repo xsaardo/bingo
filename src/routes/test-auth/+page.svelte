@@ -119,14 +119,14 @@
 		{:else}
 			<!-- Logged Out State -->
 			<form
-				onsubmit={(e) => { e.preventDefault(); handleSendMagicLink(); }}
+				onsubmit={(e) => {
+					e.preventDefault();
+					handleSendMagicLink();
+				}}
 				class="space-y-4"
 			>
 				<div>
-					<label
-						for="email"
-						class="block text-sm font-medium text-gray-700 mb-2"
-					>
+					<label for="email" class="block text-sm font-medium text-gray-700 mb-2">
 						Email Address
 					</label>
 					<input
@@ -162,16 +162,13 @@
 				<li>✅ Environment variables configured</li>
 				<li>✅ Database schema created</li>
 				<li>✅ RLS policies enabled</li>
-				<li class="{user ? 'text-green-600 font-medium' : ''}">
+				<li class={user ? 'text-green-600 font-medium' : ''}>
 					{user ? '✅' : '⏳'} Magic link authentication
 				</li>
 			</ul>
 		</div>
 
-		<a
-			href="/"
-			class="block text-center text-sm text-blue-600 hover:text-blue-700 mt-4"
-		>
+		<a href="/" class="block text-center text-sm text-blue-600 hover:text-blue-700 mt-4">
 			← Back to main app
 		</a>
 	</div>
