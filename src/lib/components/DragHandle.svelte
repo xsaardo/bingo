@@ -7,10 +7,17 @@
 	}
 
 	let { onclick }: Props = $props();
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+		}
+	}
 </script>
 
 <span
 	onclick={onclick}
+	onkeydown={handleKeydown}
 	class="cursor-move text-gray-400 select-none"
 	data-drag-handle
 	aria-label="Drag to reorder"

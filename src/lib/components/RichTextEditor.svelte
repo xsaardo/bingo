@@ -36,10 +36,6 @@
 					orderedList: {
 						keepMarks: true,
 						keepAttributes: false
-					},
-					listItem: {
-						keepMarks: true,
-						keepAttributes: false
 					}
 				}),
 				Link.configure({

@@ -19,7 +19,9 @@
 
 	const AUTO_SAVE_DELAY_MS = 500;
 
+	// svelte-ignore state_referenced_locally — initial values synced via $effect below
 	let title = $state(milestone.title);
+	// svelte-ignore state_referenced_locally
 	let notes = $state(milestone.notes);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -68,7 +70,7 @@
 {#if expanded}
 	<!-- Expanded view -->
 	<div data-testid="milestone-item" class="border border-gray-200 rounded-lg p-4 space-y-3 bg-white">
-		<div class="flex items-center justify-between cursor-pointer" onclick={onToggle}>
+		<div class="flex items-center justify-between cursor-pointer" role="button" tabindex="0" onclick={onToggle} onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onToggle())}>
 			<div class="flex items-center gap-2">
 				<DragHandle onclick={(e) => e.stopPropagation()} />
 				<CheckboxButton
@@ -98,7 +100,7 @@
 		/>
 
 		<div>
-			<label class="block text-xs text-gray-600 mb-1">Notes (optional)</label>
+			<div class="block text-xs text-gray-600 mb-1">Notes (optional)</div>
 			<RichTextEditor
 				content={notes}
 				placeholder="Additional details..."
@@ -118,7 +120,10 @@
 	<!-- Collapsed view -->
 	<div
 		data-testid="milestone-item"
+		role="button"
+		tabindex="0"
 		onclick={onToggle}
+		onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onToggle())}
 		class="border border-gray-200 rounded-lg p-3 flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors cursor-pointer"
 	>
 		<DragHandle onclick={(e) => e.stopPropagation()} />

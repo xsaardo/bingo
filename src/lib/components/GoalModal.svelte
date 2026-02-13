@@ -19,8 +19,10 @@
 		$currentBoard?.goals.find(g => g.id === initialGoal.id) || initialGoal
 	);
 
-	let title = $state(goal.title);
-	let notes = $state(goal.notes);
+	// svelte-ignore state_referenced_locally — initial values synced via $effect below
+	let title = $state(initialGoal.title);
+	// svelte-ignore state_referenced_locally
+	let notes = $state(initialGoal.notes);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 	let titleInput: HTMLInputElement;
 
