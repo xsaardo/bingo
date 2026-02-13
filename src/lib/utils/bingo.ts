@@ -1,3 +1,6 @@
+// ABOUTME: Detects completed bingo lines (rows, columns, diagonals) on a board
+// ABOUTME: Returns matching line indices for visual highlighting
+
 import type { Board } from '$lib/types';
 
 export interface BingoLine {

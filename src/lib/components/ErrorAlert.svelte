@@ -1,3 +1,6 @@
+<!-- ABOUTME: Displays an error message banner with optional dismiss button -->
+<!-- ABOUTME: Uses ARIA live region for screen reader accessibility -->
+
 <script lang="ts">
 	interface Props {
 		error: string | null;

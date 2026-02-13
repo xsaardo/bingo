@@ -1,3 +1,6 @@
+// ABOUTME: Store for the actively viewed board with goal and milestone operations
+// ABOUTME: Handles Supabase persistence for goals, milestones, and completion state
+
 /**
  * Current Board Store
  *

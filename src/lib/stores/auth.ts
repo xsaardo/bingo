@@ -1,3 +1,6 @@
+// ABOUTME: Manages global authentication state with Supabase session tracking
+// ABOUTME: Provides login, logout, and auth state change listeners
+
 /**
  * Authentication Store
  *

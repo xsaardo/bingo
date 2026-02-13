@@ -1,3 +1,6 @@
+// ABOUTME: Store for managing the list of boards belonging to the current user
+// ABOUTME: Handles board CRUD operations with Supabase persistence
+
 /**
  * Boards Store
  *

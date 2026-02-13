@@ -1,3 +1,6 @@
+<!-- ABOUTME: Centered modal for editing a goal's title, notes, and milestones -->
+<!-- ABOUTME: Auto-saves changes with debounce and syncs state from the board store -->
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { currentBoardStore, currentBoard } from '$lib/stores/currentBoard';

@@ -1,3 +1,6 @@
+// ABOUTME: TypeScript type definitions for the bingo app data model
+// ABOUTME: Defines Board, Goal, Milestone interfaces and BoardSize type
+
 export interface Milestone {
 	id: string;
 	title: string;

@@ -1,3 +1,6 @@
+<!-- ABOUTME: Renders a goal's milestones with add, delete, and drag-to-reorder -->
+<!-- ABOUTME: Shows completion progress count and manages expand/collapse state -->
+
 <script lang="ts">
 	import type { Milestone } from '$lib/types';
 	import MilestoneItem from './MilestoneItem.svelte';

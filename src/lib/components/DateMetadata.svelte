@@ -1,3 +1,6 @@
+<!-- ABOUTME: Displays startedAt, completedAt, and lastUpdatedAt dates for a goal -->
+<!-- ABOUTME: Formats absolute dates and relative timestamps in a compact layout -->
+
 <script lang="ts">
 	import { format } from 'date-fns';
 	import { formatRelativeTime } from '$lib/utils/dates';

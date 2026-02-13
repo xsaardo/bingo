@@ -1,3 +1,6 @@
+// ABOUTME: Authentication helper functions for Supabase magic link flow
+// ABOUTME: Provides sendMagicLink and session management utilities
+
 /**
  * Authentication utilities for Supabase magic link auth
  */

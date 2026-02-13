@@ -1,3 +1,6 @@
+<!-- ABOUTME: Presents 3x3, 4x4, and 5x5 board size options for new board creation -->
+<!-- ABOUTME: Creates a board with the selected grid size on click -->
+
 <script lang="ts">
 	import { boardStore } from '$lib/stores/board';
 	import type { BoardSize } from '$lib/types';

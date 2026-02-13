@@ -1,3 +1,6 @@
+// ABOUTME: Svelte store for single-board state and UI selection tracking
+// ABOUTME: Manages board creation, goal updates, and localStorage persistence
+
 import { writable } from 'svelte/store';
 import type { Board, Goal, BoardSize } from '$lib/types';
 import { saveBoard, loadBoard } from '$lib/utils/storage';

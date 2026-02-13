@@ -1,3 +1,6 @@
+<!-- ABOUTME: Displays a single milestone in collapsed or expanded view -->
+<!-- ABOUTME: Supports inline editing of title and notes with auto-save -->
+
 <script lang="ts">
 	import type { Milestone } from '$lib/types';
 	import RichTextEditor from './RichTextEditor.svelte';

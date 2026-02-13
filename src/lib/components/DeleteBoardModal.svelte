@@ -1,3 +1,6 @@
+<!-- ABOUTME: Confirmation dialog for permanently deleting a board and its goals -->
+<!-- ABOUTME: Shows board details and warnings before executing deletion -->
+
 <script lang="ts">
 	import { boardsStore } from '$lib/stores/boards';
 	import type { Board } from '$lib/types';

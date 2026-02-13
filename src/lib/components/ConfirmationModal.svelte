@@ -1,3 +1,6 @@
+<!-- ABOUTME: Reusable confirmation dialog with danger and primary variants -->
+<!-- ABOUTME: Handles async confirm actions with loading state and backdrop dismiss -->
+
 <script lang="ts">
 	interface Props {
 		isOpen: boolean;

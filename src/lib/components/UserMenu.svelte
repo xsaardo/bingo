@@ -1,3 +1,6 @@
+<!-- ABOUTME: Dropdown menu showing current user email with navigation and sign-out -->
+<!-- ABOUTME: Closes on outside click and confirms logout with a modal -->
+
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { currentUser, authStore } from '$lib/stores/auth';

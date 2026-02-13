@@ -1,3 +1,6 @@
+<!-- ABOUTME: Dashboard card showing board name, progress bar, and completion status -->
+<!-- ABOUTME: Links to individual board view with delete option -->
+
 <script lang="ts">
 	import type { Board } from '$lib/types';
 

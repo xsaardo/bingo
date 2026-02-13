@@ -1,3 +1,6 @@
+<!-- ABOUTME: Individual cell in the bingo grid showing goal title and completion status -->
+<!-- ABOUTME: Responsive sizing based on board dimensions with last-updated indicator -->
+
 <script lang="ts">
 	import { currentBoardStore } from '$lib/stores/currentBoard';
 	import { uiStore } from '$lib/stores/board';

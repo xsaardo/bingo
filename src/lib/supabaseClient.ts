@@ -1,3 +1,6 @@
+// ABOUTME: Initializes and exports the Supabase client singleton
+// ABOUTME: Reads connection credentials from environment variables
+
 import { createClient } from '@supabase/supabase-js';
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 

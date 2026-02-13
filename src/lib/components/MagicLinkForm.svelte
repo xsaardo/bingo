@@ -1,3 +1,6 @@
+<!-- ABOUTME: Email input form that sends a passwordless magic link for authentication -->
+<!-- ABOUTME: Shows success state with instructions after sending the link -->
+
 <script lang="ts">
 	import { authStore } from '$lib/stores/auth';
 

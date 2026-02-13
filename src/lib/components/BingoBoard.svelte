@@ -1,3 +1,6 @@
+<!-- ABOUTME: Renders the bingo grid with goal squares and detects completed lines -->
+<!-- ABOUTME: Shows celebration banner on bingo and opens goal modal on square click -->
+
 <script lang="ts">
 	import { currentBoard } from '$lib/stores/currentBoard';
 	import { uiStore } from '$lib/stores/board';

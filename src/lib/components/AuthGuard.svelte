@@ -1,3 +1,6 @@
+<!-- ABOUTME: Protects routes by redirecting unauthenticated users to login -->
+<!-- ABOUTME: Renders children only after confirming authentication status -->
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';

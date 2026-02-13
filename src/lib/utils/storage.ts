@@ -1,3 +1,6 @@
+// ABOUTME: LocalStorage utilities for saving and loading board data
+// ABOUTME: Provides fallback persistence when Supabase is unavailable
+
 import type { Board } from '$lib/types';
 
 const STORAGE_KEY = 'bingo-board';

@@ -1,3 +1,6 @@
+<!-- ABOUTME: Modal form for creating a board with name input and size selection -->
+<!-- ABOUTME: Validates input and persists the board via the boards store -->
+
 <script lang="ts">
 	import { boardsStore } from '$lib/stores/boards';
 
