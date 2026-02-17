@@ -13,6 +13,173 @@ This spec covers these two features only.
 
 ---
 
+## Marketing & Positioning
+
+### The Core Insight
+
+There's a viral trend happening right now: TikTok users are creating hand-drawn bingo boards for their 2026 goals. Thousands of these boards are being posted weekly. But there's a gap:
+
+**The boards look great in the initial TikTok video. Then they sit on a shelf and get forgotten.**
+
+Nobody posts progress updates. Nobody re-shares when they complete a line. The trend dies after January because paper boards aren't designed for follow-through.
+
+### The Opportunity
+
+We're not creating a trend — we're **digitizing an existing behavior**. This is fundamentally different from launching another productivity app. The market has already validated the format. We just need to execute better than paper.
+
+### Positioning Statement
+
+> **"Turn your 2026 goals into a bingo board you'll actually finish."**
+
+Not "another goal tracker." Not "gamified productivity." It's specifically for people who **already like the bingo board concept** but need a better way to execute on it.
+
+### Key Differentiators
+
+| What we're NOT | What we ARE |
+|---|---|
+| Another productivity app competing with Notion/Todoist | A TikTok-native tool for an existing trend |
+| Serious/enterprise goal tracking | Fun, visual, shareable goal tracking |
+| Designed for habit streaks and daily check-ins | Designed for medium-term goals you check monthly |
+| Feature-heavy with complex workflows | Dead simple: make board → share board → check off goals → re-share progress |
+
+### Target Audience Segments
+
+**Primary: TikTok Goal-Setters (18-28, female-skewed)**
+- Already making paper bingo boards
+- Active on TikTok, Instagram, Pinterest
+- Setting 2026 goals in categories: fitness, reading, travel, personal growth
+- Want accountability but not rigid systems
+- Share their progress visually
+
+**Secondary: Casual Goal Trackers (25-35)**
+- Like the idea of New Year's goals but don't stick to them
+- Have tried journaling/apps but found them too heavy
+- Attracted to the fun/game aspect of bingo
+- Would share if it looked good enough
+
+**Not our audience (at launch):**
+- Serious productivity optimizers (they want more features than we offer)
+- Corporate goal-tracking (OKRs, performance management)
+- Daily habit trackers (this is monthly/quarterly goals)
+
+### Marketing Messages by Channel
+
+**TikTok/Instagram (Primary Acquisition Channel)**
+
+Headline: *"Stop losing your goals bingo board"*
+
+Hook:
+- "POV: You made a goals bingo board in January and forgot about it by March"
+- "Your 2026 goals deserve better than a crumpled piece of paper"
+- Show side-by-side: hand-drawn board (January) → our app (still checking it in July)
+
+Call-to-action: "Create yours in 30 seconds" → link to app
+
+**Product Hunt / Indie Hackers**
+
+Headline: *"Bingo boards for goals — but digital and shareable"*
+
+Angle: Riding an existing trend, not inventing one. Built with SvelteKit, zero friction (anonymous auth), viral loop built-in (share-as-image).
+
+Emphasize: We're not trying to out-feature Notion. We're trying to be faster than paper.
+
+**Reddit (r/productivity, r/getdisciplined)**
+
+Headline: *"I built a goals bingo board app because paper ones get forgotten"*
+
+Angle: Personal story. "I saw the trend on TikTok. Made my own. Lost it within a month. Built this so it actually sticks around."
+
+Emphasize: The follow-through gap. Paper is great for the initial dopamine hit but terrible for accountability.
+
+**Twitter/X**
+
+"The 2026 goals bingo trend is everywhere on TikTok. Built an app so people actually finish them instead of losing the paper in February."
+
+Attach: Screenshot or video of the board + share feature
+
+### Growth Strategy
+
+**Viral Loop:**
+1. User creates board (anonymous, zero friction)
+2. User shares board image to TikTok/Instagram (watermarked with app branding)
+3. New user sees the watermark → clicks → lands on app → creates board (repeat)
+
+**Why this works:**
+- Share-as-image is core to the product, not tacked on
+- The exported image looks better than hand-drawn versions (users actually prefer sharing ours)
+- Watermark is subtle but visible (bottom corner, small text)
+- Anonymous creation means zero friction from viral traffic
+
+**Retention Strategy:**
+- Push notifications for monthly check-ins (opt-in)
+- Email: "You haven't updated your board in 30 days — here's what's left"
+- Re-share moments: "You just completed your first bingo! Share your progress"
+
+**Monetization (Future):**
+- Freemium: 1 board free, unlimited boards for $3/month
+- Premium themes/fonts/export options
+- Remove watermark from exports (paid tier)
+
+### Why Now?
+
+**Timing is critical:**
+- The TikTok trend is happening **right now** (Jan-Feb 2026)
+- If we launch in March, we ride the wave
+- If we wait until next January, the trend may be stale
+- Paper boards have obvious pain points (easily lost, not shareable digitally, no progress tracking)
+
+**Competitive landscape:**
+- No direct competitors targeting this specific trend
+- Generic goal apps (Notion, Todoist) are too heavy
+- Bingo board makers exist but aren't designed for goals + sharing
+- We're first-mover for this specific niche
+
+### Success Metrics
+
+**Week 1:**
+- 1,000 boards created (validates low-friction creation)
+- 200 shares via share-as-image (validates core loop)
+- 10% anonymous → sign-up conversion
+
+**Month 1:**
+- 10,000 total boards created
+- 20% of users re-sharing progress (proves retention value)
+- Organic TikTok mentions from watermarked shares
+
+**Month 3:**
+- 50% of traffic coming from watermarked shares (viral loop working)
+- Avg 2.5 boards per signed-up user
+- Users checking back monthly (not daily — that's correct for this use case)
+
+### Taglines / Copy Options
+
+**Hero Section (Landing Page):**
+- "Turn your 2026 goals into a bingo board you'll actually finish"
+- "Make it. Share it. Actually do it."
+- "Goals bingo, but you won't lose this one in February"
+
+**App Store / Chrome Extension:**
+- "Bingo boards for your goals — track visually, share progress, celebrate bingos"
+
+**Social Proof:**
+- "Join 10,000+ people actually finishing their 2026 goals"
+- "The bingo board you won't forget in your drawer"
+
+### Content Strategy
+
+**Launch Week:**
+- TikTok video: "I built this after losing my paper goals board"
+- Product Hunt: "Bingo boards for goals, built for the TikTok generation"
+- Twitter thread: "Why paper bingo boards fail + how we fixed it"
+
+**Ongoing:**
+- User testimonials: Before/after (paper board → app → actually completing goals)
+- Progress shares: Repost users hitting their first bingo
+- Templates: Pre-filled boards for fitness, reading, travel
+- Monthly: "Here's how many people completed bingos this month"
+
+---
+
 ## Feature 1: Anonymous Board Creation
 
 ### Problem
