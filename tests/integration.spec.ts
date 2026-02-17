@@ -122,7 +122,7 @@ test.describe('Goal Completion', () => {
 		await page.waitForTimeout(300);
 
 		// Verify the "Completed" text appears
-		await expect(page.locator('text=Completed')).toBeVisible();
+		await expect(page.locator('span.text-green-700:has-text("Completed")')).toBeVisible();
 
 		// Close and verify the goal square shows completed style
 		await closeModal(page);
@@ -140,7 +140,7 @@ test.describe('Goal Completion', () => {
 		// Mark complete
 		await page.getByTestId('modal-checkbox').click();
 		await page.waitForTimeout(300);
-		await expect(page.locator('text=Completed')).toBeVisible();
+		await expect(page.locator('span.text-green-700:has-text("Completed")')).toBeVisible();
 
 		// Unmark complete
 		await page.getByTestId('modal-checkbox').click();
@@ -205,7 +205,7 @@ test.describe('Rich Text Notes', () => {
 		await page.keyboard.type('Important note');
 
 		// Select all text and bold it
-		await page.keyboard.press('Control+a');
+		await page.keyboard.press('Meta+A');
 		await page.getByTestId('editor-bold-button').click();
 
 		await waitForAutoSave(page);

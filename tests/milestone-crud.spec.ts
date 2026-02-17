@@ -202,12 +202,11 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.waitForTimeout(300);
 
 			// Expand milestone
-			await page.locator('text=Original Title').locator('..').locator('button').last().click();
-			await page.waitForTimeout(200);
-
-			// Edit title
+			await page.locator('text=Original Title').click();
 			const titleInput = page.locator('input[placeholder="Milestone title..."]');
-			await titleInput.clear();
+			await titleInput.waitFor({ state: 'visible' });
+
+
 			await titleInput.fill('Updated Title');
 			await page.waitForTimeout(600); // Wait for auto-save
 
@@ -313,11 +312,13 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.waitForTimeout(300);
 
 			// Expand milestone
-			await page.locator('text=Test Milestone').locator('..').locator('button').last().click();
-			await page.waitForTimeout(200);
+			await page.locator('text=Test Milestone').click();
+			const deleteButton = page.locator('button:has-text("Delete")');
+			await deleteButton.waitFor({ state: 'visible' });
+
 
 			// Click delete button
-			await page.click('button:has-text("Delete")');
+			await deleteButton.click();
 			await page.waitForTimeout(300);
 
 			// Verify milestone is gone

@@ -186,7 +186,6 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			await page.waitForTimeout(100);
 
 			// Second edit - change title
-			await titleInput.clear();
 			await titleInput.fill('Updated Title');
 			await page.waitForTimeout(600);
 
@@ -312,7 +311,6 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			await page.waitForTimeout(300);
 
 			// Wait to ensure time difference
-			await page.waitForTimeout(100);
 
 			// Complete it again
 			await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
@@ -356,8 +354,7 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			}, firstGoalId);
 
 			// Wait to ensure time difference
-			await page.waitForTimeout(100);
-
+			await page.waitForTimeout(100); // Ensure time difference
 			// Edit title
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
@@ -407,7 +404,6 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			}, firstGoalId);
 
 			// Wait to ensure time difference
-			await page.waitForTimeout(100);
 
 			// Edit notes
 			await page.getByTestId('goal-square').first().click();
@@ -454,7 +450,6 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			}, firstGoalId);
 
 			// Wait to ensure time difference
-			await page.waitForTimeout(100);
 
 			// Toggle completion
 			await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
