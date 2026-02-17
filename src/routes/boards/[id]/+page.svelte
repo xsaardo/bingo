@@ -5,6 +5,8 @@
 	import UserMenu from '$lib/components/UserMenu.svelte';
 	import BingoBoard from '$lib/components/BingoBoard.svelte';
 	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
+	import ExportableBoard from '$lib/components/ExportableBoard.svelte';
+	import ShareButton from '$lib/components/ShareButton.svelte';
 	import {
 		currentBoardStore,
 		currentBoard,
@@ -29,6 +31,7 @@
 	];
 
 	let selectedFont = $state('');
+	let exportableEl = $state<HTMLElement | null>(null);
 
 	// Load board when component mounts
 	onMount(() => {
@@ -103,6 +106,11 @@
 								{/each}
 							</select>
 						</div>
+
+						<!-- Share Button -->
+						{#if $currentBoard}
+							<ShareButton board={$currentBoard} font={selectedFont} {exportableEl} />
+						{/if}
 					</div>
 
 					<UserMenu />
@@ -156,4 +164,9 @@
 			{/if}
 		</main>
 	</div>
+
+	<!-- Hidden export-ready board, positioned off-screen for image generation -->
+	{#if $currentBoard}
+		<ExportableBoard board={$currentBoard} font={selectedFont} bind:ref={exportableEl} />
+	{/if}
 </AuthGuard>

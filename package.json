@@ -48,6 +48,7 @@
 		"@tiptap/extension-underline": "^3.18.0",
 		"@tiptap/starter-kit": "^3.18.0",
 		"date-fns": "^4.1.0",
+		"html-to-image": "^1.11.13",
 		"svelte-dnd-action": "^0.9.69"
 	}
 }
