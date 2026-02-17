@@ -177,7 +177,6 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 
 		// Close sidebar
 		await page.keyboard.press('Escape');
-		await page.waitForTimeout(200);
 
 		// Verify title is displayed
 		await expect(page.locator('text=Test Goal Title').first()).toBeVisible();

@@ -28,7 +28,6 @@ test.describe('Last Updated Display in Goal Squares', () => {
 
 		// Add a title only (no notes)
 		await page.fill('input[placeholder="Enter your goal..."]', 'Test Goal');
-		await page.waitForTimeout(600); // Wait for auto-save
 		await closeModal(page);
 
 		// Verify no notes indicator or time shown
@@ -49,7 +48,6 @@ test.describe('Last Updated Display in Goal Squares', () => {
 		await editor.click();
 		await editor.fill('Some progress notes here');
 
-		await page.waitForTimeout(600); // Wait for auto-save
 		await closeModal(page);
 
 		// Verify notes indicator shows
@@ -74,7 +72,6 @@ test.describe('Last Updated Display in Goal Squares', () => {
 		await editor.click();
 		await editor.fill('Initial notes');
 
-		await page.waitForTimeout(600); // Wait for auto-save
 		await closeModal(page);
 
 		// Get the time display
@@ -96,7 +93,6 @@ test.describe('Last Updated Display in Goal Squares', () => {
 		const editor = page.locator('.tiptap.ProseMirror');
 		await editor.click();
 		await editor.fill('Notes for 3x3');
-		await page.waitForTimeout(600); // Wait for auto-save
 		await closeModal(page);
 
 		// Verify notes emoji is displayed with appropriate size
@@ -115,7 +111,6 @@ test.describe('Last Updated Display in Goal Squares', () => {
 		const editor5x5 = page.locator('.tiptap.ProseMirror');
 		await editor5x5.click();
 		await editor5x5.fill('Notes for 5x5');
-		await page.waitForTimeout(600); // Wait for auto-save
 		await closeModal(page);
 
 		// Verify notes indicator still shows (even if smaller)
@@ -135,7 +130,6 @@ test.describe('Last Updated Display in Goal Squares', () => {
 		const editor = page.locator('.tiptap.ProseMirror');
 		await editor.click();
 		await editor.fill('These notes should persist');
-		await page.waitForTimeout(600); // Wait for auto-save
 		await closeModal(page);
 
 		// Reload page

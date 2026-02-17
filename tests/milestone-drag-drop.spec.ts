@@ -369,11 +369,9 @@ test.describe('Milestone Drag and Drop', () => {
 		await page.click('text=+ Add');
 		await page.fill('input[placeholder="New milestone..."]', 'Second');
 		await page.click('button.bg-blue-500:has-text("Add")');
-		await page.waitForTimeout(300);
 
 		// Expand first milestone (click on the milestone row, not checkbox or handle)
 		await page.getByTestId('milestone-item').nth(0).click();
-		await page.waitForTimeout(200);
 
 		// Verify expanded (should have input field visible)
 		const titleInput = await page.locator('input[placeholder="Milestone title..."]').count();
@@ -400,7 +398,6 @@ test.describe('Milestone Drag and Drop', () => {
 			steps: 20
 		});
 		await page.mouse.up();
-		await page.waitForTimeout(1000);
 
 		// Verify milestone is still expanded and order changed
 		const titleInputAfter = await page.locator('input[placeholder="Milestone title..."]').count();

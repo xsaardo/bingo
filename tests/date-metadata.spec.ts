@@ -73,11 +73,10 @@ test.describe('DateMetadata Component', () => {
 		// Edit title
 		const titleInput = page.locator('input').first();
 		await titleInput.fill('My Goal');
-		await page.waitForTimeout(600); // Wait for auto-save
+		await page.waitForTimeout(100); // Brief wait for auto-save to start
 
 		// Close modal to save and refresh data
 		await page.locator('[data-testid="close-modal-button"]').click();
-		await page.waitForTimeout(200);
 
 		// Reopen modal to see updated data
 		await page.getByTestId('goal-square').first().click();
@@ -99,7 +98,6 @@ test.describe('DateMetadata Component', () => {
 	test('shows completedAt when goal is completed', async ({ page }) => {
 		// Mark goal as complete
 		await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
-		await page.waitForTimeout(300);
 
 		// Open goal modal
 		await page.getByTestId('goal-square').first().click();
@@ -129,7 +127,6 @@ test.describe('DateMetadata Component', () => {
 	test('hides completedAt when goal is uncompleted', async ({ page }) => {
 		// Mark goal as complete
 		await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
-		await page.waitForTimeout(300);
 
 		// Open goal modal
 		await page.getByTestId('goal-square').first().click();
@@ -142,11 +139,9 @@ test.describe('DateMetadata Component', () => {
 		// Unmark as complete via the checkbox in the modal
 		const modalCheckbox = page.locator('[data-testid="modal-checkbox"]');
 		await modalCheckbox.click();
-		await page.waitForTimeout(300);
 
 		// Close modal by clicking the close button
 		await page.locator('[data-testid="close-modal-button"]').click();
-		await page.waitForTimeout(200);
 
 		// Reopen modal
 		await page.getByTestId('goal-square').first().click();
