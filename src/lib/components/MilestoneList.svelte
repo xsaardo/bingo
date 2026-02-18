@@ -2,8 +2,10 @@
 	import type { Milestone } from '$lib/types';
 	import MilestoneItem from './MilestoneItem.svelte';
 	import { currentBoardStore } from '$lib/stores/currentBoard';
+	import { currentUser } from '$lib/stores/auth';
 	import { dndzone } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
+	import ConversionPrompt from './ConversionPrompt.svelte';
 
 	interface Props {
 		goalId: string;
@@ -16,6 +18,13 @@
 	let newMilestoneTitle = $state('');
 	let showAddInput = $state(false);
 	let items = $state<Milestone[]>([]);
+
+	// Conversion prompt state
+	let showConversionPrompt = $state(false);
+	let hasPromptedForMilestones = $state(false);
+
+	// Check if user is anonymous
+	const isAnonymous = $derived($currentUser?.is_anonymous === true);
 
 	// Derived state
 	let completedCount = $derived(milestones.filter((m) => m.completed).length);
@@ -73,6 +82,20 @@
 		const newOrder = items.map((m) => m.id);
 		await currentBoardStore.reorderMilestones(goalId, newOrder);
 	}
+
+	function handleAddClick() {
+		// Show conversion prompt for anonymous users trying to add milestones
+		// Only show once per session
+		if (isAnonymous && !hasPromptedForMilestones) {
+			showConversionPrompt = true;
+			hasPromptedForMilestones = true;
+		}
+		showAddInput = !showAddInput;
+	}
+
+	function handleConversionDismiss() {
+		showConversionPrompt = false;
+	}
 </script>
 
 <div class="space-y-3">
@@ -82,7 +105,7 @@
 			Milestones ({completedCount}/{totalCount} complete)
 		</h3>
 		<button
-			onclick={() => (showAddInput = !showAddInput)}
+			onclick={handleAddClick}
 			class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
 		>
 			+ Add
@@ -138,3 +161,10 @@
 		</p>
 	{/if}
 </div>
+
+<!-- Conversion Prompt -->
+<ConversionPrompt
+	trigger="milestones"
+	isOpen={showConversionPrompt}
+	onDismiss={handleConversionDismiss}
+/>

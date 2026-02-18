@@ -2,10 +2,12 @@
 	import { onMount } from 'svelte';
 	import { currentBoardStore, currentBoard } from '$lib/stores/currentBoard';
 	import { uiStore } from '$lib/stores/board';
+	import { currentUser } from '$lib/stores/auth';
 	import type { Goal } from '$lib/types';
 	import RichTextEditor from './RichTextEditor.svelte';
 	import DateMetadata from './DateMetadata.svelte';
 	import MilestoneList from './MilestoneList.svelte';
+	import ConversionPrompt from './ConversionPrompt.svelte';
 
 	interface Props {
 		goal: Goal;
@@ -23,6 +25,14 @@
 	let notes = $state(goal.notes);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 	let titleInput: HTMLInputElement;
+
+	// Conversion prompt state
+	let showConversionPrompt = $state(false);
+	let conversionTrigger = $state<'notes' | 'milestones'>('notes');
+	let hasPromptedForNotes = $state(false);
+
+	// Check if user is anonymous
+	const isAnonymous = $derived($currentUser?.is_anonymous === true);
 
 	// Sync local state with goal (from store)
 	$effect(() => {
@@ -61,6 +71,20 @@
 
 	async function toggleComplete() {
 		await currentBoardStore.toggleComplete(goal.id);
+	}
+
+	function handleNotesFocus() {
+		// Show conversion prompt for anonymous users trying to add detailed notes
+		// Only show once per modal session
+		if (isAnonymous && !hasPromptedForNotes) {
+			conversionTrigger = 'notes';
+			showConversionPrompt = true;
+			hasPromptedForNotes = true;
+		}
+	}
+
+	function handleConversionDismiss() {
+		showConversionPrompt = false;
 	}
 
 	function handleBackdropClick(e: MouseEvent) {
@@ -164,13 +188,15 @@
 			<!-- Progress Notes -->
 			<div class="flex-1 flex flex-col">
 				<div class="block text-sm font-medium text-gray-700 mb-2">📝 Progress Notes</div>
-				<RichTextEditor
-					content={notes}
-					placeholder="Track your progress, milestones, and reflections here..."
-					onUpdate={(html) => {
-						notes = html;
-					}}
-				/>
+				<div onfocusin={handleNotesFocus}>
+					<RichTextEditor
+						content={notes}
+						placeholder="Track your progress, milestones, and reflections here..."
+						onUpdate={(html) => {
+							notes = html;
+						}}
+					/>
+				</div>
 				<p class="text-xs text-gray-500 mt-2">Changes are automatically saved</p>
 			</div>
 
@@ -179,3 +205,10 @@
 		</div>
 	</div>
 </div>
+
+<!-- Conversion Prompt -->
+<ConversionPrompt
+	trigger={conversionTrigger}
+	isOpen={showConversionPrompt}
+	onDismiss={handleConversionDismiss}
+/>
