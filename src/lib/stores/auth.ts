@@ -7,7 +7,13 @@
 
 import { writable, derived } from 'svelte/store';
 import type { User } from '@supabase/supabase-js';
-import { getCurrentUser, onAuthStateChange, sendMagicLink, signOut } from '$lib/utils/auth';
+import {
+	getCurrentUser,
+	onAuthStateChange,
+	sendMagicLink,
+	signInAnonymously,
+	signOut
+} from '$lib/utils/auth';
 
 interface AuthState {
 	user: User | null;
@@ -30,7 +36,7 @@ export const currentUser = derived(authState, ($authState) => $authState.user);
 // Derived store to check if authenticated
 export const isAuthenticated = derived(authState, ($authState) => !!$authState.user);
 
-// Derived store to check if auth is loading
+// Derived store to check if auth is loading TODO
 export const isAuthLoading = derived(authState, ($authState) => $authState.loading);
 
 // Derived store to check if auth is initialized
@@ -50,8 +56,14 @@ export const authStore = {
 	 */
 	async init() {
 		try {
-			// Get current user session
-			const user = await getCurrentUser();
+			// Check for existing session
+			let user = await getCurrentUser();
+
+			// If no existing session, create anonymous session
+			if (!user) {
+				const result = await signInAnonymously();
+				user = result.success ? result.user ?? null : null;
+			}
 
 			authState.update((state) => ({
 				...state,
@@ -109,16 +121,6 @@ export const authStore = {
 		authState.update((state) => ({
 			...state,
 			user
-		}));
-	},
-
-	/**
-	 * Set loading state
-	 */
-	setLoading(loading: boolean) {
-		authState.update((state) => ({
-			...state,
-			loading
 		}));
 	}
 };

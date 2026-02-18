@@ -57,6 +57,37 @@ export async function sendMagicLink(email: string, redirectTo?: string): Promise
 }
 
 /**
+ * Sign in anonymously
+ * Creates a temporary session for users who haven't signed up yet
+ */
+export async function signInAnonymously(): Promise<AuthResult> {
+	try {
+		const { data, error } = await supabase.auth.signInAnonymously();
+
+		if (error) {
+			console.error('Anonymous sign-in error:', error);
+			return {
+				success: false,
+				error: error.message
+			};
+		}
+
+		console.log('Anonymous session created');
+
+		return {
+			success: true,
+			user: data.user
+		};
+	} catch (err) {
+		console.error('Unexpected error during anonymous sign-in:', err);
+		return {
+			success: false,
+			error: err instanceof Error ? err.message : 'Unknown error occurred'
+		};
+	}
+}
+
+/**
  * Sign out the current user
  */
 export async function signOut(): Promise<AuthResult> {
