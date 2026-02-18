@@ -13,6 +13,7 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test": "playwright test",
+		"test:unit": "vitest run",
 		"test:ui": "playwright test --ui",
 		"test:headed": "playwright test --headed"
 	},
@@ -38,7 +39,8 @@
 		"svelte-eslint-parser": "^1.4.1",
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3",
-		"vite": "^7.2.6"
+		"vite": "^7.2.6",
+		"vitest": "^4.0.18"
 	},
 	"dependencies": {
 		"@supabase/supabase-js": "^2.90.1",

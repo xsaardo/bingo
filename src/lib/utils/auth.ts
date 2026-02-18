@@ -58,7 +58,7 @@ export async function sendMagicLink(email: string, redirectTo?: string): Promise
 
 /**
  * Sign in anonymously
- * Creates a temporary session for users who haven't signed up yet
+ * Creates an anonymous session for users who haven't signed up yet
  */
 export async function signInAnonymously(): Promise<AuthResult> {
 	try {
@@ -71,8 +71,6 @@ export async function signInAnonymously(): Promise<AuthResult> {
 				error: error.message
 			};
 		}
-
-		console.log('Anonymous session created');
 
 		return {
 			success: true,

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { isAuthInitialized } from '$lib/stores/auth';
+	import { authError, authStore, isAuthInitialized } from '$lib/stores/auth';
 	import { boardsStore } from '$lib/stores/boards';
 
 	let boardName = $state('My 2026 Goals');
@@ -33,6 +33,10 @@
 			handleCreateBoard();
 		}
 	}
+
+	async function retryAuth() {
+		await authStore.init();
+	}
 </script>
 
 <svelte:head>
@@ -47,6 +51,20 @@
 				class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
 			></div>
 			<p class="text-gray-600">Loading...</p>
+		</div>
+	</div>
+{:else if $authError}
+	<!-- Auth init failed -->
+	<div class="min-h-screen bg-gray-50 flex items-center justify-center">
+		<div class="text-center">
+			<p data-testid="auth-error-message" class="text-red-600 mb-4">{$authError}</p>
+			<button
+				data-testid="auth-retry-button"
+				onclick={retryAuth}
+				class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+			>
+				Try again
+			</button>
 		</div>
 	</div>
 {:else}
