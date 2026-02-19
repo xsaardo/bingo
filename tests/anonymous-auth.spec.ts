@@ -15,3 +15,32 @@ test('new visitor gets an anonymous session and sees the landing page', async ({
 	// The board creation form should be visible (auth succeeded, page rendered)
 	await expect(page.locator('input#board-name')).toBeVisible({ timeout: 10000 });
 });
+
+test('anonymous user sees sign-in prompt instead of notes/milestones in goal modal', async ({ page }) => {
+	await page.goto('/');
+
+	// Wait for the board creation form
+	await expect(page.locator('input#board-name')).toBeVisible({ timeout: 10000 });
+
+	// Create a board
+	await page.getByRole('button', { name: /Create 5×5 Board/ }).click();
+
+	// Wait for board page to load
+	await expect(page).toHaveURL(/\/boards\//, { timeout: 10000 });
+
+	// Dismiss the welcome modal that appears for new boards
+	await page.getByRole('button', { name: 'Get Started' }).click({ timeout: 10000 });
+
+	await expect(page.getByTestId('goal-square').first()).toBeVisible({ timeout: 10000 });
+
+	// Open a goal modal
+	await page.getByTestId('goal-square').first().click();
+	await expect(page.getByTestId('goal-modal')).toBeVisible();
+
+	// Notes editor and milestones should be hidden for anonymous users
+	await expect(page.getByTestId('goal-notes-section')).not.toBeVisible();
+	await expect(page.getByTestId('goal-milestones-section')).not.toBeVisible();
+
+	// Sign-in prompt should be visible instead
+	await expect(page.getByTestId('sign-in-for-details')).toBeVisible();
+});

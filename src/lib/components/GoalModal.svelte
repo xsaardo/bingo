@@ -185,23 +185,41 @@
 				lastUpdatedAt={goal.lastUpdatedAt}
 			/>
 
-			<!-- Progress Notes -->
-			<div class="flex-1 flex flex-col">
-				<div class="block text-sm font-medium text-gray-700 mb-2">📝 Progress Notes</div>
-				<div onfocusin={handleNotesFocus}>
-					<RichTextEditor
-						content={notes}
-						placeholder="Track your progress, milestones, and reflections here..."
-						onUpdate={(html) => {
-							notes = html;
-						}}
-					/>
+			{#if isAnonymous}
+				<!-- Sign-in prompt for anonymous users -->
+				<div
+					data-testid="sign-in-for-details"
+					class="rounded-lg border-2 border-dashed border-gray-200 p-6 text-center bg-gray-50"
+				>
+					<p class="text-gray-600 text-sm mb-3">Sign in to add notes and milestones to your goals</p>
+					<a
+						href="/auth/login"
+						class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+					>
+						Sign in
+					</a>
 				</div>
-				<p class="text-xs text-gray-500 mt-2">Changes are automatically saved</p>
-			</div>
+			{:else}
+				<!-- Progress Notes -->
+				<div class="flex-1 flex flex-col" data-testid="goal-notes-section">
+					<div class="block text-sm font-medium text-gray-700 mb-2">📝 Progress Notes</div>
+					<div onfocusin={handleNotesFocus}>
+						<RichTextEditor
+							content={notes}
+							placeholder="Track your progress, milestones, and reflections here..."
+							onUpdate={(html) => {
+								notes = html;
+							}}
+						/>
+					</div>
+					<p class="text-xs text-gray-500 mt-2">Changes are automatically saved</p>
+				</div>
 
-			<!-- Milestones -->
-			<MilestoneList goalId={goal.id} milestones={goal.milestones} />
+				<!-- Milestones -->
+				<div data-testid="goal-milestones-section">
+					<MilestoneList goalId={goal.id} milestones={goal.milestones} />
+				</div>
+			{/if}
 		</div>
 	</div>
 </div>
