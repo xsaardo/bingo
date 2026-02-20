@@ -1,38 +1,13 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { currentBoard } from '$lib/stores/currentBoard';
 	import { uiStore } from '$lib/stores/board';
 	import { detectBingo, type BingoLine } from '$lib/utils/bingo';
 	import GoalSquare from './GoalSquare.svelte';
 	import GoalModal from './GoalModal.svelte';
-	import WelcomeModal from './WelcomeModal.svelte';
 
 	let bingoLines = $derived<BingoLine[]>($currentBoard ? detectBingo($currentBoard) : []);
 	let hasBingo = $derived(bingoLines.length > 0);
 	let bingoIndices = $derived(new Set(bingoLines.flatMap((line) => line.indices)));
-	let isEmpty = $derived(
-		$currentBoard ? $currentBoard.goals.every((goal) => !goal.title.trim()) : false
-	);
-	let showWelcomeModal = $state(false);
-
-	// Check if we should show the welcome modal
-	onMount(() => {
-		if ($currentBoard && isEmpty) {
-			const storageKey = `welcome-modal-dismissed-${$currentBoard.id}`;
-			const hasSeenWelcome = localStorage.getItem(storageKey);
-			if (!hasSeenWelcome) {
-				showWelcomeModal = true;
-			}
-		}
-	});
-
-	function handleCloseWelcome() {
-		if ($currentBoard) {
-			const storageKey = `welcome-modal-dismissed-${$currentBoard.id}`;
-			localStorage.setItem(storageKey, 'true');
-		}
-		showWelcomeModal = false;
-	}
 </script>
 
 {#if $currentBoard}
@@ -70,15 +45,6 @@
 	<GoalModal
 		goal={$currentBoard.goals[$uiStore.selectedGoalIndex]}
 		index={$uiStore.selectedGoalIndex}
-	/>
-{/if}
-
-<!-- Welcome Modal -->
-{#if $currentBoard}
-	<WelcomeModal
-		isOpen={showWelcomeModal}
-		onClose={handleCloseWelcome}
-		boardSize={$currentBoard.size}
 	/>
 {/if}
 
