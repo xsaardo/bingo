@@ -7,6 +7,8 @@
 	let creating = $state(false);
 	let error = $state('');
 	let nameInput = $state<HTMLInputElement>();
+	let buttonWidth = $state(0);
+	let buttonHeight = $state(0);
 
 	// Auto-select the placeholder text when input is focused
 	function handleFocus(e: FocusEvent) {
@@ -124,37 +126,91 @@
 					{/if}
 
 					<!-- Create Button -->
-					<button
-						onclick={handleCreateBoard}
-						disabled={creating}
-						class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold rounded-lg transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center justify-center"
+					<div
+						class="relative wiggle-on-hover"
+						bind:clientWidth={buttonWidth}
+						bind:clientHeight={buttonHeight}
 					>
-						{#if creating}
+						<button
+							data-testid="create-board-button"
+							onclick={handleCreateBoard}
+							disabled={creating}
+							class="w-full py-4 bg-white hover:bg-blue-50 text-blue-700 text-lg font-semibold rounded-lg transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+						>
+							{#if creating}
+								<svg
+									class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-700"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									/>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									/>
+								</svg>
+								Creating your 5×5 board...
+							{:else}
+								Click here to get started!
+							{/if}
+						</button>
+						{#if buttonWidth > 0}
 							<svg
-								class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+								data-testid="hand-drawn-border"
+								class="absolute pointer-events-none"
+								style="top: -8px; left: -8px; overflow: visible;"
+								width={buttonWidth + 16}
+								height={buttonHeight + 16}
 								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
 							>
-								<circle
-									class="opacity-25"
-									cx="12"
-									cy="12"
-									r="10"
-									stroke="currentColor"
-									stroke-width="4"
-								/>
-								<path
-									class="opacity-75"
-									fill="currentColor"
-									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+								<defs>
+									<filter
+										id="hand-drawn"
+										x="-4"
+										y="-4"
+										width={buttonWidth + 24}
+										height={buttonHeight + 24}
+										filterUnits="userSpaceOnUse"
+									>
+										<feTurbulence
+											type="fractalNoise"
+											baseFrequency="0.025"
+											numOctaves="3"
+											result="noise"
+											seed="3"
+										/>
+										<feDisplacementMap
+											in="SourceGraphic"
+											in2="noise"
+											scale="4"
+											xChannelSelector="R"
+											yChannelSelector="G"
+										/>
+									</filter>
+								</defs>
+								<rect
+									x="5"
+									y="5"
+									width={buttonWidth + 6}
+									height={buttonHeight + 6}
+									fill="none"
+									stroke="#1d4ed8"
+									stroke-width="2.5"
+									rx="12"
+									filter="url(#hand-drawn)"
 								/>
 							</svg>
-							Creating your 5×5 board...
-						{:else}
-							Create 5×5 Board
 						{/if}
-					</button>
+					</div>
 
 					<p class="text-xs text-gray-500 text-center">
 						No sign-up required. Your board is saved automatically.
@@ -174,3 +230,25 @@
 		</div>
 	</div>
 {/if}
+
+<style>
+	@keyframes wiggle {
+		0%,
+		100% {
+			transform: rotate(0deg);
+		}
+		20% {
+			transform: rotate(-1.5deg);
+		}
+		50% {
+			transform: rotate(1.5deg);
+		}
+		80% {
+			transform: rotate(-0.8deg);
+		}
+	}
+
+	.wiggle-on-hover:hover {
+		animation: wiggle 0.35s ease-in-out;
+	}
+</style>
