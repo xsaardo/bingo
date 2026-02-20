@@ -45,7 +45,7 @@
 
 {#if !$isAuthInitialized}
 	<!-- Loading state -->
-	<div class="min-h-screen bg-gray-50 flex items-center justify-center">
+	<div class="min-h-screen flex items-center justify-center">
 		<div class="text-center">
 			<div
 				class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
@@ -55,7 +55,7 @@
 	</div>
 {:else if $authError}
 	<!-- Auth init failed -->
-	<div class="min-h-screen bg-gray-50 flex items-center justify-center">
+	<div class="min-h-screen flex items-center justify-center">
 		<div class="text-center">
 			<p data-testid="auth-error-message" class="text-red-600 mb-4">{$authError}</p>
 			<button
@@ -69,7 +69,7 @@
 	</div>
 {:else}
 	<!-- Landing page with inline board creation -->
-	<div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+	<div class="min-h-screen flex items-center justify-center p-4">
 		<div class="max-w-2xl w-full">
 			<div class="text-center mb-8">
 				<h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">

@@ -33,3 +33,5 @@ export interface Board {
 }
 
 export type BoardSize = 3 | 4 | 5;
+
+export type BackgroundTheme = 'horse' | string;

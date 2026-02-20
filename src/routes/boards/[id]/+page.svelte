@@ -50,9 +50,9 @@
 </svelte:head>
 
 <AuthGuard>
-	<div class="min-h-screen bg-gray-50">
+	<div class="min-h-screen">
 		<!-- Header -->
-		<header class="bg-white border-b border-gray-200">
+		<header class="bg-grey/50 border-b border-gray-200">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
 				<div class="flex items-center justify-between">
 					<div class="flex items-center space-x-4 flex-1">
