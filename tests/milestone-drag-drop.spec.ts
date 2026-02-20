@@ -72,9 +72,10 @@ test.describe('Milestone Drag and Drop', () => {
 	});
 
 	test('renders milestones in position order', async ({ page }) => {
-		// Open goal modal
+		// Open and expand goal modal
 		await page.getByTestId('goal-square').first().click();
 		await page.waitForSelector('[data-testid="goal-modal"]');
+		await page.getByTestId('expand-modal-button').click();
 
 		// Add three milestones
 		const titles = ['First Milestone', 'Second Milestone', 'Third Milestone'];

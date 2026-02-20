@@ -37,10 +37,16 @@ test('anonymous user sees sign-in prompt instead of notes/milestones in goal mod
 	await page.getByTestId('goal-square').first().click();
 	await expect(page.getByTestId('goal-modal')).toBeVisible();
 
-	// Notes editor and milestones should be hidden for anonymous users
+	// Modal is collapsed by default — sign-in prompt not yet visible
+	await expect(page.getByTestId('sign-in-for-details')).not.toBeVisible();
+
+	// Expand the modal
+	await page.getByTestId('expand-modal-button').click();
+
+	// Notes editor and milestones should still be hidden for anonymous users
 	await expect(page.getByTestId('goal-notes-section')).not.toBeVisible();
 	await expect(page.getByTestId('goal-milestones-section')).not.toBeVisible();
 
-	// Sign-in prompt should be visible instead
+	// Sign-in prompt should be visible in the expanded area
 	await expect(page.getByTestId('sign-in-for-details')).toBeVisible();
 });

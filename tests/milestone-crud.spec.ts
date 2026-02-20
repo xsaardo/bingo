@@ -69,9 +69,10 @@ test.describe('Milestone CRUD Operations', () => {
 
 	test.describe('addMilestone', () => {
 		test('should add a new milestone to a goal', async ({ page }) => {
-			// Open goal modal
+			// Open and expand goal modal
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
+			await page.getByTestId('expand-modal-button').click();
 
 			// Click Add milestone button
 			await page.click('text=+ Add');
@@ -108,9 +109,10 @@ test.describe('Milestone CRUD Operations', () => {
 		});
 
 		test('should increment position for each new milestone', async ({ page }) => {
-			// Open goal modal
+			// Open and expand goal modal
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
+			await page.getByTestId('expand-modal-button').click();
 
 			// Add first milestone
 			await page.click('text=+ Add');
@@ -163,9 +165,10 @@ test.describe('Milestone CRUD Operations', () => {
 			// Wait a bit to ensure timestamp will be different
 			await page.waitForTimeout(100);
 
-			// Open goal modal and add milestone
+			// Open and expand goal modal, then add milestone
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
+			await page.getByTestId('expand-modal-button').click();
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Test Milestone');
 			await page.click('button.bg-blue-500:has-text("Add")');
@@ -193,9 +196,10 @@ test.describe('Milestone CRUD Operations', () => {
 
 	test.describe('updateMilestone', () => {
 		test('should update milestone title', async ({ page }) => {
-			// Open goal modal and add milestone
+			// Open and expand goal modal, then add milestone
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
+			await page.getByTestId('expand-modal-button').click();
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Original Title');
 			await page.click('button.bg-blue-500:has-text("Add")');
@@ -232,9 +236,10 @@ test.describe('Milestone CRUD Operations', () => {
 
 	test.describe('toggleMilestoneComplete', () => {
 		test('should mark milestone as complete and set completedAt', async ({ page }) => {
-			// Open goal modal and add milestone
+			// Open and expand goal modal, then add milestone
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
+			await page.getByTestId('expand-modal-button').click();
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Test Milestone');
 			await page.click('button.bg-blue-500:has-text("Add")');
@@ -265,9 +270,10 @@ test.describe('Milestone CRUD Operations', () => {
 		});
 
 		test('should clear completedAt when unchecked', async ({ page }) => {
-			// Open goal modal and add milestone
+			// Open and expand goal modal, then add milestone
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
+			await page.getByTestId('expand-modal-button').click();
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Test Milestone');
 			await page.click('button.bg-blue-500:has-text("Add")');
@@ -304,9 +310,10 @@ test.describe('Milestone CRUD Operations', () => {
 
 	test.describe('deleteMilestone', () => {
 		test('should delete a milestone', async ({ page }) => {
-			// Open goal modal and add milestone
+			// Open and expand goal modal, then add milestone
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
+			await page.getByTestId('expand-modal-button').click();
 			await page.click('text=+ Add');
 			await page.fill('input[placeholder="New milestone..."]', 'Test Milestone');
 			await page.click('button.bg-blue-500:has-text("Add")');
