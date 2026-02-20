@@ -52,9 +52,10 @@ test.describe('DateMetadata Component', () => {
 	});
 
 	test('shows lastUpdatedAt for new goals', async ({ page }) => {
-		// Open goal modal
+		// Open and expand goal modal
 		await page.getByTestId('goal-square').first().click();
 		await page.waitForSelector('[data-testid="goal-modal"]');
+		await page.getByTestId('expand-modal-button').click();
 
 		// Check that last updated is visible
 		const lastUpdatedText = await page.locator('text=Last updated:').textContent();
@@ -62,9 +63,10 @@ test.describe('DateMetadata Component', () => {
 	});
 
 	test('shows startedAt after first edit', async ({ page }) => {
-		// Open goal modal
+		// Open and expand goal modal
 		await page.getByTestId('goal-square').first().click();
 		await page.waitForSelector('[data-testid="goal-modal"]');
+		await page.getByTestId('expand-modal-button').click();
 
 		// Initially, startedAt should not be visible
 		const startedBefore = await page.locator('text=Started:').count();
@@ -79,9 +81,10 @@ test.describe('DateMetadata Component', () => {
 		await page.locator('[data-testid="close-modal-button"]').click();
 		await page.waitForTimeout(200);
 
-		// Reopen modal to see updated data
+		// Reopen and expand modal to see updated data
 		await page.getByTestId('goal-square').first().click();
 		await page.waitForSelector('[data-testid="goal-modal"]');
+		await page.getByTestId('expand-modal-button').click();
 
 		// Now startedAt should be visible
 		const startedAfter = await page.locator('text=Started:').count();
@@ -101,9 +104,10 @@ test.describe('DateMetadata Component', () => {
 		await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
 		await page.waitForTimeout(300);
 
-		// Open goal modal
+		// Open and expand goal modal
 		await page.getByTestId('goal-square').first().click();
 		await page.waitForSelector('[data-testid="goal-modal"]');
+		await page.getByTestId('expand-modal-button').click();
 
 		// CompletedAt should be visible
 		const completedCount = await page.locator('text=Completed:').count();
@@ -131,9 +135,10 @@ test.describe('DateMetadata Component', () => {
 		await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
 		await page.waitForTimeout(300);
 
-		// Open goal modal
+		// Open and expand goal modal
 		await page.getByTestId('goal-square').first().click();
 		await page.waitForSelector('[data-testid="goal-modal"]');
+		await page.getByTestId('expand-modal-button').click();
 
 		// CompletedAt should be visible
 		let completedCount = await page.locator('text=Completed:').count();
@@ -148,9 +153,10 @@ test.describe('DateMetadata Component', () => {
 		await page.locator('[data-testid="close-modal-button"]').click();
 		await page.waitForTimeout(200);
 
-		// Reopen modal
+		// Reopen and expand modal
 		await page.getByTestId('goal-square').first().click();
 		await page.waitForSelector('[data-testid="goal-modal"]');
+		await page.getByTestId('expand-modal-button').click();
 
 		// CompletedAt should not be visible
 		completedCount = await page.locator('text=Completed:').count();
@@ -158,9 +164,10 @@ test.describe('DateMetadata Component', () => {
 	});
 
 	test('formats lastUpdatedAt as relative time', async ({ page }) => {
-		// Open goal modal
+		// Open and expand goal modal
 		await page.getByTestId('goal-square').first().click();
 		await page.waitForSelector('[data-testid="goal-modal"]');
+		await page.getByTestId('expand-modal-button').click();
 
 		// Get the last updated text
 		const lastUpdatedText = await page

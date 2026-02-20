@@ -112,6 +112,13 @@ export async function openFirstGoalModal(page: Page): Promise<void> {
 }
 
 /**
+ * Expands the goal modal to show notes, milestones, and date metadata
+ */
+export async function expandGoalModal(page: Page): Promise<void> {
+	await page.getByTestId('expand-modal-button').click();
+}
+
+/**
  * Closes the modal using Escape key
  */
 export async function closeModal(page: Page): Promise<void> {

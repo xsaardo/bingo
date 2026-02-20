@@ -1,3 +1,6 @@
+<!-- ABOUTME: Modal dialog for viewing and editing a single goal -->
+<!-- ABOUTME: Shows title and completion toggle by default; signed-in users can expand for notes and milestones -->
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { currentBoardStore, currentBoard } from '$lib/stores/currentBoard';
@@ -7,7 +10,6 @@
 	import RichTextEditor from './RichTextEditor.svelte';
 	import DateMetadata from './DateMetadata.svelte';
 	import MilestoneList from './MilestoneList.svelte';
-	import ConversionPrompt from './ConversionPrompt.svelte';
 
 	interface Props {
 		goal: Goal;
@@ -25,11 +27,7 @@
 	let notes = $state(goal.notes);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 	let titleInput: HTMLInputElement;
-
-	// Conversion prompt state
-	let showConversionPrompt = $state(false);
-	let conversionTrigger = $state<'notes' | 'milestones'>('notes');
-	let hasPromptedForNotes = $state(false);
+	let isExpanded = $state(false);
 
 	// Check if user is anonymous
 	const isAnonymous = $derived($currentUser?.is_anonymous === true);
@@ -71,20 +69,6 @@
 
 	async function toggleComplete() {
 		await currentBoardStore.toggleComplete(goal.id);
-	}
-
-	function handleNotesFocus() {
-		// Show conversion prompt for anonymous users trying to add detailed notes
-		// Only show once per modal session
-		if (isAnonymous && !hasPromptedForNotes) {
-			conversionTrigger = 'notes';
-			showConversionPrompt = true;
-			hasPromptedForNotes = true;
-		}
-	}
-
-	function handleConversionDismiss() {
-		showConversionPrompt = false;
 	}
 
 	function handleBackdropClick(e: MouseEvent) {
@@ -178,32 +162,51 @@
 				/>
 			</div>
 
-			<!-- Date Metadata -->
-			<DateMetadata
-				startedAt={goal.startedAt}
-				completedAt={goal.completedAt}
-				lastUpdatedAt={goal.lastUpdatedAt}
-			/>
-
-			{#if isAnonymous}
-				<!-- Sign-in prompt for anonymous users -->
-				<div
-					data-testid="sign-in-for-details"
-					class="rounded-lg border-2 border-dashed border-gray-200 p-6 text-center bg-gray-50"
+			<!-- Expand trigger -->
+			<button
+				onclick={() => (isExpanded = !isExpanded)}
+				class="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+				aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
+				data-testid="expand-modal-button"
+			>
+				<svg
+					class="w-4 h-4 transition-transform duration-200 {isExpanded ? 'rotate-180' : ''}"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
 				>
-					<p class="text-gray-600 text-sm mb-3">Sign in to add notes and milestones to your goals</p>
-					<a
-						href="/auth/login"
-						class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+				</svg>
+				{isExpanded ? 'Hide notes & milestones' : 'Notes & milestones'}
+			</button>
+
+			<!-- Expanded section -->
+			{#if isExpanded}
+				{#if isAnonymous}
+					<!-- Sign-in prompt for anonymous users -->
+					<div
+						data-testid="sign-in-for-details"
+						class="rounded-lg border-2 border-dashed border-gray-200 p-6 text-center bg-gray-50"
 					>
-						Sign in
-					</a>
-				</div>
-			{:else}
-				<!-- Progress Notes -->
-				<div class="flex-1 flex flex-col" data-testid="goal-notes-section">
-					<div class="block text-sm font-medium text-gray-700 mb-2">📝 Progress Notes</div>
-					<div onfocusin={handleNotesFocus}>
+						<p class="text-gray-600 text-sm mb-3">Sign in to add notes and milestones to your goals</p>
+						<a
+							href="/auth/login"
+							class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+						>
+							Sign in
+						</a>
+					</div>
+				{:else}
+					<!-- Date Metadata -->
+					<DateMetadata
+						startedAt={goal.startedAt}
+						completedAt={goal.completedAt}
+						lastUpdatedAt={goal.lastUpdatedAt}
+					/>
+
+					<!-- Progress Notes -->
+					<div class="flex-1 flex flex-col" data-testid="goal-notes-section">
+						<div class="block text-sm font-medium text-gray-700 mb-2">📝 Progress Notes</div>
 						<RichTextEditor
 							content={notes}
 							placeholder="Track your progress, milestones, and reflections here..."
@@ -211,22 +214,15 @@
 								notes = html;
 							}}
 						/>
+						<p class="text-xs text-gray-500 mt-2">Changes are automatically saved</p>
 					</div>
-					<p class="text-xs text-gray-500 mt-2">Changes are automatically saved</p>
-				</div>
 
-				<!-- Milestones -->
-				<div data-testid="goal-milestones-section">
-					<MilestoneList goalId={goal.id} milestones={goal.milestones} />
-				</div>
+					<!-- Milestones -->
+					<div data-testid="goal-milestones-section">
+						<MilestoneList goalId={goal.id} milestones={goal.milestones} />
+					</div>
+				{/if}
 			{/if}
 		</div>
 	</div>
 </div>
-
-<!-- Conversion Prompt -->
-<ConversionPrompt
-	trigger={conversionTrigger}
-	isOpen={showConversionPrompt}
-	onDismiss={handleConversionDismiss}
-/>

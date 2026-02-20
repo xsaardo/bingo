@@ -125,9 +125,10 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 		});
 
 		test('should set on first notes edit', async ({ page }) => {
-			// Open sidebar for first goal
+			// Open and expand modal for first goal
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
+			await page.getByTestId('expand-modal-button').click();
 
 			// Edit notes (skip title)
 			const richTextEditor = page.getByTestId('rich-text-editor');
@@ -409,9 +410,10 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			// Wait to ensure time difference
 			await page.waitForTimeout(100);
 
-			// Edit notes
+			// Open and expand modal, then edit notes
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
+			await page.getByTestId('expand-modal-button').click();
 
 			const richTextEditor = page.getByTestId('rich-text-editor');
 			await richTextEditor.click();
