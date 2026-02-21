@@ -64,11 +64,6 @@
 			{$currentUser?.email?.charAt(0).toUpperCase() || 'U'}
 		</div>
 
-		<!-- User Email (hidden on mobile) -->
-		<span class="hidden sm:block text-sm font-medium text-gray-700 max-w-[150px] truncate">
-			{$currentUser?.email || 'User'}
-		</span>
-
 		<!-- Dropdown Arrow -->
 		<svg
 			class="w-4 h-4 text-gray-500 transition-transform {isOpen ? 'rotate-180' : ''}"
