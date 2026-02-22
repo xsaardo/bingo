@@ -76,6 +76,28 @@
 	}
 </script>
 
+<style>
+	@keyframes bingo-pulse {
+		0%,
+		100% {
+			transform: scale(1);
+			box-shadow:
+				0 0 0 0 rgba(234, 179, 8, 0.4),
+				0 4px 6px -1px rgba(0, 0, 0, 0.1);
+		}
+		50% {
+			transform: scale(1.04);
+			box-shadow:
+				0 0 0 6px rgba(234, 179, 8, 0.2),
+				0 10px 15px -3px rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	:global(.bingo-winner) {
+		animation: bingo-pulse 1.5s ease-in-out infinite;
+	}
+</style>
+
 <div
 	data-testid="goal-square"
 	role="button"
@@ -84,7 +106,7 @@
 	onkeydown={(e) => e.key === 'Enter' && selectGoal()}
 	class="aspect-square border-2 rounded-lg p-1 sm:p-2 md:p-3 lg:p-4 cursor-pointer transition-all duration-200 hover:shadow-md active:scale-95 overflow-hidden {isInBingo &&
 	goal.completed
-		? 'bg-yellow-50 border-yellow-500 shadow-lg ring-2 ring-yellow-400 ring-offset-2'
+		? 'bingo-winner bg-yellow-50 border-yellow-500 shadow-lg ring-2 ring-yellow-400 ring-offset-2'
 		: goal.completed
 			? 'bg-green-50 border-green-500'
 			: 'bg-white border-gray-300 hover:border-blue-400'}"
