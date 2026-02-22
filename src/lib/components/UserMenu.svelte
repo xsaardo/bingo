@@ -49,31 +49,40 @@
 <svelte:window on:click={handleClickOutside} />
 
 <div class="relative">
-	<!-- User Menu Button -->
-	<button
-		id="user-menu-button"
-		onclick={toggleMenu}
-		class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-		aria-expanded={isOpen}
-		aria-haspopup="true"
-	>
-		<!-- User Avatar -->
-		<div
-			class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+	{#if !$currentUser?.email}
+		<!-- Login Button (unauthenticated / anonymous) -->
+		<a
+			href="/auth/login"
+			class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
 		>
-			{$currentUser?.email?.charAt(0).toUpperCase() || 'U'}
-		</div>
+			Login
+		</a>
+	{:else}
+		<!-- User Menu Button -->
+		<button
+			id="user-menu-button"
+			onclick={toggleMenu}
+			class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+			aria-expanded={isOpen}
+			aria-haspopup="true"
+		>
+			<!-- User Avatar -->
+			<div
+				class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+			>
+				{$currentUser.email.charAt(0).toUpperCase()}
+			</div>
 
-		<!-- Dropdown Arrow -->
-		<svg
-			class="w-4 h-4 text-gray-500 transition-transform {isOpen ? 'rotate-180' : ''}"
-			fill="none"
-			stroke="currentColor"
-			viewBox="0 0 24 24"
-		>
-			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-		</svg>
-	</button>
+			<!-- Dropdown Arrow -->
+			<svg
+				class="w-4 h-4 text-gray-500 transition-transform {isOpen ? 'rotate-180' : ''}"
+				fill="none"
+				stroke="currentColor"
+				viewBox="0 0 24 24"
+			>
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+			</svg>
+		</button>
 
 	<!-- Dropdown Menu -->
 	{#if isOpen}
@@ -167,6 +176,7 @@
 			</div>
 		</div>
 	{/if}
+{/if}
 </div>
 
 <!-- Logout Confirmation Modal -->
