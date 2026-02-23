@@ -20,6 +20,12 @@ test.afterEach(async ({ page }) => {
 	await deleteTestBoard(page, testBoardId);
 });
 
+test('Save button closes the modal', async ({ page }) => {
+	await openFirstGoalModal(page);
+	await page.getByTestId('save-goal-button').click();
+	await expect(page.getByTestId('goal-modal')).not.toBeVisible();
+});
+
 test('closing modal without saving discards changes', async ({ page }) => {
 	const goalId = await getFirstGoalId(page, testBoardId);
 
@@ -45,8 +51,9 @@ test('Save button persists title even after toggling completion', async ({ page 
 	// Toggle the completion checkbox (this triggers a store update)
 	await page.getByTestId('modal-checkbox').click();
 
-	// Click Save
+	// Click Save and wait for modal to close (save completes before close)
 	await page.getByTestId('save-goal-button').click();
+	await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
 	// Verify the title was saved to the database
 	const goal = await getGoalData(page, goalId, 'title, completed');

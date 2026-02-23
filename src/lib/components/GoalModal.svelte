@@ -34,6 +34,7 @@
 
 	async function handleSave() {
 		await currentBoardStore.saveGoal(goal.id, title, notes);
+		uiStore.clearSelection();
 	}
 
 	function handleClose() {
