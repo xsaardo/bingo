@@ -26,44 +26,17 @@
 
 	let title = $state(goal.title);
 	let notes = $state(goal.notes);
-	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 	let titleInput: HTMLInputElement;
 	let isExpanded = $state(false);
 
 	// Check if user is anonymous
 	const isAnonymous = $derived($currentUser?.is_anonymous === true);
 
-	// Auto-save with debounce
-	function autoSave() {
-		if (saveTimeout) clearTimeout(saveTimeout);
-
-		saveTimeout = setTimeout(async () => {
-			await currentBoardStore.saveGoal(goal.id, title, notes);
-		}, 500);
-	}
-
-	// Watch for changes and trigger auto-save
-	$effect(() => {
-		// Only auto-save if values have changed from the original goal
-		if (title !== goal.title || notes !== goal.notes) {
-			autoSave();
-		}
-	});
-
 	async function handleSave() {
-		if (saveTimeout) clearTimeout(saveTimeout);
 		await currentBoardStore.saveGoal(goal.id, title, notes);
 	}
 
-	async function handleClose() {
-		// Save immediately on close only if there are changes
-		if (saveTimeout) clearTimeout(saveTimeout);
-
-		// Only save if title or notes have changed
-		if (title !== goal.title || notes !== goal.notes) {
-			await currentBoardStore.saveGoal(goal.id, title, notes);
-		}
-
+	function handleClose() {
 		uiStore.clearSelection();
 	}
 

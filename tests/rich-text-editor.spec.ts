@@ -9,7 +9,6 @@ import {
 	openFirstGoalModal,
 	expandGoalModal,
 	closeModal,
-	waitForAutoSave,
 	getGoalData
 } from './test-helpers';
 
@@ -113,9 +112,9 @@ test.describe('RichTextEditor Component', () => {
 		await page.keyboard.press('Meta+A');
 		await page.getByTestId('editor-bold-button').click();
 
-		// Close modal to trigger save
+		// Save and close modal
+		await page.getByTestId('save-goal-button').click();
 		await closeModal(page);
-		await waitForAutoSave(page);
 
 		// Reopen modal
 		await openFirstGoalModal(page);
@@ -138,8 +137,9 @@ test.describe('RichTextEditor Component', () => {
 		await page.keyboard.press('Meta+A');
 		await page.getByTestId('editor-bold-button').click();
 
+		// Save and close modal
+		await page.getByTestId('save-goal-button').click();
 		await closeModal(page);
-		await waitForAutoSave(page);
 
 		// Check database contains HTML
 		const goalData = await getGoalData(page, firstGoalId, 'notes');

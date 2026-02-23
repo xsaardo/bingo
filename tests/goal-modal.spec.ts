@@ -7,8 +7,7 @@ import {
 	deleteTestBoard,
 	getFirstGoalId,
 	getGoalData,
-	openFirstGoalModal,
-	waitForAutoSave
+	openFirstGoalModal
 } from './test-helpers';
 
 let testBoardId: string;
@@ -19,6 +18,20 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(async ({ page }) => {
 	await deleteTestBoard(page, testBoardId);
+});
+
+test('closing modal without saving discards changes', async ({ page }) => {
+	const goalId = await getFirstGoalId(page, testBoardId);
+
+	await openFirstGoalModal(page);
+	await page.getByTestId('modal-title-input').fill('Unsaved Title');
+
+	// Close without clicking Save
+	await page.getByTestId('close-modal-button').click();
+
+	// Title should not be saved
+	const goal = await getGoalData(page, goalId, 'title');
+	expect(goal.title).toBe('');
 });
 
 test('Save button persists title even after toggling completion', async ({ page }) => {
@@ -34,9 +47,6 @@ test('Save button persists title even after toggling completion', async ({ page 
 
 	// Click Save
 	await page.getByTestId('save-goal-button').click();
-
-	// Wait for save to complete
-	await waitForAutoSave(page);
 
 	// Verify the title was saved to the database
 	const goal = await getGoalData(page, goalId, 'title, completed');
