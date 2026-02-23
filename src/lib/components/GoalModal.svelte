@@ -33,12 +33,6 @@
 	// Check if user is anonymous
 	const isAnonymous = $derived($currentUser?.is_anonymous === true);
 
-	// Sync local state with goal (from store)
-	$effect(() => {
-		title = goal.title;
-		notes = goal.notes;
-	});
-
 	// Auto-save with debounce
 	function autoSave() {
 		if (saveTimeout) clearTimeout(saveTimeout);

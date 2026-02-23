@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { authError, authStore, isAuthInitialized } from '$lib/stores/auth';
+	import { authError, authStore, isAnonymous, isAuthInitialized } from '$lib/stores/auth';
 	import { boardsStore } from '$lib/stores/boards';
 	import UserMenu from '$lib/components/UserMenu.svelte';
+	import { getAnonymousBoardId, saveAnonymousBoardId } from '$lib/utils/storage';
 
 	let boardName = $state('My 2026 Goals');
 	let creating = $state(false);
@@ -10,6 +11,16 @@
 	let nameInput = $state<HTMLInputElement>();
 	let buttonWidth = $state(0);
 	let buttonHeight = $state(0);
+
+	// Redirect anonymous users who already have a board back to it
+	$effect(() => {
+		if ($isAuthInitialized && $isAnonymous) {
+			const boardId = getAnonymousBoardId();
+			if (boardId) {
+				goto(`/boards/${boardId}`);
+			}
+		}
+	});
 
 	// Auto-select the placeholder text when input is focused
 	function handleFocus(e: FocusEvent) {
@@ -25,6 +36,9 @@
 		creating = false;
 
 		if (result.success && result.board) {
+			if ($isAnonymous) {
+				saveAnonymousBoardId(result.board.id);
+			}
 			goto(`/boards/${result.board.id}`);
 		} else {
 			error = result.error || 'Failed to create board';

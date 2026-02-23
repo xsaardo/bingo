@@ -11,6 +11,7 @@
 		currentBoardLoading,
 		currentBoardError
 	} from '$lib/stores/currentBoard';
+	import { isAnonymous } from '$lib/stores/auth';
 
 	const boardId = $derived($page.params.id!);
 
@@ -60,12 +61,14 @@
 					</a>
 
 					<div class="flex items-center gap-3">
-						<a
-							href="/dashboard"
-							class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-						>
-							Home
-						</a>
+						{#if !$isAnonymous}
+							<a
+								href="/dashboard"
+								class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+							>
+								Home
+							</a>
+						{/if}
 						<UserMenu />
 					</div>
 				</div>

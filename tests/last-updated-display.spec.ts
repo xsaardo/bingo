@@ -6,6 +6,7 @@ import {
 	createTestBoard,
 	deleteTestBoard,
 	openFirstGoalModal,
+	expandGoalModal,
 	closeModal
 } from './test-helpers';
 
@@ -13,7 +14,7 @@ test.describe('Last Updated Display in Goal Squares', () => {
 	let boardId: string;
 
 	test.beforeEach(async ({ page }) => {
-		boardId = await createTestBoard(page, '3×3');
+		boardId = await createTestBoard(page);
 	});
 
 	test.afterEach(async ({ page }) => {
@@ -44,7 +45,8 @@ test.describe('Last Updated Display in Goal Squares', () => {
 		// Add title and notes
 		await page.fill('input[placeholder="Enter your goal..."]', 'Test Goal with Notes');
 
-		// Type in the rich text editor
+		// Expand modal to access the rich text editor
+		await expandGoalModal(page);
 		const editor = page.locator('.tiptap.ProseMirror');
 		await editor.click();
 		await editor.fill('Some progress notes here');
@@ -70,6 +72,7 @@ test.describe('Last Updated Display in Goal Squares', () => {
 		// Add title and notes
 		await page.fill('input[placeholder="Enter your goal..."]', 'Time Test Goal');
 
+		await expandGoalModal(page);
 		const editor = page.locator('.tiptap.ProseMirror');
 		await editor.click();
 		await editor.fill('Initial notes');
@@ -90,9 +93,10 @@ test.describe('Last Updated Display in Goal Squares', () => {
 	});
 
 	test('text size adjusts based on board size', async ({ page }) => {
-		// Test 3x3 board (default)
+		// Test with first board
 		await openFirstGoalModal(page);
 		await page.fill('input[placeholder="Enter your goal..."]', '3x3 Goal');
+		await expandGoalModal(page);
 		const editor = page.locator('.tiptap.ProseMirror');
 		await editor.click();
 		await editor.fill('Notes for 3x3');
@@ -107,11 +111,12 @@ test.describe('Last Updated Display in Goal Squares', () => {
 		await page.goto('/dashboard');
 
 		// Create 5x5 board
-		const boardId5x5 = await createTestBoard(page, '5×5');
+		const boardId5x5 = await createTestBoard(page);
 
 		// Add goal with notes
 		await openFirstGoalModal(page);
 		await page.fill('input[placeholder="Enter your goal..."]', '5x5 Goal');
+		await expandGoalModal(page);
 		const editor5x5 = page.locator('.tiptap.ProseMirror');
 		await editor5x5.click();
 		await editor5x5.fill('Notes for 5x5');
@@ -132,6 +137,7 @@ test.describe('Last Updated Display in Goal Squares', () => {
 
 		// Add title and notes
 		await page.fill('input[placeholder="Enter your goal..."]', 'Persistent Goal');
+		await expandGoalModal(page);
 		const editor = page.locator('.tiptap.ProseMirror');
 		await editor.click();
 		await editor.fill('These notes should persist');
