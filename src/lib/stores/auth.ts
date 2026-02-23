@@ -38,6 +38,9 @@ export const currentUser = derived(authState, ($authState) => $authState.user);
 // Derived store to check if authenticated
 export const isAuthenticated = derived(authState, ($authState) => !!$authState.user);
 
+// Derived store to check if the current user is anonymous (no email)
+export const isAnonymous = derived(authState, ($authState) => $authState.user?.is_anonymous === true);
+
 // Derived store to check if auth is loading TODO
 export const isAuthLoading = derived(authState, ($authState) => $authState.loading);
 

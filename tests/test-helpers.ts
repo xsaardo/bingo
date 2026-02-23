@@ -7,10 +7,7 @@ import type { Page } from '@playwright/test';
  * Creates a new test board and navigates to it
  * Returns the board ID for cleanup
  */
-export async function createTestBoard(
-	page: Page,
-	size: '3×3' | '4×4' | '5×5' = '3×3'
-): Promise<string> {
+export async function createTestBoard(page: Page): Promise<string> {
 	await page.goto('/dashboard');
 
 	// Create a new board
@@ -19,10 +16,6 @@ export async function createTestBoard(
 
 	const boardName = `Test Board ${Date.now()}`;
 	await page.fill('input[id="board-name"]', boardName);
-
-	// Select board size
-	const sizeButton = page.locator('button').filter({ hasText: size });
-	await sizeButton.click();
 
 	// Click the Create Board button in the modal
 	await page.click('button[type="submit"]:has-text("Create Board")');
