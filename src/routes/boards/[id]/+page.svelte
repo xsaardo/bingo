@@ -35,7 +35,7 @@
 </svelte:head>
 
 <AuthGuard>
-	<div class="min-h-screen">
+	<div class="h-screen flex flex-col">
 		<!-- Header -->
 		<header class="bg-transparent">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -76,9 +76,9 @@
 		</header>
 
 		<!-- Main Content -->
-		<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+		<main class="flex-1 min-h-0 flex flex-col items-center px-4 py-3 sm:py-4 overflow-hidden">
 			<!-- Board Title -->
-			<div class="mb-4 text-center">
+			<div class="shrink-0 mb-2 sm:mb-3 text-center w-full">
 				{#if $currentBoard}
 					<h1 class="text-3xl font-bold text-gray-900">{$currentBoard.name}</h1>
 				{:else if !$currentBoardError}
@@ -121,10 +121,12 @@
 			{:else if $currentBoard}
 				<!-- BingoBoard Component -->
 				<div
-					class="w-full mx-auto"
-					style="max-width: min(56rem, calc(100vh - 8rem)); max-height: calc(100vh - 8rem);"
+					class="flex-1 min-h-0 w-full flex items-center justify-center"
+					style="container-type: size;"
 				>
-					<BingoBoard />
+					<div style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);">
+						<BingoBoard />
+					</div>
 				</div>
 			{/if}
 		</main>

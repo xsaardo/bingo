@@ -16,10 +16,10 @@
 {/if}
 
 {#if $currentBoard}
-	<div class="bg-white rounded-lg shadow-lg p-2 sm:p-3 md:p-4 relative">
+	<div class="bg-white rounded-lg shadow-lg p-2 sm:p-3 md:p-4 relative h-full">
 		<div
-			class="grid gap-2 sm:gap-3"
-			style="grid-template-columns: repeat({$currentBoard.size}, minmax(0, 1fr));"
+			class="grid gap-2 sm:gap-3 h-full"
+			style="grid-template-columns: repeat({$currentBoard.size}, minmax(0, 1fr)); grid-template-rows: repeat({$currentBoard.size}, minmax(0, 1fr));"
 		>
 			{#each $currentBoard.goals as goal, index}
 				<GoalSquare
