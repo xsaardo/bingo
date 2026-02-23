@@ -6,9 +6,10 @@
 		isOpen: boolean;
 		board: Board | null;
 		onClose: () => void;
+		onDeleted?: (boardName: string) => void;
 	}
 
-	let { isOpen, board, onClose }: Props = $props();
+	let { isOpen, board, onClose, onDeleted }: Props = $props();
 
 	let loading = $state(false);
 	let error = $state('');
@@ -31,7 +32,9 @@
 		loading = false;
 
 		if (result.success) {
+			const name = board.name;
 			onClose();
+			onDeleted?.(name);
 		} else {
 			error = result.error || 'Failed to delete board';
 		}
@@ -52,7 +55,7 @@
 
 {#if isOpen && board}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm"
+		class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20"
 		onclick={handleBackdropClick}
 		onkeydown={handleKeydown}
 		role="dialog"
@@ -110,9 +113,6 @@
 				<div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
 					<p class="text-sm text-gray-600 mb-1">Board to delete:</p>
 					<p class="font-semibold text-gray-900 text-lg">{board.name}</p>
-					<p class="text-sm text-gray-500 mt-1">
-						{board.size}×{board.size} grid • {board.goals.length} goals
-					</p>
 				</div>
 
 				<!-- Warning Message -->

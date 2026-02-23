@@ -55,10 +55,7 @@
 				>
 					{board.name}
 				</h3>
-				<p class="text-sm text-gray-500 mt-1">
-					{board.size}×{board.size} grid • {totalGoals} goals
-				</p>
-			</div>
+				</div>
 
 			<!-- Delete Button -->
 			{#if onDelete}
@@ -161,22 +158,7 @@
 				{/if}
 			</div>
 
-			<span class="text-xs text-gray-400">{formatDate(board.createdAt)}</span>
-		</div>
-	</div>
-
-	<!-- Footer - View Board -->
-	<div class="px-4 py-3 bg-gray-50 border-t border-gray-100">
-		<div class="flex items-center justify-between text-sm">
-			<span class="text-blue-600 font-medium group-hover:text-blue-700">View board</span>
-			<svg
-				class="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition-transform"
-				fill="none"
-				stroke="currentColor"
-				viewBox="0 0 24 24"
-			>
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-			</svg>
+			<span class="text-xs text-gray-400">Created {formatDate(board.createdAt)}</span>
 		</div>
 	</div>
 </a>

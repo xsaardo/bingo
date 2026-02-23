@@ -38,7 +38,7 @@
 		<!-- Header -->
 		<header class="bg-grey/50">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-				<div class="relative flex items-center justify-between">
+				<div class="relative flex items-center justify-between h-10">
 					<!-- Board Title (absolutely centered) -->
 					<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
 						{#if $currentBoard}
@@ -54,7 +54,7 @@
 					<div></div>
 
 					<!-- Right side: Dashboard button + User Menu -->
-					<div class="flex items-center space-x-2">
+					<div class="flex items-center gap-3">
 						<a
 							href="/dashboard"
 							class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
