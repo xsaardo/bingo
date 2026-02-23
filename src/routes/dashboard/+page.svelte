@@ -12,6 +12,7 @@
 	let showCreateModal = $state(false);
 	let showDeleteModal = $state(false);
 	let boardToDelete: Board | null = $state(null);
+	let deletedBoardName = $state<string | null>(null);
 
 	// Fetch boards when component mounts
 	onMount(() => {
@@ -39,6 +40,11 @@
 		boardToDelete = null;
 	}
 
+	function handleBoardDeleted(boardName: string) {
+		deletedBoardName = boardName;
+		setTimeout(() => (deletedBoardName = null), 3000);
+	}
+
 	async function handleRetryFetch() {
 		await boardsStore.fetchBoards();
 	}
@@ -51,7 +57,7 @@
 <AuthGuard>
 	<div class="min-h-screen">
 		<!-- Header -->
-		<header class="bg-white/50 border-b border-gray-200">
+		<header class="bg-transparent">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
 				<div class="flex items-center justify-between">
 					<div class="flex items-center space-x-3">
@@ -65,10 +71,26 @@
 								/>
 							</svg>
 						</div>
-						<h1 class="text-xl font-bold text-gray-900">Bingo Board</h1>
+						<h1 class="text-xl font-bold text-gray-900">BINGOAL</h1>
 					</div>
 
+					<div class="flex items-center gap-3">
+					<button
+						onclick={handleCreateBoard}
+						class="flex items-center px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+					>
+						<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+							/>
+						</svg>
+						New Board
+					</button>
 					<UserMenu />
+				</div>
 				</div>
 			</div>
 		</header>
@@ -76,25 +98,9 @@
 		<!-- Main Content -->
 		<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 			<!-- Page Header -->
-			<div class="flex items-center justify-between mb-8">
-				<div>
-					<h2 class="text-3xl font-bold text-gray-900">My Boards</h2>
-					<p class="text-gray-600 mt-1">Create and manage your bingo boards</p>
-				</div>
-				<button
-					onclick={handleCreateBoard}
-					class="flex items-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
-				>
-					<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-						/>
-					</svg>
-					New Board
-				</button>
+			<div class="mb-8">
+				<h2 class="text-3xl font-bold text-gray-900">My Boards</h2>
+				<p class="text-gray-600 mt-1">Create and manage your bingo boards</p>
 			</div>
 
 			<!-- Error State -->
@@ -180,5 +186,18 @@
 		isOpen={showDeleteModal}
 		board={boardToDelete}
 		onClose={handleCloseDeleteModal}
+		onDeleted={handleBoardDeleted}
 	/>
+
+	<!-- Delete success toast -->
+	{#if deletedBoardName}
+		<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+			<div class="flex items-center gap-3 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg text-sm">
+				<svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+				</svg>
+				<span>"{deletedBoardName}" was deleted</span>
+			</div>
+		</div>
+	{/if}
 </AuthGuard>

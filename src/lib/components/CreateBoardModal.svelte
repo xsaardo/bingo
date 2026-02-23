@@ -9,7 +9,6 @@
 	let { isOpen, onClose }: Props = $props();
 
 	let name = $state('');
-	let size = $state(3);
 	let loading = $state(false);
 	let error = $state('');
 	let nameInput = $state<HTMLInputElement | undefined>(undefined);
@@ -18,7 +17,6 @@
 	$effect(() => {
 		if (isOpen) {
 			name = '';
-			size = 3;
 			error = '';
 			// Focus the name input after a brief delay to ensure modal is rendered
 			setTimeout(() => nameInput?.focus(), 100);
@@ -42,7 +40,7 @@
 		loading = true;
 		error = '';
 
-		const result = await boardsStore.createBoard(name.trim(), size);
+		const result = await boardsStore.createBoard(name.trim(), 5);
 
 		loading = false;
 
@@ -68,7 +66,7 @@
 
 {#if isOpen}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm"
+		class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20"
 		onclick={handleBackdropClick}
 		onkeydown={handleKeydown}
 		role="dialog"
@@ -96,8 +94,7 @@
 						</svg>
 					</button>
 				</div>
-				<p class="text-blue-100 text-sm mt-1">Set up your bingo board</p>
-			</div>
+				</div>
 
 			<!-- Form -->
 			<form onsubmit={handleSubmit} class="p-6 space-y-5">
@@ -118,57 +115,6 @@
 						class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
 					/>
 					<p class="text-xs text-gray-500 mt-1">Give your board a memorable name</p>
-				</div>
-
-				<!-- Board Size -->
-				<div>
-					<div class="block text-sm font-medium text-gray-700 mb-3">
-						Board Size <span class="text-red-500">*</span>
-					</div>
-					<div class="grid grid-cols-3 gap-3">
-						{#each [3, 4, 5] as sizeOption}
-							<button
-								type="button"
-								onclick={() => (size = sizeOption)}
-								disabled={loading}
-								class="relative p-4 border-2 rounded-lg transition-all disabled:cursor-not-allowed {size ===
-								sizeOption
-									? 'border-blue-600 bg-blue-50'
-									: 'border-gray-200 hover:border-blue-300 bg-white'}"
-							>
-								{#if size === sizeOption}
-									<div class="absolute top-2 right-2">
-										<svg
-											class="w-5 h-5 text-blue-600"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-											/>
-										</svg>
-									</div>
-								{/if}
-								<div class="text-center">
-									<div
-										class="text-2xl font-bold {size === sizeOption
-											? 'text-blue-600'
-											: 'text-gray-700'}"
-									>
-										{sizeOption}×{sizeOption}
-									</div>
-									<div class="text-xs text-gray-500 mt-1">
-										{sizeOption * sizeOption} goals
-									</div>
-								</div>
-							</button>
-						{/each}
-					</div>
-					<p class="text-xs text-gray-500 mt-2">Choose how many goals you want on your board</p>
 				</div>
 
 				<!-- Error Message -->
@@ -197,7 +143,7 @@
 				{/if}
 
 				<!-- Actions -->
-				<div class="flex items-center justify-end space-x-3 pt-4 border-t">
+				<div class="flex items-center justify-end space-x-3">
 					<button
 						type="button"
 						onclick={onClose}
