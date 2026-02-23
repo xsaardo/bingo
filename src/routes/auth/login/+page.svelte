@@ -1,43 +1,35 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { isAuthenticated } from '$lib/stores/auth';
+	import { isAuthenticated, isAnonymous } from '$lib/stores/auth';
 	import MagicLinkForm from '$lib/components/MagicLinkForm.svelte';
+	import Logo from '$lib/components/Logo.svelte';
 
-	// Redirect to dashboard if already logged in
+	// Redirect to dashboard if already logged in as a real user
 	onMount(() => {
-		if ($isAuthenticated) {
+		if ($isAuthenticated && !$isAnonymous) {
 			goto('/dashboard');
 		}
 	});
 
 	// Also watch for auth state changes
-	$: if ($isAuthenticated) {
+	$: if ($isAuthenticated && !$isAnonymous) {
 		goto('/dashboard');
 	}
 </script>
 
 <svelte:head>
-	<title>Sign In - Bingo Board</title>
+	<title>Sign In - Bingoal</title>
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center p-4">
 	<div class="w-full max-w-md">
 		<!-- Header -->
 		<div class="text-center mb-8">
-			<div
-				class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4 shadow-lg"
-			>
-				<svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-					/>
-				</svg>
+			<div class="inline-flex mb-4">
+				<Logo size="4rem" />
 			</div>
-			<h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome to Bingo Board</h1>
+			<h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome to BINGOAL</h1>
 			<p class="text-gray-600">Sign in to create and manage your bingo boards</p>
 		</div>
 

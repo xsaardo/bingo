@@ -98,30 +98,6 @@
 
 			<!-- Menu Items -->
 			<div class="py-1">
-				<!-- Dashboard Link -->
-				<a
-					href="/dashboard"
-					onclick={closeMenu}
-					class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-				>
-					<div class="flex items-center">
-						<svg
-							class="w-4 h-4 mr-3 text-gray-500"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-							/>
-						</svg>
-						My Boards
-					</div>
-				</a>
-
 				<!-- Test Auth (dev only) -->
 				{#if import.meta.env.DEV}
 					<a

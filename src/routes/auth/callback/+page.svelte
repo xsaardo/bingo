@@ -20,10 +20,8 @@
 
 			if (session) {
 				status = 'success';
-				// Redirect to test page to show success
-				// In production, this would redirect to dashboard
 				setTimeout(() => {
-					goto('/test-auth');
+					goto('/dashboard');
 				}, 1500);
 			} else {
 				throw new Error('No session found');
@@ -73,7 +71,7 @@
 				<h1 class="text-xl font-semibold text-gray-900">Authentication failed</h1>
 				<p class="text-red-600">{errorMessage}</p>
 				<a
-					href="/test-auth"
+					href="/auth/login"
 					class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
 				>
 					Try again
