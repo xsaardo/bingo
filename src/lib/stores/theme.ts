@@ -10,7 +10,7 @@ interface ThemeState {
 const STORAGE_KEY = 'bingo-theme';
 
 const initialState: ThemeState = {
-	background: 'horse'
+	background: 'cork'
 };
 
 const themeState = writable<ThemeState>(initialState);

@@ -16,7 +16,7 @@
 {/if}
 
 {#if $currentBoard}
-	<div class="bg-white rounded-lg shadow-lg p-2 sm:p-3 md:p-4 relative">
+	<div class="paper-card rounded-sm p-2 sm:p-3 md:p-4 relative">
 		<div
 			class="grid gap-2 sm:gap-3"
 			style="grid-template-columns: repeat({$currentBoard.size}, minmax(0, 1fr));"

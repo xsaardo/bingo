@@ -57,7 +57,7 @@
 								<polygon points="18,15.8 18.529,17.272 20.092,17.320 18.856,18.278 19.293,19.780 18,18.9 16.707,19.780 17.144,18.278 15.908,17.320 17.471,17.272" fill="#2563eb"/>
 							</svg>
 						</div>
-						<span class="text-xl font-bold text-gray-900">BINGOAL</span>
+						<span class="font-handwritten text-2xl font-bold" style="color: #2c2418;">BINGOAL</span>
 					</a>
 
 					<div class="flex items-center gap-3">
@@ -80,7 +80,7 @@
 			<!-- Board Title -->
 			<div class="mb-4 text-center">
 				{#if $currentBoard}
-					<h1 class="text-3xl font-bold text-gray-900">{$currentBoard.name}</h1>
+					<h1 class="font-handwritten text-4xl font-bold" style="color: #2c2418;">{$currentBoard.name}</h1>
 				{:else if !$currentBoardError}
 					<div class="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto"></div>
 				{/if}

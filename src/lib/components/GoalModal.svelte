@@ -77,13 +77,14 @@
 	class="fixed inset-0 flex items-center justify-center z-50 p-4"
 	style="background-color: rgba(0, 0, 0, 0.3);"
 >
-	<!-- Modal -->
+	<!-- Modal — styled as notebook paper -->
 	<div
 		role="dialog"
 		aria-label="Edit goal"
 		tabindex="0"
 		in:scale={{ duration: 200, start: 0.95 }}
-		class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+		class="paper-card max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+		style="border-radius: 3px;"
 		onclick={(e) => e.stopPropagation()}
 		onkeydown={(e) => e.key === 'Escape' && handleClose()}
 		data-testid="goal-modal"
@@ -103,19 +104,15 @@
 		<div class="flex-1 overflow-y-scroll px-6 pt-2 pb-2 space-y-3">
 			<!-- Title + Completion Toggle inline -->
 			<div class="flex items-center gap-3">
+				<!-- Dabber stamp button in modal -->
 				<button
 					onclick={toggleComplete}
-					class="shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all active:scale-90 {goal.completed
-						? 'bg-green-500 border-green-500'
-						: 'border-gray-300 hover:border-green-500'}"
+					class="shrink-0 w-6 h-6 rounded-full border-2 transition-all active:scale-90"
+					style="{goal.completed
+						? 'border-color: rgba(90,0,100,0.6); background: radial-gradient(circle at 40% 35%, rgba(90,0,100,0.5), rgba(50,0,60,0.8));'
+						: 'border-color: #c4b896; background: transparent;'}"
 					data-testid="modal-checkbox"
-				>
-					{#if goal.completed}
-						<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-						</svg>
-					{/if}
-				</button>
+				></button>
 				<input
 					bind:this={titleInput}
 					id="modal-goal-title"
@@ -123,7 +120,8 @@
 					bind:value={title}
 					placeholder="Enter your goal..."
 					onkeydown={(e) => e.key === 'Enter' && handleSave()}
-					class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+					class="font-handwritten flex-1 px-3 py-2 transition-colors"
+					style="font-size: 1.1rem; background: transparent; border: none; border-bottom: 2px solid #c4b896; outline: none; color: #2c2418; border-radius: 0;"
 					data-testid="modal-title-input"
 				/>
 			</div>
@@ -175,10 +173,14 @@
 		</div>
 
 		<!-- Footer -->
-		<div class="flex items-center justify-end gap-2 px-6 pt-1 pb-3">
+		<div
+			class="flex items-center justify-end gap-2 px-6 pt-1 pb-3"
+			style="border-top: 1px solid rgba(196, 184, 150, 0.5);"
+		>
 			<button
 				onclick={() => (isExpanded = !isExpanded)}
-				class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+				class="font-handwritten flex items-center gap-2 px-3 py-2 text-sm transition-colors"
+				style="color: #8a7a60; border: 1px solid #c4b896; border-radius: 2px; background: transparent;"
 				aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
 				data-testid="expand-modal-button"
 			>
@@ -186,7 +188,8 @@
 			</button>
 			<button
 				onclick={handleSave}
-				class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+				class="font-handwritten px-4 py-2 text-sm font-semibold transition-all active:scale-95"
+				style="background: #3a5a9a; color: white; border-radius: 2px; border: 1px solid #2a4a8a; box-shadow: 0 2px 4px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);"
 				data-testid="save-goal-button"
 			>
 				Save

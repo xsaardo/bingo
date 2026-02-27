@@ -42,27 +42,101 @@
 	}
 </script>
 
+<style>
+	/* Push pin at top of the card */
+	.push-pin {
+		position: absolute;
+		top: -10px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: radial-gradient(circle at 38% 35%, #e8d060, #c8a000 60%, #a07800);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+		z-index: 10;
+	}
+
+	.push-pin::after {
+		content: '';
+		position: absolute;
+		bottom: -6px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 3px;
+		height: 7px;
+		background: linear-gradient(to bottom, #b8b8b8, #888);
+		border-radius: 0 0 2px 2px;
+	}
+
+	/* Index card hover — lift the card slightly */
+	.card-link {
+		display: block;
+		text-decoration: none;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.card-link:hover {
+		transform: translateY(-3px) rotate(0.3deg);
+		box-shadow:
+			3px 5px 8px rgba(0, 0, 0, 0.25),
+			6px 8px 16px rgba(0, 0, 0, 0.15),
+			0 0 0 1px rgba(180, 155, 100, 0.4);
+	}
+
+	/* Pencil progress bar track */
+	.pencil-track {
+		background: rgba(180, 160, 120, 0.25);
+		border: 1px solid rgba(160, 140, 100, 0.4);
+		border-radius: 2px;
+		height: 8px;
+		overflow: hidden;
+	}
+
+	/* Progress fill — looks like a pencil-colored bar */
+	.pencil-fill {
+		height: 100%;
+		border-radius: 1px;
+		background: repeating-linear-gradient(
+			90deg,
+			#5a8a3a,
+			#5a8a3a 3px,
+			#4a7a2a 3px,
+			#4a7a2a 6px
+		);
+		transition: width 0.3s ease;
+	}
+</style>
+
 <a
 	href="/boards/{board.id}"
-	class="block bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all duration-200 overflow-hidden group"
+	class="card-link index-card overflow-hidden group"
+	style="border-radius: 3px; margin-top: 10px; position: relative;"
 >
-	<!-- Header -->
-	<div class="p-4 border-b border-gray-100">
+	<!-- Push pin decorative element -->
+	<div class="push-pin"></div>
+
+	<!-- Header — sits above the ruled lines -->
+	<div class="px-4 pt-6 pb-2" style="border-bottom: 1px solid rgba(184, 207, 232, 0.6);">
 		<div class="flex items-start justify-between">
-			<div class="flex-1 min-w-0">
+			<div class="flex-1 min-w-0" style="padding-left: 38px;">
 				<h3
-					class="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors"
+					class="font-handwritten text-xl font-semibold truncate group-hover:text-blue-700 transition-colors"
+					style="color: #2c2418;"
 				>
 					{board.name}
 				</h3>
-				</div>
+			</div>
 
 			<!-- Delete Button -->
 			{#if onDelete}
 				<button
 					onclick={handleDeleteClick}
-					class="flex-shrink-0 ml-2 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+					class="flex-shrink-0 ml-2 p-2 rounded-lg transition-colors"
+					style="color: #a89878;"
 					title="Delete board"
+					onmouseenter={(e) => (e.currentTarget.style.color = '#b91c1c')}
+					onmouseleave={(e) => (e.currentTarget.style.color = '#a89878')}
 				>
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -78,20 +152,17 @@
 	</div>
 
 	<!-- Progress Section -->
-	<div class="p-4">
-		<!-- Progress Bar -->
+	<div class="px-4 py-3" style="padding-left: calc(46px + 1rem);">
+		<!-- Progress Bar — pencil-stroke style -->
 		<div class="mb-3">
-			<div class="flex items-center justify-between mb-2">
-				<span class="text-sm font-medium text-gray-700">Progress</span>
-				<span class="text-sm font-semibold text-blue-600">{completionPercentage}%</span>
+			<div class="flex items-center justify-between mb-1.5">
+				<span class="font-handwritten text-sm font-medium" style="color: #5a4a32;">Progress</span>
+				<span class="font-handwritten text-sm font-semibold" style="color: #3a6a20;">{completionPercentage}%</span>
 			</div>
-			<div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-				<div
-					class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-					style="width: {completionPercentage}%"
-				></div>
+			<div class="pencil-track">
+				<div class="pencil-fill" style="width: {completionPercentage}%"></div>
 			</div>
-			<p class="text-xs text-gray-500 mt-1">
+			<p class="font-handwritten text-xs mt-1" style="color: #8a7a60;">
 				{completedGoals} of {totalGoals} goals completed
 			</p>
 		</div>
@@ -101,64 +172,36 @@
 			<div class="flex items-center space-x-2">
 				{#if !hasContent}
 					<span
-						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+						class="font-handwritten inline-flex items-center px-2 py-0.5 text-xs font-medium"
+						style="color: #8a7a60; border: 1px dashed #c4b896; border-radius: 2px;"
 					>
-						<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-							/>
-						</svg>
 						Empty
 					</span>
 				{:else if completedGoals === totalGoals}
 					<span
-						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+						class="font-handwritten inline-flex items-center px-2 py-0.5 text-xs font-medium"
+						style="color: #3a7a20; border: 1px solid #5a9a40; border-radius: 2px; background: rgba(90, 154, 64, 0.08);"
 					>
-						<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
-						Complete
+						✓ Complete
 					</span>
 				{:else if completedGoals > 0}
 					<span
-						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+						class="font-handwritten inline-flex items-center px-2 py-0.5 text-xs font-medium"
+						style="color: #3a5a9a; border: 1px solid #6a8aba; border-radius: 2px; background: rgba(90, 120, 180, 0.08);"
 					>
-						<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M13 10V3L4 14h7v7l9-11h-7z"
-							/>
-						</svg>
 						In Progress
 					</span>
 				{:else}
 					<span
-						class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
+						class="font-handwritten inline-flex items-center px-2 py-0.5 text-xs font-medium"
+						style="color: #8a6a20; border: 1px solid #c4a030; border-radius: 2px; background: rgba(196, 160, 48, 0.08);"
 					>
-						<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
 						Not Started
 					</span>
 				{/if}
 			</div>
 
-			<span class="text-xs text-gray-400">Created {formatDate(board.createdAt)}</span>
+			<span class="font-handwritten text-xs" style="color: #a89878;">Created {formatDate(board.createdAt)}</span>
 		</div>
 	</div>
 </a>
