@@ -6,6 +6,12 @@
 	import GoalModal from './GoalModal.svelte';
 	import Confetti from './Confetti.svelte';
 
+	interface Props {
+		readonly?: boolean;
+	}
+
+	let { readonly = false }: Props = $props();
+
 	let bingoLines = $derived<BingoLine[]>($currentBoard ? detectBingo($currentBoard) : []);
 	let hasBingo = $derived(bingoLines.length > 0);
 	let bingoIndices = $derived(new Set(bingoLines.flatMap((line) => line.indices)));
@@ -27,17 +33,17 @@
 					{index}
 					isInBingo={bingoIndices.has(index)}
 					boardSize={$currentBoard.size}
+					{readonly}
 				/>
 			{/each}
 		</div>
 	</div>
 {/if}
 
-<!-- Goal Modal -->
-{#if $currentBoard && $uiStore.selectedGoalIndex !== null}
+<!-- Goal Modal — not shown in readonly mode -->
+{#if !readonly && $currentBoard && $uiStore.selectedGoalIndex !== null}
 	<GoalModal
 		goal={$currentBoard.goals[$uiStore.selectedGoalIndex]}
 		index={$uiStore.selectedGoalIndex}
 	/>
 {/if}
-

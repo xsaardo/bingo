@@ -65,6 +65,7 @@ export const boardsStore = {
 					id,
 					name,
 					size,
+					is_public,
 					created_at,
 					updated_at,
 					goals (
@@ -93,6 +94,7 @@ export const boardsStore = {
 				id: board.id,
 				name: board.name,
 				size: board.size,
+				isPublic: board.is_public ?? false,
 				goals: (board.goals || [])
 					.sort((a: any, b: any) => a.position - b.position)
 					.map((goal: any) => ({
@@ -187,6 +189,7 @@ export const boardsStore = {
 					id,
 					name,
 					size,
+					is_public,
 					created_at,
 					updated_at,
 					goals (
@@ -215,6 +218,7 @@ export const boardsStore = {
 				id: completeBoard.id,
 				name: completeBoard.name,
 				size: completeBoard.size,
+				isPublic: completeBoard.is_public ?? false,
 				goals: (completeBoard.goals || [])
 					.sort((a: any, b: any) => a.position - b.position)
 					.map((goal: any) => ({
