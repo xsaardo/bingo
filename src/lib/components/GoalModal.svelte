@@ -3,7 +3,7 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fade, scale, slide } from 'svelte/transition';
+	import { fade, scale } from 'svelte/transition';
 	import { currentBoardStore, currentBoard } from '$lib/stores/currentBoard';
 	import { uiStore } from '$lib/stores/board';
 	import { currentUser } from '$lib/stores/auth';
@@ -129,9 +129,13 @@
 			</div>
 
 			<!-- Expanded section -->
-			{#if isExpanded}
-				<div transition:slide={{ duration: 200 }} class="space-y-3">
-					{#if isAnonymous}
+			<div
+				class="grid transition-all duration-200 ease-in-out"
+				style="grid-template-rows: {isExpanded ? '1fr' : '0fr'};"
+			>
+				<div class="overflow-hidden">
+					<div class="space-y-3">
+						{#if isAnonymous}
 						<!-- Sign-in prompt for anonymous users -->
 						<div
 							data-testid="sign-in-for-details"
@@ -169,9 +173,10 @@
 						<div data-testid="goal-milestones-section">
 							<MilestoneList goalId={goal.id} milestones={goal.milestones} />
 						</div>
-					{/if}
+						{/if}
+					</div>
 				</div>
-			{/if}
+			</div>
 		</div>
 
 		<!-- Footer -->
