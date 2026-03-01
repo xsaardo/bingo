@@ -75,7 +75,7 @@
 
 				// Physics
 				p.vy += GRAVITY;
-				p.vx += Math.sin(frameCount * 0.02) * WIND;
+				p.vx += Math.sin(frameCount * 0.02 + p.rotation) * WIND;
 				p.x += p.vx;
 				p.y += p.vy;
 				p.rotation += p.rotationSpeed;
