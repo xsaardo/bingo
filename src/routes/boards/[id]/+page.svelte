@@ -34,17 +34,18 @@
 		await currentBoardStore.loadBoard(boardId);
 	}
 
-	async function toggleSharing() {
+	async function handleShare() {
 		if (!$currentBoard) return;
-		await currentBoardStore.setPublic(boardId, !$currentBoard.isPublic);
-	}
-
-	async function copyShareUrl() {
-		await navigator.clipboard.writeText(shareUrl);
-		copied = true;
-		setTimeout(() => {
-			copied = false;
-		}, 2000);
+		if ($currentBoard.isPublic) {
+			await currentBoardStore.setPublic(boardId, false);
+		} else {
+			await currentBoardStore.setPublic(boardId, true);
+			await navigator.clipboard.writeText(shareUrl);
+			copied = true;
+			setTimeout(() => {
+				copied = false;
+			}, 2000);
+		}
 	}
 </script>
 
@@ -90,45 +91,27 @@
 
 						{#if $currentBoard}
 							<button
-								onclick={toggleSharing}
-								class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-colors {$currentBoard.isPublic
-									? 'text-blue-700 bg-blue-50 hover:bg-blue-100'
-									: 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'}"
-								title={$currentBoard.isPublic ? 'Sharing on — click to disable' : 'Share this board'}
+								onclick={handleShare}
+								class="p-2 rounded-lg transition-colors {$currentBoard.isPublic
+									? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
+									: 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}"
+								title={copied ? 'Link copied!' : $currentBoard.isPublic ? 'Sharing on — click to stop' : 'Share board'}
 							>
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-									/>
-								</svg>
-								{$currentBoard.isPublic ? 'Sharing on' : 'Share'}
+								{#if copied}
+									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+									</svg>
+								{:else}
+									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+									</svg>
+								{/if}
 							</button>
 						{/if}
 
 						<UserMenu />
 					</div>
 				</div>
-
-				<!-- Share URL bar — shown when sharing is enabled -->
-				{#if $currentBoard?.isPublic}
-					<div class="mt-3 flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
-						<svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-						</svg>
-						<span class="text-sm text-blue-700 flex-1 truncate font-mono">{shareUrl}</span>
-						<button
-							onclick={copyShareUrl}
-							class="flex-shrink-0 text-sm font-medium px-2 py-0.5 rounded transition-colors {copied
-								? 'text-green-700 bg-green-100'
-								: 'text-blue-700 hover:bg-blue-100'}"
-						>
-							{copied ? 'Copied!' : 'Copy'}
-						</button>
-					</div>
-				{/if}
 			</div>
 		</header>
 
