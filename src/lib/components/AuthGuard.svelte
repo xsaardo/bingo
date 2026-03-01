@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import BuyMeACoffee from '$lib/components/BuyMeACoffee.svelte';
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { authError, authStore, isAuthenticated, isAuthInitialized, isAuthLoading } from '$lib/stores/auth';
@@ -80,6 +81,7 @@
 	</div>
 {:else if shouldRender}
 	<!-- Render protected content -->
+	<BuyMeACoffee />
 	<slot />
 {:else}
 	<!-- Redirecting to login (don't render anything) -->
