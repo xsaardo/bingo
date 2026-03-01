@@ -15,6 +15,11 @@
 
 	const boardId = $derived($page.params.id!);
 
+	let shareUrl = $derived(
+		$currentBoard ? `${$page.url.origin}/share/${$currentBoard.id}` : ''
+	);
+	let toastMessage = $state('');
+
 	// Load board when component mounts
 	onMount(() => {
 		currentBoardStore.loadBoard(boardId);
@@ -28,6 +33,25 @@
 	async function handleRetry() {
 		await currentBoardStore.loadBoard(boardId);
 	}
+
+	function showToast(message: string) {
+		toastMessage = message;
+		setTimeout(() => {
+			toastMessage = '';
+		}, 2000);
+	}
+
+	async function handleShare() {
+		if (!$currentBoard) return;
+		if ($currentBoard.isPublic) {
+			await currentBoardStore.setPublic(boardId, false);
+			showToast('Sharing disabled');
+		} else {
+			await currentBoardStore.setPublic(boardId, true);
+			await navigator.clipboard.writeText(shareUrl);
+			showToast('Link copied to clipboard');
+		}
+	}
 </script>
 
 <svelte:head>
@@ -35,7 +59,7 @@
 </svelte:head>
 
 <AuthGuard>
-	<div class="min-h-screen">
+	<div class="h-screen flex flex-col">
 		<!-- Header -->
 		<header class="bg-transparent">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -69,6 +93,21 @@
 								Home
 							</a>
 						{/if}
+
+						{#if $currentBoard}
+							<button
+								onclick={handleShare}
+								class="p-2 rounded-lg transition-colors {$currentBoard.isPublic
+									? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
+									: 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}"
+								title={$currentBoard.isPublic ? 'Sharing on — click to stop' : 'Share board'}
+							>
+								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+								</svg>
+							</button>
+						{/if}
+
 						<UserMenu />
 					</div>
 				</div>
@@ -76,9 +115,9 @@
 		</header>
 
 		<!-- Main Content -->
-		<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+		<main class="flex-1 min-h-0 flex flex-col items-center px-4 py-3 sm:py-4 overflow-hidden">
 			<!-- Board Title -->
-			<div class="mb-4 text-center">
+			<div class="shrink-0 mb-2 sm:mb-3 text-center w-full">
 				{#if $currentBoard}
 					<h1 class="text-3xl font-bold text-gray-900">{$currentBoard.name}</h1>
 				{:else if !$currentBoardError}
@@ -121,12 +160,25 @@
 			{:else if $currentBoard}
 				<!-- BingoBoard Component -->
 				<div
-					class="w-full mx-auto"
-					style="max-width: min(56rem, calc(100vh - 8rem)); max-height: calc(100vh - 8rem);"
+					class="flex-1 min-h-0 w-full flex items-center justify-center"
+					style="container-type: size;"
 				>
-					<BingoBoard />
+					<div style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);">
+						<BingoBoard />
+					</div>
 				</div>
 			{/if}
 		</main>
 	</div>
+	<!-- Toast notification -->
+	{#if toastMessage}
+		<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+			<div class="flex items-center gap-3 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg text-sm">
+				<svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+				</svg>
+				<span>{toastMessage}</span>
+			</div>
+		</div>
+	{/if}
 </AuthGuard>

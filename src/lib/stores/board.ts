@@ -36,6 +36,7 @@ function createBoardStore() {
 				name: 'My Bingo Board',
 				size,
 				goals,
+				isPublic: false,
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date().toISOString()
 			};

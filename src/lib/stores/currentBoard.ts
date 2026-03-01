@@ -58,6 +58,7 @@ export const currentBoardStore = {
 					id,
 					name,
 					size,
+					is_public,
 					created_at,
 					updated_at,
 					goals (
@@ -99,6 +100,7 @@ export const currentBoardStore = {
 				id: data.id,
 				name: data.name,
 				size: data.size,
+				isPublic: data.is_public ?? false,
 				goals: (data.goals || [])
 					.sort((a: any, b: any) => a.position - b.position)
 					.map((goal: any) => ({
@@ -537,6 +539,100 @@ export const currentBoardStore = {
 			return { success: true };
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'Failed to reorder milestones';
+			return { success: false, error: errorMessage };
+		}
+	},
+
+	/**
+	 * Toggle whether this board is publicly visible
+	 */
+	async setPublic(boardId: string, isPublic: boolean) {
+		try {
+			const { error } = await supabase
+				.from('boards')
+				.update({ is_public: isPublic })
+				.eq('id', boardId);
+
+			if (error) {
+				throw error;
+			}
+
+			currentBoardState.update((state) => {
+				if (!state.board) return state;
+				return { ...state, board: { ...state.board, isPublic } };
+			});
+
+			return { success: true };
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : (error as any)?.message ?? 'Failed to update sharing';
+			return { success: false, error: errorMessage };
+		}
+	},
+
+	/**
+	 * Load a board for public (unauthenticated) viewing — goals only, no milestones
+	 */
+	async loadPublicBoard(boardId: string) {
+		currentBoardState.update((state) => ({ ...state, loading: true, error: null }));
+
+		try {
+			const { data, error } = await supabase
+				.from('boards')
+				.select(
+					`
+					id,
+					name,
+					size,
+					is_public,
+					created_at,
+					updated_at,
+					goals (
+						id,
+						position,
+						title,
+						completed
+					)
+				`
+				)
+				.eq('id', boardId)
+				.single();
+
+			if (error) {
+				throw error;
+			}
+
+			if (!data) {
+				throw new Error('Board not found');
+			}
+
+			const board: Board = {
+				id: data.id,
+				name: data.name,
+				size: data.size,
+				isPublic: data.is_public ?? false,
+				goals: (data.goals || [])
+					.sort((a: any, b: any) => a.position - b.position)
+					.map((goal: any) => ({
+						id: goal.id,
+						title: goal.title,
+						notes: '',
+						completed: goal.completed,
+						startedAt: null,
+						completedAt: null,
+						lastUpdatedAt: '',
+						milestones: []
+					})),
+				createdAt: data.created_at,
+				updatedAt: data.updated_at
+			};
+
+			currentBoardState.set({ board, loading: false, error: null, saving: false });
+
+			return { success: true, board };
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : 'Failed to load board';
+			currentBoardState.update((state) => ({ ...state, loading: false, error: errorMessage }));
 			return { success: false, error: errorMessage };
 		}
 	},

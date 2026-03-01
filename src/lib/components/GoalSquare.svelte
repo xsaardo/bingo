@@ -9,9 +9,10 @@
 		index: number;
 		isInBingo?: boolean;
 		boardSize: number;
+		readonly?: boolean;
 	}
 
-	let { goal, index, isInBingo = false, boardSize }: Props = $props();
+	let { goal, index, isInBingo = false, boardSize, readonly = false }: Props = $props();
 
 	// Calculate responsive text sizes based on board size
 	let titleTextClass = $derived(
@@ -102,14 +103,17 @@
 	data-testid="goal-square"
 	role="button"
 	tabindex="0"
-	onclick={selectGoal}
-	onkeydown={(e) => e.key === 'Enter' && selectGoal()}
-	class="aspect-square border-2 rounded-lg p-1 sm:p-2 md:p-3 lg:p-4 cursor-pointer transition-all duration-200 hover:shadow-md active:scale-95 overflow-hidden {isInBingo &&
-	goal.completed
+	onclick={readonly ? undefined : selectGoal}
+	onkeydown={readonly ? undefined : (e) => e.key === 'Enter' && selectGoal()}
+	class="aspect-square border-2 rounded-lg p-1 sm:p-2 md:p-3 lg:p-4 overflow-hidden transition-all duration-200 {readonly
+		? 'cursor-default'
+		: 'cursor-pointer hover:shadow-md active:scale-95'} {isInBingo && goal.completed
 		? 'bingo-winner bg-yellow-50 border-yellow-500 shadow-lg ring-2 ring-yellow-400 ring-offset-2'
 		: goal.completed
 			? 'bg-green-50 border-green-500'
-			: 'bg-white border-gray-300 hover:border-blue-400'}"
+			: readonly
+				? 'bg-white border-gray-200'
+				: 'bg-white border-gray-300 hover:border-blue-400'}"
 >
 	<div class="h-full flex flex-col justify-between min-h-0">
 		<div class="flex-1 flex items-center justify-center text-center px-1 overflow-hidden min-h-0">
@@ -121,43 +125,47 @@
 				>
 					{goal.title}
 				</p>
-			{:else}
+			{:else if !readonly}
 				<p class="{placeholderTextClass} text-gray-400 italic">Click to add</p>
 			{/if}
 		</div>
 
 		<div class="flex items-center justify-between mt-0.5 sm:mt-1 flex-shrink-0">
-			<button
-				data-testid="goal-checkbox"
-				onclick={toggleComplete}
-				class="{checkboxSizeClass} rounded border-2 flex items-center justify-center transition-all active:scale-90 flex-shrink-0 {goal.completed
-					? 'bg-green-500 border-green-500'
-					: 'border-gray-300 hover:border-green-500'}"
-			>
-				{#if goal.completed}
-					<svg
-						class="{checkmarkSizeClass} text-white"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="3"
-							d="M5 13l4 4L19 7"
-						/>
-					</svg>
-				{/if}
-			</button>
-
-			{#if goal.notes}
-				<span class="flex items-center gap-0.5 sm:gap-1 text-gray-500 flex-shrink-0">
-					<span class="{notesEmojiClass}">📝</span>
-					{#if lastUpdatedText}
-						<span class="{timeTextSize}">{lastUpdatedText}</span>
+			{#if !readonly}
+				<button
+					data-testid="goal-checkbox"
+					onclick={toggleComplete}
+					class="{checkboxSizeClass} rounded border-2 flex items-center justify-center transition-all active:scale-90 flex-shrink-0 {goal.completed
+						? 'bg-green-500 border-green-500'
+						: 'border-gray-300 hover:border-green-500'}"
+				>
+					{#if goal.completed}
+						<svg
+							class="{checkmarkSizeClass} text-white"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="3"
+								d="M5 13l4 4L19 7"
+							/>
+						</svg>
 					{/if}
-				</span>
+				</button>
+			{:else if goal.completed}
+				<svg
+					class="{checkmarkSizeClass} text-green-500 flex-shrink-0"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+				</svg>
+			{:else}
+				<span class="{checkboxSizeClass} flex-shrink-0"></span>
 			{/if}
 		</div>
 	</div>

@@ -28,6 +28,7 @@ export interface Board {
 	name: string;
 	size: number;
 	goals: Goal[];
+	isPublic: boolean;
 	createdAt: string;
 	updatedAt: string;
 }

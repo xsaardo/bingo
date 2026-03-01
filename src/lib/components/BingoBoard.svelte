@@ -6,6 +6,12 @@
 	import GoalModal from './GoalModal.svelte';
 	import Confetti from './Confetti.svelte';
 
+	interface Props {
+		readonly?: boolean;
+	}
+
+	let { readonly = false }: Props = $props();
+
 	let bingoLines = $derived<BingoLine[]>($currentBoard ? detectBingo($currentBoard) : []);
 	let hasBingo = $derived(bingoLines.length > 0);
 	let bingoIndices = $derived(new Set(bingoLines.flatMap((line) => line.indices)));
@@ -16,10 +22,10 @@
 {/if}
 
 {#if $currentBoard}
-	<div class="bg-white rounded-lg shadow-lg p-2 sm:p-3 md:p-4 relative">
+	<div class="bg-white rounded-lg shadow-lg p-2 sm:p-3 md:p-4 relative h-full">
 		<div
-			class="grid gap-2 sm:gap-3"
-			style="grid-template-columns: repeat({$currentBoard.size}, minmax(0, 1fr));"
+			class="grid gap-2 sm:gap-3 h-full"
+			style="grid-template-columns: repeat({$currentBoard.size}, minmax(0, 1fr)); grid-template-rows: repeat({$currentBoard.size}, minmax(0, 1fr));"
 		>
 			{#each $currentBoard.goals as goal, index}
 				<GoalSquare
@@ -27,17 +33,17 @@
 					{index}
 					isInBingo={bingoIndices.has(index)}
 					boardSize={$currentBoard.size}
+					{readonly}
 				/>
 			{/each}
 		</div>
 	</div>
 {/if}
 
-<!-- Goal Modal -->
-{#if $currentBoard && $uiStore.selectedGoalIndex !== null}
+<!-- Goal Modal — not shown in readonly mode -->
+{#if !readonly && $currentBoard && $uiStore.selectedGoalIndex !== null}
 	<GoalModal
 		goal={$currentBoard.goals[$uiStore.selectedGoalIndex]}
 		index={$uiStore.selectedGoalIndex}
 	/>
 {/if}
-
