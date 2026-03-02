@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Board } from '$lib/types';
+	import { boardsStore } from '$lib/stores/boards';
 
 	interface Props {
 		board: Board;
@@ -7,6 +8,11 @@
 	}
 
 	let { board, onDelete }: Props = $props();
+
+	function focusOnMount(node: HTMLElement) {
+		node.focus();
+		return {};
+	}
 
 	// Calculate completion stats
 	const completedGoals = $derived(board.goals.filter((g) => g.completed).length);
@@ -16,12 +22,71 @@
 	);
 	const hasContent = $derived(board.goals.some((g) => g.title.trim() !== ''));
 
+	// Inline edit state
+	let isEditing = $state(false);
+	let editName = $state('');
+	let saving = $state(false);
+	let saveError = $state<string | null>(null);
+
 	function handleDeleteClick(event: MouseEvent) {
 		event.preventDefault();
 		event.stopPropagation();
 		if (onDelete) {
 			onDelete(board.id);
 		}
+	}
+
+	function handleEditClick(event: MouseEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+		editName = board.name;
+		isEditing = true;
+		saveError = null;
+	}
+
+	function handleEditKeydown(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			saveName();
+		} else if (event.key === 'Escape') {
+			cancelEdit();
+		}
+	}
+
+	function cancelEdit() {
+		isEditing = false;
+		editName = '';
+		saveError = null;
+	}
+
+	async function saveName() {
+		const trimmed = editName.trim();
+		if (!trimmed) {
+			saveError = 'Name cannot be empty';
+			return;
+		}
+		if (trimmed.length > 100) {
+			saveError = 'Name must be 100 characters or fewer';
+			return;
+		}
+		if (trimmed === board.name) {
+			cancelEdit();
+			return;
+		}
+		saving = true;
+		saveError = null;
+		const result = await boardsStore.updateBoardName(board.id, trimmed);
+		saving = false;
+		if (result.success) {
+			isEditing = false;
+		} else {
+			saveError = result.error ?? 'Failed to save';
+		}
+	}
+
+	function handleInputClick(event: MouseEvent) {
+		event.preventDefault();
+		event.stopPropagation();
 	}
 
 	function formatDate(dateString: string) {
@@ -50,12 +115,57 @@
 	<div class="p-4 border-b border-gray-100">
 		<div class="flex items-start justify-between">
 			<div class="flex-1 min-w-0">
-				<h3
-					class="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors"
-				>
-					{board.name}
-				</h3>
-				</div>
+				{#if isEditing}
+					<div class="flex flex-col gap-1" onclick={handleInputClick}>
+						<div class="flex items-center gap-2">
+							<input
+								type="text"
+								bind:value={editName}
+								onkeydown={handleEditKeydown}
+								onblur={saveName}
+								disabled={saving}
+								maxlength={100}
+								class="flex-1 text-lg font-semibold text-gray-900 border border-blue-400 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+								use:focusOnMount
+							/>
+							<button
+								onclick={cancelEdit}
+								class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600 rounded transition-colors"
+								title="Cancel"
+								type="button"
+							>
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						</div>
+						{#if saveError}
+							<p class="text-xs text-red-500">{saveError}</p>
+						{/if}
+						{#if saving}
+							<p class="text-xs text-gray-400">Saving...</p>
+						{/if}
+					</div>
+				{:else}
+					<div class="flex items-center gap-1 group/name">
+						<h3
+							class="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors"
+						>
+							{board.name}
+						</h3>
+						<button
+							onclick={handleEditClick}
+							class="flex-shrink-0 p-1 text-gray-300 hover:text-blue-500 rounded opacity-0 group-hover/name:opacity-100 transition-all"
+							title="Rename board"
+							type="button"
+						>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+							</svg>
+						</button>
+					</div>
+				{/if}
+			</div>
 
 			<!-- Delete Button -->
 			{#if onDelete}
