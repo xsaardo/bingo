@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { currentBoardStore } from '$lib/stores/currentBoard';
 	import { uiStore } from '$lib/stores/board';
-	import { formatRelativeTime } from '$lib/utils/dates';
 	import type { Goal } from '$lib/types';
 
 	interface Props {
@@ -45,26 +44,6 @@
 			: boardSize === 4
 				? 'w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3'
 				: 'w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2'
-	);
-
-	let notesEmojiClass = $derived(
-		boardSize === 3
-			? 'text-[10px] sm:text-xs md:text-sm'
-			: boardSize === 4
-				? 'text-[8px] sm:text-[10px] md:text-xs'
-				: 'text-[7px] sm:text-[8px] md:text-[10px]'
-	);
-
-	let lastUpdatedText = $derived(
-		goal.lastUpdatedAt ? formatRelativeTime(goal.lastUpdatedAt) : null
-	);
-
-	let timeTextSize = $derived(
-		boardSize === 3
-			? 'text-[10px]'
-			: boardSize === 4
-				? 'text-[10px]'
-				: 'text-[8px]'
 	);
 
 	async function toggleComplete(e: Event) {
