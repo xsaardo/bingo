@@ -1,9 +1,9 @@
-// ABOUTME: Integration tests for Phase 3 - Date Auto-Population Logic
-// ABOUTME: Tests startedAt, completedAt, and lastUpdatedAt fields with automatic date tracking
+// ABOUTME: Integration tests for automatic date tracking on goals
+// ABOUTME: Verifies startedAt, completedAt, and lastUpdatedAt are set correctly on user actions
 
 import { test, expect } from '@playwright/test';
 
-test.describe('Phase 3: Date Auto-Population Logic', () => {
+test.describe('Goal Date Tracking', () => {
 	let testBoardId: string;
 	let firstGoalId: string;
 
@@ -17,10 +17,6 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 
 		const boardName = `Test Board ${Date.now()}`;
 		await page.fill('input[id="board-name"]', boardName);
-
-		// Select 3x3 size
-		const size3Button = page.locator('button').filter({ hasText: '3×3' });
-		await size3Button.click();
 
 		// Click the Create Board button in the modal
 		await page.click('button[type="submit"]:has-text("Create Board")');
@@ -69,8 +65,8 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 		}
 	});
 
-	test.describe('startedAt auto-population', () => {
-		test('should be null for new goals', async ({ page }) => {
+	test.describe('startedAt', () => {
+		test('is null for new goals', async ({ page }) => {
 			const goalData = await page.evaluate(async (goalId) => {
 				// @ts-expect-error - Browser import path, works at runtime via Vite
 				const supabaseModule = await import('/src/lib/supabaseClient');
@@ -88,17 +84,17 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			expect(goalData?.started_at).toBe(null);
 		});
 
-		test('should set on first title edit', async ({ page }) => {
-			// Open sidebar for first goal
+		test('is set on first title save', async ({ page }) => {
+			// Open goal modal and edit title
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
 
-			// Edit title
-			const titleInput = page.locator('input').first();
+			const titleInput = page.getByTestId('modal-title-input');
 			await titleInput.fill('My First Goal');
 
-			// Wait for auto-save
-			await page.waitForTimeout(600);
+			// Save and wait for modal to close (confirms async save completed)
+			await page.getByTestId('save-goal-button').click();
+			await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
 
 			// Check startedAt is now set
 			const goalData = await page.evaluate(async (goalId) => {
@@ -124,21 +120,26 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			expect(startedDate.toString()).not.toBe('Invalid Date');
 		});
 
-		test('should set on first notes edit', async ({ page }) => {
-			// Open and expand modal for first goal
+		test('is set on first notes save', async ({ page }) => {
+			// Open and expand goal modal
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
 			await page.getByTestId('expand-modal-button').click();
+			// Wait for expand animation (200ms CSS transition) before interacting
+			await page.waitForTimeout(300);
 
-			// Edit notes (skip title)
+			// Type into notes (title left empty)
 			const richTextEditor = page.getByTestId('rich-text-editor');
 			await richTextEditor.click();
-			await richTextEditor.type('These are my notes');
+			await richTextEditor.pressSequentially('These are my notes');
+			// Verify TipTap has processed the input before saving
+			await expect(richTextEditor).toContainText('These are my notes');
 
-			// Wait for auto-save
-			await page.waitForTimeout(600);
+			// Save and wait for modal to close (confirms async save completed)
+			await page.getByTestId('save-goal-button').click();
+			await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
 
-			// Check startedAt is now set
+			// Check startedAt is now set and notes were saved
 			const goalData = await page.evaluate(async (goalId) => {
 				// @ts-expect-error - Browser import path, works at runtime via Vite
 				const supabaseModule = await import('/src/lib/supabaseClient');
@@ -157,16 +158,19 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			expect(goalData?.started_at).not.toBe(null);
 		});
 
-		test('should NOT change on subsequent edits', async ({ page }) => {
-			// First edit - set title
+		test('does not change on subsequent saves', async ({ page }) => {
+			// First save — sets startedAt
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
 
-			const titleInput = page.locator('input').first();
+			const titleInput = page.getByTestId('modal-title-input');
 			await titleInput.fill('Initial Title');
-			await page.waitForTimeout(600);
 
-			// Get initial startedAt
+			// Save and wait for modal to close (confirms async save completed)
+			await page.getByTestId('save-goal-button').click();
+			await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+
+			// Capture the startedAt set by the first save
 			const initialStartedAt = await page.evaluate(async (goalId) => {
 				// @ts-expect-error - Browser import path, works at runtime via Vite
 				const supabaseModule = await import('/src/lib/supabaseClient');
@@ -183,15 +187,21 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 
 			expect(initialStartedAt).not.toBe(null);
 
-			// Wait a bit to ensure time would be different
+			// Wait to ensure a subsequent timestamp would differ
 			await page.waitForTimeout(100);
 
-			// Second edit - change title
+			// Second save — startedAt must not change
+			await page.getByTestId('goal-square').first().click();
+			await page.waitForSelector('[data-testid="goal-modal"]');
+
 			await titleInput.clear();
 			await titleInput.fill('Updated Title');
-			await page.waitForTimeout(600);
 
-			// Get updated startedAt
+			// Save and wait for modal to close (confirms async save completed)
+			await page.getByTestId('save-goal-button').click();
+			await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+
+			// Verify startedAt is unchanged
 			const updatedStartedAt = await page.evaluate(async (goalId) => {
 				// @ts-expect-error - Browser import path, works at runtime via Vite
 				const supabaseModule = await import('/src/lib/supabaseClient');
@@ -206,13 +216,12 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 				return data?.started_at;
 			}, firstGoalId);
 
-			// startedAt should not have changed
 			expect(updatedStartedAt).toBe(initialStartedAt);
 		});
 	});
 
-	test.describe('completedAt auto-population', () => {
-		test('should set when goal marked complete', async ({ page }) => {
+	test.describe('completedAt', () => {
+		test('is set when goal is completed', async ({ page }) => {
 			// Mark goal as complete
 			await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
 			await page.waitForTimeout(300);
@@ -241,9 +250,11 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			expect(completedDate.toString()).not.toBe('Invalid Date');
 		});
 
-		test('should clear when goal unchecked', async ({ page }) => {
-			// First, complete the goal
-			await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
+		test('is cleared when goal is unchecked', async ({ page }) => {
+			const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
+
+			// Complete the goal
+			await checkbox.click();
 			await page.waitForTimeout(300);
 
 			// Verify it's completed
@@ -264,8 +275,8 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			expect(goalData?.completed).toBe(true);
 			expect(goalData?.completed_at).not.toBe(null);
 
-			// Now uncheck it
-			await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
+			// Uncheck it
+			await checkbox.click();
 			await page.waitForTimeout(300);
 
 			// Check completedAt is now null
@@ -287,9 +298,11 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			expect(goalData?.completed_at).toBe(null);
 		});
 
-		test('should update if goal re-completed', async ({ page }) => {
+		test('is updated if goal is re-completed', async ({ page }) => {
+			const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
+
 			// First completion
-			await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
+			await checkbox.click();
 			await page.waitForTimeout(300);
 
 			const firstCompletedAt = await page.evaluate(async (goalId) => {
@@ -308,15 +321,11 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 
 			expect(firstCompletedAt).not.toBe(null);
 
-			// Uncomplete it
-			await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
+			// Uncomplete it, wait, then re-complete
+			await checkbox.click();
 			await page.waitForTimeout(300);
-
-			// Wait to ensure time difference
-			await page.waitForTimeout(100);
-
-			// Complete it again
-			await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
+			await page.waitForTimeout(100); // Ensure timestamp will differ
+			await checkbox.click();
 			await page.waitForTimeout(300);
 
 			const secondCompletedAt = await page.evaluate(async (goalId) => {
@@ -339,8 +348,8 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 		});
 	});
 
-	test.describe('lastUpdatedAt auto-population', () => {
-		test('should update on title change', async ({ page }) => {
+	test.describe('lastUpdatedAt', () => {
+		test('updates on title save', async ({ page }) => {
 			// Get initial lastUpdatedAt
 			const initialLastUpdated = await page.evaluate(async (goalId) => {
 				// @ts-expect-error - Browser import path, works at runtime via Vite
@@ -359,13 +368,16 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			// Wait to ensure time difference
 			await page.waitForTimeout(100);
 
-			// Edit title
+			// Edit and save title
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
 
-			const titleInput = page.locator('input').first();
+			const titleInput = page.getByTestId('modal-title-input');
 			await titleInput.fill('Changed Title');
-			await page.waitForTimeout(600);
+
+			// Save and wait for modal to close (confirms async save completed)
+			await page.getByTestId('save-goal-button').click();
+			await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
 
 			// Get updated lastUpdatedAt
 			const updatedLastUpdated = await page.evaluate(async (goalId) => {
@@ -382,7 +394,6 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 				return data?.last_updated_at;
 			}, firstGoalId);
 
-			// lastUpdatedAt should have changed
 			expect(updatedLastUpdated).not.toBe(initialLastUpdated);
 
 			// Verify new timestamp is after initial
@@ -391,7 +402,7 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			expect(updatedDate.getTime()).toBeGreaterThan(initialDate.getTime());
 		});
 
-		test('should update on notes change', async ({ page }) => {
+		test('updates on notes save', async ({ page }) => {
 			// Get initial lastUpdatedAt
 			const initialLastUpdated = await page.evaluate(async (goalId) => {
 				// @ts-expect-error - Browser import path, works at runtime via Vite
@@ -410,15 +421,22 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 			// Wait to ensure time difference
 			await page.waitForTimeout(100);
 
-			// Open and expand modal, then edit notes
+			// Open and expand modal, then type in notes and save
 			await page.getByTestId('goal-square').first().click();
 			await page.waitForSelector('[data-testid="goal-modal"]');
 			await page.getByTestId('expand-modal-button').click();
+			// Wait for expand animation (200ms CSS transition) before interacting
+			await page.waitForTimeout(300);
 
 			const richTextEditor = page.getByTestId('rich-text-editor');
 			await richTextEditor.click();
-			await richTextEditor.type('Updated notes');
-			await page.waitForTimeout(600);
+			await richTextEditor.pressSequentially('Updated notes');
+			// Verify TipTap has processed the input before saving
+			await expect(richTextEditor).toContainText('Updated notes');
+
+			// Save and wait for modal to close (confirms async save completed)
+			await page.getByTestId('save-goal-button').click();
+			await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
 
 			// Get updated lastUpdatedAt
 			const updatedLastUpdated = await page.evaluate(async (goalId) => {
@@ -435,11 +453,10 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 				return data?.last_updated_at;
 			}, firstGoalId);
 
-			// lastUpdatedAt should have changed
 			expect(updatedLastUpdated).not.toBe(initialLastUpdated);
 		});
 
-		test('should update on completion toggle', async ({ page }) => {
+		test('updates on completion toggle', async ({ page }) => {
 			// Get initial lastUpdatedAt
 			const initialLastUpdated = await page.evaluate(async (goalId) => {
 				// @ts-expect-error - Browser import path, works at runtime via Vite
@@ -477,7 +494,6 @@ test.describe('Phase 3: Date Auto-Population Logic', () => {
 				return data?.last_updated_at;
 			}, firstGoalId);
 
-			// lastUpdatedAt should have changed
 			expect(updatedLastUpdated).not.toBe(initialLastUpdated);
 		});
 	});
