@@ -21,10 +21,6 @@ test.describe('Milestone Drag and Drop', () => {
 		const boardName = `Test Board ${Date.now()}`;
 		await page.fill('input[id="board-name"]', boardName);
 
-		// Select 3x3 size
-		const size3Button = page.locator('button').filter({ hasText: '3×3' });
-		await size3Button.click();
-
 		// Click the Create Board button
 		await page.click('button[type="submit"]:has-text("Create Board")');
 
