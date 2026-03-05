@@ -17,10 +17,6 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 		const boardName = `Test Board ${Date.now()}`;
 		await page.fill('input[id="board-name"]', boardName);
 
-		// Select 3x3 size
-		const size3Button = page.locator('button').filter({ hasText: '3×3' });
-		await size3Button.click();
-
 		// Click the Create Board button in the modal
 		await page.click('button[type="submit"]:has-text("Create Board")');
 
@@ -150,7 +146,7 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 
 		// Verify board loaded correctly
 		const goalCount = await page.getByTestId('goal-square').count();
-		expect(goalCount).toBe(9); // 3x3 board
+		expect(goalCount).toBe(25); // 5x5 board (default size)
 
 		// Verify no console errors
 		expect(consoleErrors).toHaveLength(0);
@@ -172,11 +168,8 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 		const titleInput = page.locator('input').first();
 		await titleInput.fill('Test Goal Title');
 
-		// Wait for auto-save
-		await page.waitForTimeout(600);
-
-		// Close sidebar
-		await page.keyboard.press('Escape');
+		// Save and close
+		await page.getByTestId('save-goal-button').click();
 		await page.waitForTimeout(200);
 
 		// Verify title is displayed
