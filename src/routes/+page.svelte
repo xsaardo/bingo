@@ -5,11 +5,13 @@
   import UserMenu from '$lib/components/UserMenu.svelte';
   import Logo from '$lib/components/Logo.svelte';
   import { getAnonymousBoardId, saveAnonymousBoardId } from '$lib/utils/storage';
+  import { Input } from '$lib/components/ui/input/index.js';
+  import { Label } from '$lib/components/ui/label/index.js';
 
   let boardName = $state('My 2026 Goals');
   let creating = $state(false);
   let error = $state('');
-  let nameInput = $state<HTMLInputElement>();
+  let nameInput = $state<HTMLInputElement | null>(null);
   let buttonWidth = $state(0);
   let buttonHeight = $state(0);
 
@@ -126,11 +128,11 @@
           <div class="space-y-6">
             <!-- Board Name -->
             <div>
-              <label for="board-name" class="block text-sm font-medium text-gray-700 mb-2">
+              <Label for="board-name" class="block mb-2">
                 What's your board called?
-              </label>
-              <input
-                bind:this={nameInput}
+              </Label>
+              <Input
+                bind:ref={nameInput}
                 id="board-name"
                 type="text"
                 bind:value={boardName}
@@ -138,7 +140,7 @@
                 onkeydown={handleKeyDown}
                 placeholder="My 2026 Goals"
                 disabled={creating}
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                class="w-full px-4 py-3 h-auto"
               />
             </div>
 

@@ -1,5 +1,7 @@
 <script lang="ts">
   import { authStore } from '$lib/stores/auth';
+  import { Input } from '$lib/components/ui/input/index.js';
+  import { Label } from '$lib/components/ui/label/index.js';
 
   let email = '';
   let loading = false;
@@ -79,17 +81,15 @@
     class="space-y-4"
   >
     <div>
-      <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-        Email address
-      </label>
-      <input
+      <Label for="email" class="block mb-2">Email address</Label>
+      <Input
         id="email"
         type="email"
         bind:value={email}
         placeholder="you@example.com"
         required
         disabled={loading}
-        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
+        class="w-full px-4 py-3 h-auto"
       />
     </div>
 
