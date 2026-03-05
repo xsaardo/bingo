@@ -34,8 +34,8 @@ test('anonymous user sees sign-in prompt instead of notes/milestones in goal mod
 	await page.getByTestId('goal-square').first().click();
 	await expect(page.getByTestId('goal-modal')).toBeVisible();
 
-	// Modal is collapsed by default — sign-in prompt not yet visible
-	await expect(page.getByTestId('sign-in-for-details')).not.toBeVisible();
+	// Modal is collapsed by default — sign-in prompt clipped to zero height by CSS grid animation
+	await expect(page.getByTestId('sign-in-for-details')).not.toBeInViewport();
 
 	// Expand the modal
 	await page.getByTestId('expand-modal-button').click();

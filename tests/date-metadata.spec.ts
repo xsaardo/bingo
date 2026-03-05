@@ -16,10 +16,6 @@ test.describe('DateMetadata Component', () => {
 		const boardName = `Test Board ${Date.now()}`;
 		await page.fill('input[id="board-name"]', boardName);
 
-		// Select 3x3 size
-		const size3Button = page.locator('button').filter({ hasText: '3×3' });
-		await size3Button.click();
-
 		// Click the Create Board button
 		await page.click('button[type="submit"]:has-text("Create Board")');
 
@@ -72,14 +68,10 @@ test.describe('DateMetadata Component', () => {
 		const startedBefore = await page.locator('text=Started:').count();
 		expect(startedBefore).toBe(0);
 
-		// Edit title
+		// Edit title and save (saving sets startedAt on first edit)
 		const titleInput = page.locator('input').first();
 		await titleInput.fill('My Goal');
-		await page.waitForTimeout(600); // Wait for auto-save
-
-		// Close modal to save and refresh data
-		await page.locator('[data-testid="close-modal-button"]').click();
-		await page.waitForTimeout(200);
+		await page.getByTestId('save-goal-button').click();
 
 		// Reopen and expand modal to see updated data
 		await page.getByTestId('goal-square').first().click();
