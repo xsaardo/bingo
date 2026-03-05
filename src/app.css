@@ -1,52 +1,52 @@
 @import 'tailwindcss';
 
 /*
-  shadcn-svelte CSS variables
-  Primary color mapped to blue-600 (#2563eb = hsl(221 83% 53%))
+  shadcn-svelte CSS variables (oklch format)
+  Primary color mapped to blue-600
 */
 :root {
-	--background: 0 0% 100%;
-	--foreground: 222.2 84% 4.9%;
-	--card: 0 0% 100%;
-	--card-foreground: 222.2 84% 4.9%;
-	--popover: 0 0% 100%;
-	--popover-foreground: 222.2 84% 4.9%;
-	--primary: 221 83% 53%; /* blue-600 */
-	--primary-foreground: 0 0% 100%; /* white */
-	--secondary: 210 40% 96.1%;
-	--secondary-foreground: 222.2 47.4% 11.2%;
-	--muted: 210 40% 96.1%;
-	--muted-foreground: 215.4 16.3% 46.9%;
-	--accent: 210 40% 96.1%;
-	--accent-foreground: 222.2 47.4% 11.2%;
-	--destructive: 0 84.2% 60.2%;
-	--destructive-foreground: 0 0% 100%;
-	--border: 214.3 31.8% 91.4%;
-	--input: 214.3 31.8% 91.4%;
-	--ring: 221 83% 53%; /* blue-600 */
 	--radius: 0.5rem;
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.145 0 0);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.145 0 0);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.145 0 0);
+	--primary: oklch(0.511 0.262 264.052); /* blue-600 */
+	--primary-foreground: oklch(1 0 0);
+	--secondary: oklch(0.967 0.003 264.542);
+	--secondary-foreground: oklch(0.21 0.034 264.665);
+	--muted: oklch(0.967 0.003 264.542);
+	--muted-foreground: oklch(0.551 0.027 264.364);
+	--accent: oklch(0.967 0.003 264.542);
+	--accent-foreground: oklch(0.21 0.034 264.665);
+	--destructive: oklch(0.577 0.245 27.325);
+	--destructive-foreground: oklch(1 0 0);
+	--border: oklch(0.928 0.006 264.531);
+	--input: oklch(0.928 0.006 264.531);
+	--ring: oklch(0.511 0.262 264.052); /* blue-600 */
 }
 
 .dark {
-	--background: 222.2 84% 4.9%;
-	--foreground: 210 40% 98%;
-	--card: 222.2 84% 4.9%;
-	--card-foreground: 210 40% 98%;
-	--popover: 222.2 84% 4.9%;
-	--popover-foreground: 210 40% 98%;
-	--primary: 217 91% 60%; /* blue-500 — slightly lighter for dark mode */
-	--primary-foreground: 0 0% 100%;
-	--secondary: 217.2 32.6% 17.5%;
-	--secondary-foreground: 210 40% 98%;
-	--muted: 217.2 32.6% 17.5%;
-	--muted-foreground: 215 20.2% 65.1%;
-	--accent: 217.2 32.6% 17.5%;
-	--accent-foreground: 210 40% 98%;
-	--destructive: 0 62.8% 50%;
-	--destructive-foreground: 0 0% 100%;
-	--border: 217.2 32.6% 17.5%;
-	--input: 217.2 32.6% 17.5%;
-	--ring: 217 91% 60%;
+	--background: oklch(0.145 0 0);
+	--foreground: oklch(0.985 0 0);
+	--card: oklch(0.205 0 0);
+	--card-foreground: oklch(0.985 0 0);
+	--popover: oklch(0.205 0 0);
+	--popover-foreground: oklch(0.985 0 0);
+	--primary: oklch(0.546 0.245 262.881); /* blue-500 for dark mode */
+	--primary-foreground: oklch(1 0 0);
+	--secondary: oklch(0.269 0 0);
+	--secondary-foreground: oklch(0.985 0 0);
+	--muted: oklch(0.269 0 0);
+	--muted-foreground: oklch(0.708 0 0);
+	--accent: oklch(0.269 0 0);
+	--accent-foreground: oklch(0.985 0 0);
+	--destructive: oklch(0.704 0.191 22.216);
+	--destructive-foreground: oklch(1 0 0);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.546 0.245 262.881);
 }
 
 .theme-horse {
