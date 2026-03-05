@@ -1,9 +1,9 @@
-// ABOUTME: Integration tests for Phase 2 - Data Model Updates
-// ABOUTME: Tests new Goal fields (date metadata, milestones array) with Supabase persistence
+// ABOUTME: Integration tests for goal date fields (started_at, completed_at, last_updated_at)
+// ABOUTME: Verifies default values, persistence across reloads, and basic goal workflow
 
 import { test, expect } from '@playwright/test';
 
-test.describe('Phase 2: Enhanced Data Model', () => {
+test.describe('Goal Date Fields', () => {
 	let testBoardId: string;
 
 	// Create a fresh test board before each test
@@ -41,7 +41,6 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 	// Clean up test board after each test
 	test.afterEach(async ({ page }) => {
 		if (testBoardId) {
-			// Delete the test board via Supabase
 			await page.evaluate(async (boardId) => {
 				// @ts-expect-error - Browser import path, works at runtime via Vite
 				const supabaseModule = await import('/src/lib/supabaseClient');
@@ -72,12 +71,10 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 				return { error: error?.message || 'No data' };
 			}
 
-			// Verify structure
 			return {
 				hasStartedAt: data.started_at === null, // Should be null initially
 				hasCompletedAt: data.completed_at === null, // Should be null initially
 				hasLastUpdatedAt: typeof data.last_updated_at === 'string' // Should exist
-				// Note: milestones will be loaded separately in later phases
 			};
 		}, testBoardId);
 
@@ -135,7 +132,7 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 		expect(afterReloadData!.completed_at).toBe(null);
 	});
 
-	test('goals load without errors with new data model', async ({ page }) => {
+	test('board loads with correct goal count and no console errors', async ({ page }) => {
 		// Monitor console for errors
 		const consoleErrors: string[] = [];
 		page.on('console', (msg) => {
@@ -152,7 +149,7 @@ test.describe('Phase 2: Enhanced Data Model', () => {
 		expect(consoleErrors).toHaveLength(0);
 	});
 
-	test('can create, edit, and complete goals with new data model', async ({ page }) => {
+	test('can edit title and complete a goal', async ({ page }) => {
 		const consoleErrors: string[] = [];
 		page.on('console', (msg) => {
 			if (msg.type() === 'error') {
