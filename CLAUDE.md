@@ -53,6 +53,7 @@ Only pause to ask for confirmation when:
 
 ## Writing code
 
+- Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.
 - When submitting work, verify that you have FOLLOWED ALL RULES. (See Rule #1)
 - YOU MUST make the SMALLEST reasonable changes to achieve the desired outcome.
 - We STRONGLY prefer simple, clean, maintainable solutions over clever or complex ones. Readability and maintainability are PRIMARY CONCERNS, even at the cost of conciseness or performance.

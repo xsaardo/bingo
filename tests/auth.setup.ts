@@ -9,6 +9,12 @@ setup('authenticate', async ({ page }) => {
 	// Navigate to login page
 	await page.goto('/auth/login');
 
+	// Wait for the app's anonymous auth init to complete before signing in.
+	// authStore.init() runs async in onMount and calls signInAnonymously(); if
+	// signInWithPassword races ahead of it, the anonymous sign-in can overwrite
+	// the password session and the redirect to /dashboard never fires.
+	await page.waitForLoadState('networkidle');
+
 	// Get credentials from Node.js environment
 	const email = process.env.TEST_USER_EMAIL || 'test@example.com';
 	const password = process.env.TEST_USER_PASSWORD || 'test-password-123';

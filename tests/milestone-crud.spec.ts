@@ -17,10 +17,6 @@ test.describe('Milestone CRUD Operations', () => {
 		const boardName = `Test Board ${Date.now()}`;
 		await page.fill('input[id="board-name"]', boardName);
 
-		// Select 3x3 size
-		const size3Button = page.locator('button').filter({ hasText: '3×3' });
-		await size3Button.click();
-
 		// Click the Create Board button
 		await page.click('button[type="submit"]:has-text("Create Board")');
 
@@ -205,8 +201,8 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
-			// Expand milestone
-			await page.locator('text=Original Title').locator('..').locator('button').last().click();
+			// Expand milestone by clicking the row
+			await page.getByTestId('milestone-item').click();
 			await page.waitForTimeout(200);
 
 			// Edit title
@@ -319,8 +315,8 @@ test.describe('Milestone CRUD Operations', () => {
 			await page.click('button.bg-blue-500:has-text("Add")');
 			await page.waitForTimeout(300);
 
-			// Expand milestone
-			await page.locator('text=Test Milestone').locator('..').locator('button').last().click();
+			// Expand milestone by clicking the row
+			await page.getByTestId('milestone-item').click();
 			await page.waitForTimeout(200);
 
 			// Click delete button

@@ -62,8 +62,8 @@ test.describe('RichTextEditor Component', () => {
 				await editor.click();
 				await editor.type(text);
 
-				// Select all text (use Meta on Mac, Control on others)
-				await page.keyboard.press('Meta+A');
+				// Select all text (ControlOrMeta maps to Ctrl on Linux/Windows, Cmd on Mac)
+				await page.keyboard.press('ControlOrMeta+A');
 
 				// Click formatting button
 				await page.getByTestId(button).click();
@@ -91,7 +91,7 @@ test.describe('RichTextEditor Component', () => {
 				await editor.click();
 				// Type text first, then convert to list
 				await page.keyboard.type('Item 1');
-				await page.keyboard.press('Meta+A');
+				await page.keyboard.press('ControlOrMeta+A');
 				await page.getByTestId(button).click();
 
 				const listElement = editor.locator(tag);
@@ -109,7 +109,7 @@ test.describe('RichTextEditor Component', () => {
 		const editor = page.getByTestId('rich-text-editor');
 		await editor.click();
 		await editor.type('This is bold');
-		await page.keyboard.press('Meta+A');
+		await page.keyboard.press('ControlOrMeta+A');
 		await page.getByTestId('editor-bold-button').click();
 
 		// Save and close modal
@@ -134,7 +134,7 @@ test.describe('RichTextEditor Component', () => {
 		const editor = page.getByTestId('rich-text-editor');
 		await editor.click();
 		await editor.type('Database test');
-		await page.keyboard.press('Meta+A');
+		await page.keyboard.press('ControlOrMeta+A');
 		await page.getByTestId('editor-bold-button').click();
 
 		// Save and close modal
@@ -154,10 +154,10 @@ test.describe('RichTextEditor Component', () => {
 		const editor = page.getByTestId('rich-text-editor');
 		await editor.click();
 		await editor.type('Keyboard shortcut');
-		await page.keyboard.press('Meta+A');
+		await page.keyboard.press('ControlOrMeta+A');
 
 		// Test Cmd+B for bold
-		await page.keyboard.press('Meta+B');
+		await page.keyboard.press('ControlOrMeta+B');
 
 		const boldElement = editor.locator('strong, b');
 		await expect(boldElement).toBeVisible();
@@ -170,7 +170,7 @@ test.describe('RichTextEditor Component', () => {
 		const editor = page.getByTestId('rich-text-editor');
 		await editor.click();
 		await editor.type('Text');
-		await page.keyboard.press('Meta+A');
+		await page.keyboard.press('ControlOrMeta+A');
 		await page.getByTestId('editor-bold-button').click();
 
 		// Bold button should show active state
