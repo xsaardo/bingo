@@ -61,6 +61,7 @@
 		<!-- User Menu Button -->
 		<button
 			id="user-menu-button"
+			data-testid="user-menu-button"
 			onclick={toggleMenu}
 			class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
 			aria-expanded={isOpen}

@@ -42,7 +42,9 @@ setup('authenticate', async ({ page }) => {
 		{ email, password }
 	);
 
-	// Wait for redirect to dashboard (indicates successful login)
+	// Navigate to dashboard after signing in (the evaluate call sets the session
+	// but doesn't trigger the app's redirect logic)
+	await page.goto('/dashboard');
 	await page.waitForURL('/dashboard', { timeout: 10000 });
 
 	// Verify we're logged in by checking for the New Board button

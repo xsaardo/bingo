@@ -36,13 +36,19 @@ test.describe('Sharing toggle', () => {
 		// Share URL input/text should appear
 		const shareUrl = page
 			.getByTestId('share-url')
-			.or(page.locator('input[readonly][value*="/share/"]'))
-			.or(page.locator('text=/share/' + testBoardId));
+			.or(page.locator('input[readonly][value*="/share/"]'));
 		await expect(shareUrl.first()).toBeVisible({ timeout: 5000 });
 	});
 
-	test('copy button copies the correct share URL to clipboard', async ({ page, context }) => {
-		// Grant clipboard permission
+	test('copy button copies the correct share URL to clipboard', async ({
+		page,
+		context,
+		browserName
+	}) => {
+		// Clipboard isolation only works reliably in Chromium; Firefox/WebKit use the system clipboard
+		test.skip(browserName !== 'chromium', 'Clipboard API only reliably testable in Chromium');
+
+		// Grant clipboard permissions for Chromium
 		await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 
 		await page.goto(`/boards/${testBoardId}`);
@@ -64,7 +70,7 @@ test.describe('Sharing toggle', () => {
 			.getByTestId('copy-share-url')
 			.or(page.locator('button[aria-label*="copy" i]'))
 			.or(page.locator('button:has-text("Copy")'));
-		if (await copyBtn.count() > 0) {
+		if ((await copyBtn.count()) > 0) {
 			await copyBtn.click();
 		}
 
@@ -126,7 +132,10 @@ test.describe('Public share view', () => {
 		await anonPage.close();
 	});
 
-	test('goal squares on the public view are not clickable (readonly)', async ({ page, context }) => {
+	test('goal squares on the public view are not clickable (readonly)', async ({
+		page,
+		context
+	}) => {
 		// Enable sharing
 		await page.goto(`/boards/${testBoardId}`);
 		await page.waitForSelector('[data-testid="goal-square"]');

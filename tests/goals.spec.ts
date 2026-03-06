@@ -1,5 +1,5 @@
-// ABOUTME: E2E tests for board interaction (goal modal, completion, bingo detection)
-// ABOUTME: Covers clicking goals, editing, persistence, and bingo confetti
+// ABOUTME: E2E tests for goal interactions on the board
+// ABOUTME: Covers modal open/save/discard, title/notes persistence, completion, and bingo detection
 
 import { test, expect } from '@playwright/test';
 import {
@@ -8,13 +8,15 @@ import {
 	getFirstGoalId,
 	getGoalData,
 	openFirstGoalModal,
-	waitForAutoSave
+	expandGoalModal
 } from './test-helpers';
 
 let testBoardId: string;
+let firstGoalId: string;
 
 test.beforeEach(async ({ page }) => {
 	testBoardId = await createTestBoard(page);
+	firstGoalId = await getFirstGoalId(page, testBoardId);
 });
 
 test.afterEach(async ({ page }) => {
@@ -28,8 +30,6 @@ test.describe('Goal modal', () => {
 	});
 
 	test('editing a goal title persists after page reload', async ({ page }) => {
-		const goalId = await getFirstGoalId(page, testBoardId);
-
 		await openFirstGoalModal(page);
 		await page.getByTestId('modal-title-input').fill('My Persistent Goal');
 		await page.getByTestId('save-goal-button').click();
@@ -40,13 +40,11 @@ test.describe('Goal modal', () => {
 		await page.waitForSelector('[data-testid="goal-square"]');
 
 		// Verify the title was saved
-		const goal = await getGoalData(page, goalId, 'title');
+		const goal = await getGoalData(page, firstGoalId, 'title');
 		expect(goal.title).toBe('My Persistent Goal');
 	});
 
 	test('editing goal notes persists after page reload', async ({ page }) => {
-		const goalId = await getFirstGoalId(page, testBoardId);
-
 		await openFirstGoalModal(page);
 
 		// Expand the modal to show notes
@@ -71,16 +69,51 @@ test.describe('Goal modal', () => {
 		await page.waitForSelector('[data-testid="goal-square"]');
 
 		// Confirm persistence via DB
-		const goal = await getGoalData(page, goalId, 'notes');
+		const goal = await getGoalData(page, firstGoalId, 'notes');
 		// Notes may be stored as rich text (HTML) — just verify they exist
 		expect(goal).not.toBeNull();
 	});
+
+	test('Save button closes the modal', async ({ page }) => {
+		await openFirstGoalModal(page);
+		await page.getByTestId('save-goal-button').click();
+		await expect(page.getByTestId('goal-modal')).not.toBeVisible();
+	});
+
+	test('closing modal without saving discards changes', async ({ page }) => {
+		await openFirstGoalModal(page);
+		await page.getByTestId('modal-title-input').fill('Unsaved Title');
+
+		// Close without clicking Save
+		await page.getByTestId('close-modal-button').click();
+
+		// Title should not be saved
+		const goal = await getGoalData(page, firstGoalId, 'title');
+		expect(goal.title).toBe('');
+	});
+
+	test('Save button persists title even after toggling completion', async ({ page }) => {
+		await openFirstGoalModal(page);
+
+		// Type a title
+		await page.getByTestId('modal-title-input').fill('My Goal Title');
+
+		// Toggle the completion checkbox (this triggers a store update)
+		await page.getByTestId('modal-checkbox').click();
+
+		// Click Save and wait for modal to close (save completes before close)
+		await page.getByTestId('save-goal-button').click();
+		await expect(page.getByTestId('goal-modal')).not.toBeVisible();
+
+		// Verify the title was saved to the database
+		const goal = await getGoalData(page, firstGoalId, 'title, completed');
+		expect(goal.title).toBe('My Goal Title');
+		expect(goal.completed).toBe(true);
+	});
 });
 
-test.describe('Goal completion and bingo detection', () => {
+test.describe('Goal completion', () => {
 	test('toggling goal completion updates the checkbox state', async ({ page }) => {
-		const goalId = await getFirstGoalId(page, testBoardId);
-
 		await openFirstGoalModal(page);
 
 		const checkbox = page.getByTestId('modal-checkbox');
@@ -90,8 +123,45 @@ test.describe('Goal completion and bingo detection', () => {
 		await page.getByTestId('save-goal-button').click();
 		await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
-		const goal = await getGoalData(page, goalId, 'completed');
+		const goal = await getGoalData(page, firstGoalId, 'completed');
 		expect(goal.completed).toBe(!initialChecked);
+	});
+
+	test('can edit title and complete a goal', async ({ page }) => {
+		const consoleErrors: string[] = [];
+		page.on('console', (msg) => {
+			if (msg.type() === 'error') {
+				consoleErrors.push(msg.text());
+			}
+		});
+
+		// Open sidebar for first goal
+		await page.getByTestId('goal-square').first().click();
+		await page.waitForSelector('[data-testid="goal-modal"]');
+
+		// Edit title
+		const titleInput = page.locator('input').first();
+		await titleInput.fill('Test Goal Title');
+
+		// Save and close
+		await page.getByTestId('save-goal-button').click();
+		await page.waitForTimeout(200);
+
+		// Verify title is displayed
+		await expect(page.locator('text=Test Goal Title').first()).toBeVisible();
+
+		// Toggle completion
+		await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
+
+		// Wait for update
+		await page.waitForTimeout(300);
+
+		// Verify completed styling
+		const goalSquare = page.getByTestId('goal-square').first();
+		await expect(goalSquare).toHaveClass(/bg-green-50/);
+
+		// Verify no console errors occurred
+		expect(consoleErrors).toHaveLength(0);
 	});
 
 	test('bingo confetti appears when a row is completed', async ({ page }) => {

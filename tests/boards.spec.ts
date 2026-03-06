@@ -1,5 +1,5 @@
 // ABOUTME: E2E tests for board management on the dashboard
-// ABOUTME: Covers create, delete with confirmation, and navigation to boards
+// ABOUTME: Covers create, delete with confirmation, navigation, and board load verification
 
 import { test, expect } from '@playwright/test';
 import { deleteTestBoard } from './test-helpers';
@@ -15,7 +15,7 @@ test.afterEach(async ({ page }) => {
 
 async function createBoardWithSize(
 	page: import('@playwright/test').Page,
-	size?: '3x3' | '4x4' | '5x5'
+	size?: '4x4' | '5x5'
 ): Promise<string> {
 	await page.goto('/dashboard');
 	await page.click('button:has-text("New Board")');
@@ -27,7 +27,7 @@ async function createBoardWithSize(
 	if (size) {
 		// Select grid size if the option is present
 		const sizeSelect = page.locator('select[name="size"], [data-testid="board-size-select"]');
-		if (await sizeSelect.count() > 0) {
+		if ((await sizeSelect.count()) > 0) {
 			await sizeSelect.selectOption(size);
 		}
 	}
@@ -50,30 +50,20 @@ test.describe('Board creation', () => {
 		await expect(page.getByTestId('goal-square').first()).toBeVisible({ timeout: 10000 });
 	});
 
-	test('creates a 3x3 board', async ({ page }) => {
-		await page.goto('/dashboard');
-		await page.click('button:has-text("New Board")');
-		await page.waitForSelector('input[id="board-name"]');
+	test('default board has 25 goal squares with no console errors', async ({ page }) => {
+		createdBoardId = await createBoardWithSize(page);
 
-		const boardName = `3x3 Board ${Date.now()}`;
-		await page.fill('input[id="board-name"]', boardName);
+		const consoleErrors: string[] = [];
+		page.on('console', (msg) => {
+			if (msg.type() === 'error') {
+				consoleErrors.push(msg.text());
+			}
+		});
 
-		const sizeSelect = page.locator('select[name="size"], [data-testid="board-size-select"]');
-		if (await sizeSelect.count() > 0) {
-			await sizeSelect.selectOption('3x3');
-		}
-
-		await page.click('button[type="submit"]:has-text("Create Board")');
-		await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 5000 });
-
-		await page.waitForSelector(`text=${boardName}`, { timeout: 5000 });
-		await page.click(`text=${boardName}`);
-		await page.waitForURL(/\/boards\/.+/, { timeout: 10000 });
-		createdBoardId = page.url().split('/').pop()!;
-
-		// 3x3 = 9 goal squares
-		const squares = await page.getByTestId('goal-square').count();
-		expect(squares).toBeGreaterThanOrEqual(9);
+		await page.waitForSelector('[data-testid="goal-square"]', { timeout: 10000 });
+		const goalCount = await page.getByTestId('goal-square').count();
+		expect(goalCount).toBe(25); // 5x5 board (default size)
+		expect(consoleErrors).toHaveLength(0);
 	});
 
 	test('creates a 5x5 board', async ({ page }) => {
@@ -85,7 +75,7 @@ test.describe('Board creation', () => {
 		await page.fill('input[id="board-name"]', boardName);
 
 		const sizeSelect = page.locator('select[name="size"], [data-testid="board-size-select"]');
-		if (await sizeSelect.count() > 0) {
+		if ((await sizeSelect.count()) > 0) {
 			await sizeSelect.selectOption('5x5');
 		}
 
@@ -98,6 +88,7 @@ test.describe('Board creation', () => {
 		createdBoardId = page.url().split('/').pop()!;
 
 		// 5x5 = 25 goal squares
+		await page.waitForSelector('[data-testid="goal-square"]', { timeout: 10000 });
 		const squares = await page.getByTestId('goal-square').count();
 		expect(squares).toBeGreaterThanOrEqual(25);
 	});
@@ -126,13 +117,13 @@ test.describe('Board deletion', () => {
 		await deleteBtn.click();
 
 		// Confirmation dialog should appear
-		const confirmBtn = page
-			.getByRole('button', { name: /confirm|yes|delete/i })
-			.or(page.getByTestId('confirm-delete-button'));
-		await confirmBtn.click();
+		await page.waitForSelector('[data-testid="confirm-delete-button"]');
+		await page.getByTestId('confirm-delete-button').click();
 
-		// Board should disappear from the list
-		await expect(page.locator(`text=${boardName}`)).not.toBeVisible({ timeout: 5000 });
+		// Board card should disappear from the list
+		await expect(
+			page.getByTestId('board-card').filter({ hasText: boardName })
+		).not.toBeVisible({ timeout: 5000 });
 		// No cleanup needed — board was deleted
 		createdBoardId = null;
 	});
@@ -141,7 +132,6 @@ test.describe('Board deletion', () => {
 test.describe('Board navigation', () => {
 	test('navigates to a board from the dashboard', async ({ page }) => {
 		createdBoardId = await createBoardWithSize(page);
-		const boardUrl = page.url();
 
 		// Go back to dashboard and click the board card
 		await page.goto('/dashboard');

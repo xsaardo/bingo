@@ -109,6 +109,7 @@
 
 <a
 	href="/boards/{board.id}"
+	data-testid="board-card"
 	class="block bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all duration-200 overflow-hidden group"
 >
 	<!-- Header -->
@@ -173,6 +174,8 @@
 					onclick={handleDeleteClick}
 					class="flex-shrink-0 ml-2 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
 					title="Delete board"
+					aria-label="Delete board"
+					data-testid="delete-board-button"
 				>
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
