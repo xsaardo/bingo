@@ -105,6 +105,8 @@
 			<div class="flex items-center gap-3">
 				<button
 					onclick={toggleComplete}
+					role="checkbox"
+					aria-checked={goal.completed}
 					class="shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all active:scale-90 {goal.completed
 						? 'bg-green-500 border-green-500'
 						: 'border-gray-300 hover:border-green-500'}"

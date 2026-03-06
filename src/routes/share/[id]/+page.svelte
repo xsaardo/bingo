@@ -72,7 +72,7 @@
 				<p class="text-gray-600">Loading board...</p>
 			</div>
 		{:else if $currentBoardError}
-			<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+			<div data-testid="share-error" class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
 				<div class="max-w-md mx-auto space-y-4">
 					<ErrorAlert error={$currentBoardError} />
 					<p class="text-sm text-gray-500 text-center">

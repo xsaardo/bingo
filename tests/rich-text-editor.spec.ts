@@ -112,9 +112,9 @@ test.describe('RichTextEditor Component', () => {
 		await page.keyboard.press('ControlOrMeta+A');
 		await page.getByTestId('editor-bold-button').click();
 
-		// Save and close modal
+		// Save — button closes modal after async save completes
 		await page.getByTestId('save-goal-button').click();
-		await closeModal(page);
+		await page.getByTestId('goal-modal').waitFor({ state: 'hidden', timeout: 5000 });
 
 		// Reopen modal
 		await openFirstGoalModal(page);
@@ -137,9 +137,9 @@ test.describe('RichTextEditor Component', () => {
 		await page.keyboard.press('ControlOrMeta+A');
 		await page.getByTestId('editor-bold-button').click();
 
-		// Save and close modal
+		// Save — button closes modal after async save completes
 		await page.getByTestId('save-goal-button').click();
-		await closeModal(page);
+		await page.getByTestId('goal-modal').waitFor({ state: 'hidden', timeout: 5000 });
 
 		// Check database contains HTML
 		const goalData = await getGoalData(page, firstGoalId, 'notes');

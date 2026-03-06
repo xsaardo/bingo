@@ -181,6 +181,7 @@
 						type="button"
 						onclick={handleDelete}
 						disabled={loading}
+						data-testid="confirm-delete-button"
 						class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:bg-red-300 disabled:cursor-not-allowed flex items-center"
 					>
 						{#if loading}

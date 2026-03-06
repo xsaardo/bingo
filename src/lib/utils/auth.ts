@@ -90,7 +90,7 @@ export async function signInAnonymously(): Promise<AuthResult> {
  */
 export async function signOut(): Promise<AuthResult> {
 	try {
-		const { error } = await supabase.auth.signOut();
+		const { error } = await supabase.auth.signOut({ scope: 'local' });
 
 		if (error) {
 			return {

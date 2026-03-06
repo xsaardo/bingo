@@ -112,11 +112,11 @@ export async function expandGoalModal(page: Page): Promise<void> {
 }
 
 /**
- * Closes the modal using Escape key
+ * Closes the modal using Escape key and waits for it to fully disappear
  */
 export async function closeModal(page: Page): Promise<void> {
 	await page.keyboard.press('Escape');
-	await page.waitForTimeout(200);
+	await page.getByTestId('goal-modal').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
 }
 
 /**
@@ -131,4 +131,66 @@ export async function waitForAutoSave(page: Page): Promise<void> {
  */
 export async function waitForCheckboxUpdate(page: Page): Promise<void> {
 	await page.waitForTimeout(300);
+}
+
+/**
+ * Adds a milestone to the currently open (and expanded) goal modal
+ */
+export async function addMilestone(page: Page, title: string): Promise<void> {
+	await page.click('text=+ Add');
+	await page.fill('input[placeholder="New milestone..."]', title);
+	await page.click('button.bg-blue-500:has-text("Add")');
+	await page.waitForTimeout(300);
+}
+
+/**
+ * Returns all milestones for a goal, ordered by position
+ */
+export async function getMilestonesForGoal(
+	page: Page,
+	goalId: string,
+	fields = '*'
+): Promise<any[]> {
+	return await page.evaluate(
+		async ({ id, selectFields }) => {
+			// @ts-expect-error - Browser import path, works at runtime via Vite
+			const supabaseModule = await import('/src/lib/supabaseClient');
+			const { supabase } = supabaseModule;
+
+			const { data } = await supabase
+				.from('milestones')
+				.select(selectFields)
+				.eq('goal_id', id)
+				.order('position', { ascending: true });
+
+			return data ?? [];
+		},
+		{ id: goalId, selectFields: fields }
+	);
+}
+
+/**
+ * Returns a single milestone for a goal (first match)
+ */
+export async function getMilestoneForGoal(
+	page: Page,
+	goalId: string,
+	fields = '*'
+): Promise<any | null> {
+	return await page.evaluate(
+		async ({ id, selectFields }) => {
+			// @ts-expect-error - Browser import path, works at runtime via Vite
+			const supabaseModule = await import('/src/lib/supabaseClient');
+			const { supabase } = supabaseModule;
+
+			const { data } = await supabase
+				.from('milestones')
+				.select(selectFields)
+				.eq('goal_id', id)
+				.single();
+
+			return data;
+		},
+		{ id: goalId, selectFields: fields }
+	);
 }
