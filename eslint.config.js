@@ -6,6 +6,7 @@ import tsParser from '@typescript-eslint/parser';
 import svelte from 'eslint-plugin-svelte';
 import svelteParser from 'svelte-eslint-parser';
 import prettier from 'eslint-config-prettier';
+import security from 'eslint-plugin-security';
 
 export default [
 	js.configs.recommended,
@@ -43,10 +44,12 @@ export default [
 			}
 		},
 		plugins: {
-			'@typescript-eslint': ts
+			'@typescript-eslint': ts,
+			security
 		},
 		rules: {
 			...ts.configs.recommended.rules,
+			...security.configs.recommended.rules,
 			'@typescript-eslint/no-unused-vars': [
 				'error',
 				{ argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
