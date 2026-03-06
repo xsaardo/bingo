@@ -11,12 +11,14 @@ This document tracks potential enhancements and technical debt for future implem
 ### Context
 
 Currently, milestone reordering uses optimistic updates with no error handling:
+
 - UI updates immediately when user drags
 - Database save happens in background
 - If save fails, error is logged to console but user sees no feedback
 - Discrepancy self-heals on next modal open
 
 This follows the **industry standard pattern** for task management apps (Trello, Asana, Linear) where:
+
 - Low-stakes data doesn't need aggressive error handling
 - Frequent operations shouldn't interrupt user flow
 - Self-healing on refresh is acceptable
@@ -31,6 +33,7 @@ This follows the **industry standard pattern** for task management apps (Trello,
 ### Potential Enhancements (if user reports issues)
 
 **Option 1: Subtle Toast Notification (Recommended)**
+
 ```typescript
 // In MilestoneList.svelte handleFinalize()
 if (!result.success) {
@@ -40,11 +43,13 @@ if (!result.success) {
 ```
 
 **Requirements:**
+
 - Install toast library: `npm install svelte-french-toast` or `sonner`
 - Non-blocking notification in bottom-right corner
 - Auto-dismiss after 3-5 seconds
 
 **Option 2: Auto-Retry Once**
+
 ```typescript
 if (!result.success) {
   // Silently retry once
@@ -57,11 +62,13 @@ if (!result.success) {
 ```
 
 **Benefits:**
+
 - Handles transient network issues automatically
 - No user interaction required
 - Works ~95% of the time
 
 **Option 3: Rollback with Animation**
+
 ```typescript
 const previousItems = items;
 items = e.detail.items;
@@ -74,6 +81,7 @@ if (!result.success) {
 ```
 
 **Trade-offs:**
+
 - ✅ UI stays perfectly in sync with database
 - ❌ Jarring animation when rollback happens
 - ❌ Interrupts user flow
@@ -82,6 +90,7 @@ if (!result.success) {
 ### When to Implement
 
 Implement if:
+
 - Users report "changes disappearing" or sync issues
 - Analytics show high failure rates (>1% of reorders)
 - App expands to offline-first or poor connectivity scenarios

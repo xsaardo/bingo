@@ -10,15 +10,15 @@ import { supabase } from '$lib/supabaseClient';
 import type { Board } from '$lib/types';
 
 interface BoardsState {
-	boards: Board[];
-	loading: boolean;
-	error: string | null;
+  boards: Board[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: BoardsState = {
-	boards: [],
-	loading: false,
-	error: null
+  boards: [],
+  loading: false,
+  error: null
 };
 
 const boardsState = writable<BoardsState>(initialState);
@@ -39,29 +39,29 @@ export const boardsError = derived(boardsState, ($state) => $state.error);
  * Boards Store API
  */
 export const boardsStore = {
-	subscribe: boardsState.subscribe,
+  subscribe: boardsState.subscribe,
 
-	/**
-	 * Fetch all boards for the current user
-	 */
-	async fetchBoards() {
-		boardsState.update((state) => ({ ...state, loading: true, error: null }));
+  /**
+   * Fetch all boards for the current user
+   */
+  async fetchBoards() {
+    boardsState.update((state) => ({ ...state, loading: true, error: null }));
 
-		try {
-			// Get current user from Supabase
-			const {
-				data: { user }
-			} = await supabase.auth.getUser();
+    try {
+      // Get current user from Supabase
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
 
-			if (!user) {
-				throw new Error('User not authenticated');
-			}
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
 
-			// Fetch boards with their goals
-			const { data, error } = await supabase
-				.from('boards')
-				.select(
-					`
+      // Fetch boards with their goals
+      const { data, error } = await supabase
+        .from('boards')
+        .select(
+          `
 					id,
 					name,
 					size,
@@ -81,111 +81,111 @@ export const boardsStore = {
 						updated_at
 					)
 				`
-				)
-				.eq('user_id', user.id)
-				.order('created_at', { ascending: false });
+        )
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
-			if (error) {
-				throw error;
-			}
+      if (error) {
+        throw error;
+      }
 
-			// Transform the data to match our Board type
-			const boards: Board[] = (data || []).map((board: any) => ({
-				id: board.id,
-				name: board.name,
-				size: board.size,
-				isPublic: board.is_public ?? false,
-				goals: (board.goals || [])
-					.sort((a: any, b: any) => a.position - b.position)
-					.map((goal: any) => ({
-						id: goal.id,
-						title: goal.title,
-						notes: goal.notes || '',
-						completed: goal.completed,
-						startedAt: goal.started_at || null,
-						completedAt: goal.completed_at || null,
-						lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
-						milestones: []
-					})),
-				createdAt: board.created_at,
-				updatedAt: board.updated_at
-			}));
+      // Transform the data to match our Board type
+      const boards: Board[] = (data || []).map((board: any) => ({
+        id: board.id,
+        name: board.name,
+        size: board.size,
+        isPublic: board.is_public ?? false,
+        goals: (board.goals || [])
+          .sort((a: any, b: any) => a.position - b.position)
+          .map((goal: any) => ({
+            id: goal.id,
+            title: goal.title,
+            notes: goal.notes || '',
+            completed: goal.completed,
+            startedAt: goal.started_at || null,
+            completedAt: goal.completed_at || null,
+            lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
+            milestones: []
+          })),
+        createdAt: board.created_at,
+        updatedAt: board.updated_at
+      }));
 
-			boardsState.set({
-				boards,
-				loading: false,
-				error: null
-			});
+      boardsState.set({
+        boards,
+        loading: false,
+        error: null
+      });
 
-			return { success: true, boards };
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : 'Failed to fetch boards';
-			boardsState.update((state) => ({
-				...state,
-				loading: false,
-				error: errorMessage
-			}));
-			return { success: false, error: errorMessage };
-		}
-	},
+      return { success: true, boards };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch boards';
+      boardsState.update((state) => ({
+        ...state,
+        loading: false,
+        error: errorMessage
+      }));
+      return { success: false, error: errorMessage };
+    }
+  },
 
-	/**
-	 * Create a new board
-	 */
-	async createBoard(name: string, size: number) {
-		try {
-			// Get current user
-			const {
-				data: { user }
-			} = await supabase.auth.getUser();
+  /**
+   * Create a new board
+   */
+  async createBoard(name: string, size: number) {
+    try {
+      // Get current user
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
 
-			if (!user) {
-				throw new Error('User not authenticated');
-			}
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
 
-			// Validate size
-			if (![3, 4, 5].includes(size)) {
-				throw new Error('Invalid board size. Must be 3, 4, or 5.');
-			}
+      // Validate size
+      if (![3, 4, 5].includes(size)) {
+        throw new Error('Invalid board size. Must be 3, 4, or 5.');
+      }
 
-			// Create the board
-			const { data: board, error: boardError } = await supabase
-				.from('boards')
-				.insert({
-					user_id: user.id,
-					name,
-					size
-				})
-				.select()
-				.single();
+      // Create the board
+      const { data: board, error: boardError } = await supabase
+        .from('boards')
+        .insert({
+          user_id: user.id,
+          name,
+          size
+        })
+        .select()
+        .single();
 
-			if (boardError) {
-				throw boardError;
-			}
+      if (boardError) {
+        throw boardError;
+      }
 
-			// Create empty goals for the board
-			const totalGoals = size * size;
-			const goals = Array.from({ length: totalGoals }, (_, index) => ({
-				board_id: board.id,
-				position: index,
-				title: '',
-				notes: '',
-				completed: false
-			}));
+      // Create empty goals for the board
+      const totalGoals = size * size;
+      const goals = Array.from({ length: totalGoals }, (_, index) => ({
+        board_id: board.id,
+        position: index,
+        title: '',
+        notes: '',
+        completed: false
+      }));
 
-			const { error: goalsError } = await supabase.from('goals').insert(goals);
+      const { error: goalsError } = await supabase.from('goals').insert(goals);
 
-			if (goalsError) {
-				// If goals creation fails, delete the board to maintain consistency
-				await supabase.from('boards').delete().eq('id', board.id);
-				throw goalsError;
-			}
+      if (goalsError) {
+        // If goals creation fails, delete the board to maintain consistency
+        await supabase.from('boards').delete().eq('id', board.id);
+        throw goalsError;
+      }
 
-			// Fetch the complete board with goals
-			const { data: completeBoard, error: fetchError } = await supabase
-				.from('boards')
-				.select(
-					`
+      // Fetch the complete board with goals
+      const { data: completeBoard, error: fetchError } = await supabase
+        .from('boards')
+        .select(
+          `
 					id,
 					name,
 					size,
@@ -205,109 +205,109 @@ export const boardsStore = {
 						updated_at
 					)
 				`
-				)
-				.eq('id', board.id)
-				.single();
+        )
+        .eq('id', board.id)
+        .single();
 
-			if (fetchError) {
-				throw fetchError;
-			}
+      if (fetchError) {
+        throw fetchError;
+      }
 
-			// Transform to Board type
-			const newBoard: Board = {
-				id: completeBoard.id,
-				name: completeBoard.name,
-				size: completeBoard.size,
-				isPublic: completeBoard.is_public ?? false,
-				goals: (completeBoard.goals || [])
-					.sort((a: any, b: any) => a.position - b.position)
-					.map((goal: any) => ({
-						id: goal.id,
-						title: goal.title,
-						notes: goal.notes || '',
-						completed: goal.completed,
-						startedAt: goal.started_at || null,
-						completedAt: goal.completed_at || null,
-						lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
-						milestones: []
-					})),
-				createdAt: completeBoard.created_at,
-				updatedAt: completeBoard.updated_at
-			};
+      // Transform to Board type
+      const newBoard: Board = {
+        id: completeBoard.id,
+        name: completeBoard.name,
+        size: completeBoard.size,
+        isPublic: completeBoard.is_public ?? false,
+        goals: (completeBoard.goals || [])
+          .sort((a: any, b: any) => a.position - b.position)
+          .map((goal: any) => ({
+            id: goal.id,
+            title: goal.title,
+            notes: goal.notes || '',
+            completed: goal.completed,
+            startedAt: goal.started_at || null,
+            completedAt: goal.completed_at || null,
+            lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
+            milestones: []
+          })),
+        createdAt: completeBoard.created_at,
+        updatedAt: completeBoard.updated_at
+      };
 
-			// Add to store
-			boardsState.update((state) => ({
-				...state,
-				boards: [newBoard, ...state.boards]
-			}));
+      // Add to store
+      boardsState.update((state) => ({
+        ...state,
+        boards: [newBoard, ...state.boards]
+      }));
 
-			return { success: true, board: newBoard };
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : 'Failed to create board';
-			return { success: false, error: errorMessage };
-		}
-	},
+      return { success: true, board: newBoard };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create board';
+      return { success: false, error: errorMessage };
+    }
+  },
 
-	/**
-	 * Delete a board
-	 */
-	async deleteBoard(boardId: string) {
-		try {
-			// Delete the board (goals will be cascade deleted)
-			const { error } = await supabase.from('boards').delete().eq('id', boardId);
+  /**
+   * Delete a board
+   */
+  async deleteBoard(boardId: string) {
+    try {
+      // Delete the board (goals will be cascade deleted)
+      const { error } = await supabase.from('boards').delete().eq('id', boardId);
 
-			if (error) {
-				throw error;
-			}
+      if (error) {
+        throw error;
+      }
 
-			// Remove from store
-			boardsState.update((state) => ({
-				...state,
-				boards: state.boards.filter((board) => board.id !== boardId)
-			}));
+      // Remove from store
+      boardsState.update((state) => ({
+        ...state,
+        boards: state.boards.filter((board) => board.id !== boardId)
+      }));
 
-			return { success: true };
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : 'Failed to delete board';
-			return { success: false, error: errorMessage };
-		}
-	},
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete board';
+      return { success: false, error: errorMessage };
+    }
+  },
 
-	/**
-	 * Update board name
-	 */
-	async updateBoardName(boardId: string, name: string) {
-		try {
-			const { error } = await supabase.from('boards').update({ name }).eq('id', boardId);
+  /**
+   * Update board name
+   */
+  async updateBoardName(boardId: string, name: string) {
+    try {
+      const { error } = await supabase.from('boards').update({ name }).eq('id', boardId);
 
-			if (error) {
-				throw error;
-			}
+      if (error) {
+        throw error;
+      }
 
-			// Update in store
-			boardsState.update((state) => ({
-				...state,
-				boards: state.boards.map((board) => (board.id === boardId ? { ...board, name } : board))
-			}));
+      // Update in store
+      boardsState.update((state) => ({
+        ...state,
+        boards: state.boards.map((board) => (board.id === boardId ? { ...board, name } : board))
+      }));
 
-			return { success: true };
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : 'Failed to update board name';
-			return { success: false, error: errorMessage };
-		}
-	},
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update board name';
+      return { success: false, error: errorMessage };
+    }
+  },
 
-	/**
-	 * Clear error
-	 */
-	clearError() {
-		boardsState.update((state) => ({ ...state, error: null }));
-	},
+  /**
+   * Clear error
+   */
+  clearError() {
+    boardsState.update((state) => ({ ...state, error: null }));
+  },
 
-	/**
-	 * Reset store to initial state
-	 */
-	reset() {
-		boardsState.set(initialState);
-	}
+  /**
+   * Reset store to initial state
+   */
+  reset() {
+    boardsState.set(initialState);
+  }
 };

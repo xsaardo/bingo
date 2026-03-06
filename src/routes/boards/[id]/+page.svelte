@@ -1,195 +1,256 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-	import AuthGuard from '$lib/components/AuthGuard.svelte';
-	import UserMenu from '$lib/components/UserMenu.svelte';
-	import BingoBoard from '$lib/components/BingoBoard.svelte';
-	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
-	import {
-		currentBoardStore,
-		currentBoard,
-		currentBoardLoading,
-		currentBoardError
-	} from '$lib/stores/currentBoard';
-	import { isAnonymous } from '$lib/stores/auth';
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import AuthGuard from '$lib/components/AuthGuard.svelte';
+  import UserMenu from '$lib/components/UserMenu.svelte';
+  import BingoBoard from '$lib/components/BingoBoard.svelte';
+  import ErrorAlert from '$lib/components/ErrorAlert.svelte';
+  import {
+    currentBoardStore,
+    currentBoard,
+    currentBoardLoading,
+    currentBoardError
+  } from '$lib/stores/currentBoard';
+  import { isAnonymous } from '$lib/stores/auth';
 
-	const boardId = $derived($page.params.id!);
+  const boardId = $derived($page.params.id!);
 
-	let shareUrl = $derived(
-		$currentBoard ? `${$page.url.origin}/share/${$currentBoard.id}` : ''
-	);
-	let toastMessage = $state('');
+  let shareUrl = $derived($currentBoard ? `${$page.url.origin}/share/${$currentBoard.id}` : '');
+  let toastMessage = $state('');
 
-	// Load board when component mounts
-	onMount(() => {
-		currentBoardStore.loadBoard(boardId);
+  // Load board when component mounts
+  onMount(() => {
+    currentBoardStore.loadBoard(boardId);
 
-		// Cleanup when leaving
-		return () => {
-			currentBoardStore.clear();
-		};
-	});
+    // Cleanup when leaving
+    return () => {
+      currentBoardStore.clear();
+    };
+  });
 
-	async function handleRetry() {
-		await currentBoardStore.loadBoard(boardId);
-	}
+  async function handleRetry() {
+    await currentBoardStore.loadBoard(boardId);
+  }
 
-	function showToast(message: string) {
-		toastMessage = message;
-		setTimeout(() => {
-			toastMessage = '';
-		}, 2000);
-	}
+  function showToast(message: string) {
+    toastMessage = message;
+    setTimeout(() => {
+      toastMessage = '';
+    }, 2000);
+  }
 
-	async function handleShare() {
-		if (!$currentBoard) return;
-		if ($currentBoard.isPublic) {
-			await currentBoardStore.setPublic(boardId, false);
-			showToast('Sharing disabled');
-		} else {
-			await currentBoardStore.setPublic(boardId, true);
-			await navigator.clipboard.writeText(shareUrl);
-			showToast('Link copied to clipboard');
-		}
-	}
+  async function handleShare() {
+    if (!$currentBoard) return;
+    if ($currentBoard.isPublic) {
+      await currentBoardStore.setPublic(boardId, false);
+      showToast('Sharing disabled');
+    } else {
+      await currentBoardStore.setPublic(boardId, true);
+      await navigator.clipboard.writeText(shareUrl);
+      showToast('Link copied to clipboard');
+    }
+  }
 </script>
 
 <svelte:head>
-	<title>{$currentBoard?.name || 'Board'} - Bingo Board</title>
+  <title>{$currentBoard?.name || 'Board'} - Bingo Board</title>
 </svelte:head>
 
 <AuthGuard>
-	<div class="h-screen flex flex-col">
-		<!-- Header -->
-		<header class="bg-transparent">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-				<div class="flex items-center justify-between">
-					<a href="/" class="flex items-center space-x-3">
-						<div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-							<svg class="w-6 h-6" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<rect x="1" y="1" width="6" height="6" rx="1.5" fill="white"/>
-								<polygon points="4,1.8 4.529,3.272 6.092,3.320 4.856,4.278 5.293,5.780 4,4.9 2.707,5.780 3.144,4.278 1.908,3.320 3.471,3.272" fill="#2563eb"/>
-								<rect x="8" y="1" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5"/>
-								<rect x="15" y="1" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5"/>
-								<rect x="1" y="8" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5"/>
-								<rect x="8" y="8" width="6" height="6" rx="1.5" fill="white"/>
-								<polygon points="11,8.8 11.529,10.272 13.092,10.320 11.856,11.278 12.293,12.780 11,11.9 9.707,12.780 10.144,11.278 8.908,10.320 10.471,10.272" fill="#2563eb"/>
-								<rect x="15" y="8" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5"/>
-								<rect x="1" y="15" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5"/>
-								<rect x="8" y="15" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5"/>
-								<rect x="15" y="15" width="6" height="6" rx="1.5" fill="white"/>
-								<polygon points="18,15.8 18.529,17.272 20.092,17.320 18.856,18.278 19.293,19.780 18,18.9 16.707,19.780 17.144,18.278 15.908,17.320 17.471,17.272" fill="#2563eb"/>
-							</svg>
-						</div>
-						<span class="text-xl font-bold text-gray-900">BINGOAL</span>
-					</a>
+  <div class="h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-transparent">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+          <a href="/" class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+              <svg
+                class="w-6 h-6"
+                viewBox="0 0 22 22"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="1" y="1" width="6" height="6" rx="1.5" fill="white" />
+                <polygon
+                  points="4,1.8 4.529,3.272 6.092,3.320 4.856,4.278 5.293,5.780 4,4.9 2.707,5.780 3.144,4.278 1.908,3.320 3.471,3.272"
+                  fill="#2563eb"
+                />
+                <rect x="8" y="1" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5" />
+                <rect
+                  x="15"
+                  y="1"
+                  width="6"
+                  height="6"
+                  rx="1.5"
+                  stroke="white"
+                  stroke-width="1.5"
+                />
+                <rect x="1" y="8" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5" />
+                <rect x="8" y="8" width="6" height="6" rx="1.5" fill="white" />
+                <polygon
+                  points="11,8.8 11.529,10.272 13.092,10.320 11.856,11.278 12.293,12.780 11,11.9 9.707,12.780 10.144,11.278 8.908,10.320 10.471,10.272"
+                  fill="#2563eb"
+                />
+                <rect
+                  x="15"
+                  y="8"
+                  width="6"
+                  height="6"
+                  rx="1.5"
+                  stroke="white"
+                  stroke-width="1.5"
+                />
+                <rect
+                  x="1"
+                  y="15"
+                  width="6"
+                  height="6"
+                  rx="1.5"
+                  stroke="white"
+                  stroke-width="1.5"
+                />
+                <rect
+                  x="8"
+                  y="15"
+                  width="6"
+                  height="6"
+                  rx="1.5"
+                  stroke="white"
+                  stroke-width="1.5"
+                />
+                <rect x="15" y="15" width="6" height="6" rx="1.5" fill="white" />
+                <polygon
+                  points="18,15.8 18.529,17.272 20.092,17.320 18.856,18.278 19.293,19.780 18,18.9 16.707,19.780 17.144,18.278 15.908,17.320 17.471,17.272"
+                  fill="#2563eb"
+                />
+              </svg>
+            </div>
+            <span class="text-xl font-bold text-gray-900">BINGOAL</span>
+          </a>
 
-					<div class="flex items-center gap-3">
-						{#if !$isAnonymous}
-							<a
-								href="/dashboard"
-								class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-							>
-								Home
-							</a>
-						{/if}
+          <div class="flex items-center gap-3">
+            {#if !$isAnonymous}
+              <a
+                href="/dashboard"
+                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                Home
+              </a>
+            {/if}
 
-						{#if $currentBoard}
-							{#if $currentBoard.isPublic}
-								<input
-									type="text"
-									readonly
-									value={shareUrl}
-									data-testid="share-url"
-									class="text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded px-2 py-1 w-48 truncate"
-								/>
-							{/if}
-							<button
-								onclick={handleShare}
-								data-testid="share-button"
-								aria-label={$currentBoard.isPublic ? 'Disable sharing' : 'Share board'}
-								class="p-2 rounded-lg transition-colors {$currentBoard.isPublic
-									? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
-									: 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}"
-								title={$currentBoard.isPublic ? 'Sharing on — click to stop' : 'Share board'}
-							>
-								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-								</svg>
-							</button>
-						{/if}
+            {#if $currentBoard}
+              {#if $currentBoard.isPublic}
+                <input
+                  type="text"
+                  readonly
+                  value={shareUrl}
+                  data-testid="share-url"
+                  class="text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded px-2 py-1 w-48 truncate"
+                />
+              {/if}
+              <button
+                onclick={handleShare}
+                data-testid="share-button"
+                aria-label={$currentBoard.isPublic ? 'Disable sharing' : 'Share board'}
+                class="p-2 rounded-lg transition-colors {$currentBoard.isPublic
+                  ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}"
+                title={$currentBoard.isPublic ? 'Sharing on — click to stop' : 'Share board'}
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                  />
+                </svg>
+              </button>
+            {/if}
 
-						<UserMenu />
-					</div>
-				</div>
-			</div>
-		</header>
+            <UserMenu />
+          </div>
+        </div>
+      </div>
+    </header>
 
-		<!-- Main Content -->
-		<main class="flex-1 min-h-0 flex flex-col items-center px-4 py-3 sm:py-4 overflow-hidden">
-			<!-- Board Title -->
-			<div class="shrink-0 mb-2 sm:mb-3 text-center w-full">
-				{#if $currentBoard}
-					<h1 class="text-3xl font-bold text-gray-900">{$currentBoard.name}</h1>
-				{:else if !$currentBoardError}
-					<div class="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto"></div>
-				{/if}
-			</div>
-			{#if $currentBoardLoading}
-				<!-- Loading State -->
-				<div
-					class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center"
-					aria-busy="true"
-				>
-					<div
-						class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
-						aria-label="Loading board"
-					></div>
-					<p class="text-gray-600">Loading board...</p>
-				</div>
-			{:else if $currentBoardError}
-				<!-- Error State -->
-				<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-					<div class="max-w-md mx-auto space-y-4">
-						<ErrorAlert error={$currentBoardError} />
-						<div class="flex justify-center space-x-3">
-							<button
-								onclick={handleRetry}
-								class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-							>
-								Retry
-							</button>
-							<a
-								href="/dashboard"
-								class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors"
-							>
-								Back to Dashboard
-							</a>
-						</div>
-					</div>
-				</div>
-			{:else if $currentBoard}
-				<!-- BingoBoard Component -->
-				<div
-					class="flex-1 min-h-0 w-full flex items-center justify-center"
-					style="container-type: size;"
-				>
-					<div style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);">
-						<BingoBoard />
-					</div>
-				</div>
-			{/if}
-		</main>
-	</div>
-	<!-- Toast notification -->
-	{#if toastMessage}
-		<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-			<div class="flex items-center gap-3 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg text-sm">
-				<svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-				</svg>
-				<span>{toastMessage}</span>
-			</div>
-		</div>
-	{/if}
+    <!-- Main Content -->
+    <main class="flex-1 min-h-0 flex flex-col items-center px-4 py-3 sm:py-4 overflow-hidden">
+      <!-- Board Title -->
+      <div class="shrink-0 mb-2 sm:mb-3 text-center w-full">
+        {#if $currentBoard}
+          <h1 class="text-3xl font-bold text-gray-900">{$currentBoard.name}</h1>
+        {:else if !$currentBoardError}
+          <div class="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto"></div>
+        {/if}
+      </div>
+      {#if $currentBoardLoading}
+        <!-- Loading State -->
+        <div
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center"
+          aria-busy="true"
+        >
+          <div
+            class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
+            aria-label="Loading board"
+          ></div>
+          <p class="text-gray-600">Loading board...</p>
+        </div>
+      {:else if $currentBoardError}
+        <!-- Error State -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <div class="max-w-md mx-auto space-y-4">
+            <ErrorAlert error={$currentBoardError} />
+            <div class="flex justify-center space-x-3">
+              <button
+                onclick={handleRetry}
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              >
+                Retry
+              </button>
+              <a
+                href="/dashboard"
+                class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors"
+              >
+                Back to Dashboard
+              </a>
+            </div>
+          </div>
+        </div>
+      {:else if $currentBoard}
+        <!-- BingoBoard Component -->
+        <div
+          class="flex-1 min-h-0 w-full flex items-center justify-center"
+          style="container-type: size;"
+        >
+          <div style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);">
+            <BingoBoard />
+          </div>
+        </div>
+      {/if}
+    </main>
+  </div>
+  <!-- Toast notification -->
+  {#if toastMessage}
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      <div
+        class="flex items-center gap-3 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg text-sm"
+      >
+        <svg
+          class="w-4 h-4 text-green-400 flex-shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+        <span>{toastMessage}</span>
+      </div>
+    </div>
+  {/if}
 </AuthGuard>

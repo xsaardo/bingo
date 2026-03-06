@@ -1,25 +1,25 @@
 <script lang="ts">
-	import { boardStore } from '$lib/stores/board';
-	import type { BoardSize } from '$lib/types';
+  import { boardStore } from '$lib/stores/board';
+  import type { BoardSize } from '$lib/types';
 
-	const sizes: BoardSize[] = [3, 4, 5];
+  const sizes: BoardSize[] = [3, 4, 5];
 </script>
 
 <div class="mb-6 sm:mb-8">
-	<div class="text-center mb-4">
-		<h2 class="text-lg sm:text-xl font-semibold text-gray-700 mb-2">Choose Your Board Size</h2>
-		<p class="text-sm sm:text-base text-gray-600">Select how many goals you want to track</p>
-	</div>
+  <div class="text-center mb-4">
+    <h2 class="text-lg sm:text-xl font-semibold text-gray-700 mb-2">Choose Your Board Size</h2>
+    <p class="text-sm sm:text-base text-gray-600">Select how many goals you want to track</p>
+  </div>
 
-	<div class="flex justify-center gap-2 sm:gap-4">
-		{#each sizes as size}
-			<button
-				data-testid="board-size-button"
-				onclick={() => boardStore.createBoard(size)}
-				class="px-4 sm:px-6 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 font-medium text-gray-700 hover:text-blue-600 active:scale-95"
-			>
-				{size}×{size}
-			</button>
-		{/each}
-	</div>
+  <div class="flex justify-center gap-2 sm:gap-4">
+    {#each sizes as size}
+      <button
+        data-testid="board-size-button"
+        onclick={() => boardStore.createBoard(size)}
+        class="px-4 sm:px-6 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 font-medium text-gray-700 hover:text-blue-600 active:scale-95"
+      >
+        {size}×{size}
+      </button>
+    {/each}
+  </div>
 </div>

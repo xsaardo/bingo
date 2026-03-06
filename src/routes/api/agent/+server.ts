@@ -22,39 +22,39 @@ import { executeTool, AGENT_TOOLS } from '$lib/agent/tools';
 import { supabase } from '$lib/supabaseClient';
 
 export const POST: RequestHandler = async ({ request }) => {
-	// Require an authenticated session.
-	const {
-		data: { session }
-	} = await supabase.auth.getSession();
+  // Require an authenticated session.
+  const {
+    data: { session }
+  } = await supabase.auth.getSession();
 
-	if (!session) {
-		return json({ error: 'Unauthorized: no active session' }, { status: 401 });
-	}
+  if (!session) {
+    return json({ error: 'Unauthorized: no active session' }, { status: 401 });
+  }
 
-	let body: { tool?: unknown; input?: unknown };
-	try {
-		body = await request.json();
-	} catch {
-		return json({ error: 'Invalid JSON body' }, { status: 400 });
-	}
+  let body: { tool?: unknown; input?: unknown };
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
 
-	const { tool, input } = body;
+  const { tool, input } = body;
 
-	if (typeof tool !== 'string' || !tool) {
-		return json({ error: '`tool` must be a non-empty string' }, { status: 400 });
-	}
+  if (typeof tool !== 'string' || !tool) {
+    return json({ error: '`tool` must be a non-empty string' }, { status: 400 });
+  }
 
-	if (typeof input !== 'object' || input === null || Array.isArray(input)) {
-		return json({ error: '`input` must be a non-null object' }, { status: 400 });
-	}
+  if (typeof input !== 'object' || input === null || Array.isArray(input)) {
+    return json({ error: '`input` must be a non-null object' }, { status: 400 });
+  }
 
-	try {
-		const result = await executeTool(tool, input);
-		return json({ result });
-	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		return json({ error: message }, { status: 500 });
-	}
+  try {
+    const result = await executeTool(tool, input);
+    return json({ result });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return json({ error: message }, { status: 500 });
+  }
 };
 
 /**
@@ -64,5 +64,5 @@ export const POST: RequestHandler = async ({ request }) => {
  * Useful for introspection and for constructing Claude API requests.
  */
 export const GET: RequestHandler = async () => {
-	return json({ tools: AGENT_TOOLS });
+  return json({ tools: AGENT_TOOLS });
 };

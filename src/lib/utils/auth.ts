@@ -6,9 +6,9 @@ import { supabase } from '$lib/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 
 export interface AuthResult {
-	success: boolean;
-	error?: string;
-	user?: User | null;
+  success: boolean;
+  error?: string;
+  user?: User | null;
 }
 
 /**
@@ -16,44 +16,44 @@ export interface AuthResult {
  * User will click the link to authenticate
  */
 export async function sendMagicLink(email: string, redirectTo?: string): Promise<AuthResult> {
-	try {
-		// Use the current domain for the callback URL
-		// This ensures preview branches redirect correctly
-		const callbackUrl = redirectTo || `${window.location.origin}/auth/callback`;
+  try {
+    // Use the current domain for the callback URL
+    // This ensures preview branches redirect correctly
+    const callbackUrl = redirectTo || `${window.location.origin}/auth/callback`;
 
-		console.log('Sending magic link with redirect to:', callbackUrl);
+    console.log('Sending magic link with redirect to:', callbackUrl);
 
-		const { data, error } = await supabase.auth.signInWithOtp({
-			email,
-			options: {
-				// URL to redirect to after clicking magic link
-				emailRedirectTo: callbackUrl,
-				// Prevent automatic redirect to avoid issues
-				shouldCreateUser: true
-			}
-		});
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        // URL to redirect to after clicking magic link
+        emailRedirectTo: callbackUrl,
+        // Prevent automatic redirect to avoid issues
+        shouldCreateUser: true
+      }
+    });
 
-		if (error) {
-			console.error('Magic link error:', error);
-			return {
-				success: false,
-				error: error.message
-			};
-		}
+    if (error) {
+      console.error('Magic link error:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
 
-		console.log('Magic link sent successfully to:', email);
+    console.log('Magic link sent successfully to:', email);
 
-		return {
-			success: true,
-			user: data.user
-		};
-	} catch (err) {
-		console.error('Unexpected error sending magic link:', err);
-		return {
-			success: false,
-			error: err instanceof Error ? err.message : 'Unknown error occurred'
-		};
-	}
+    return {
+      success: true,
+      user: data.user
+    };
+  } catch (err) {
+    console.error('Unexpected error sending magic link:', err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : 'Unknown error occurred'
+    };
+  }
 }
 
 /**
@@ -61,83 +61,83 @@ export async function sendMagicLink(email: string, redirectTo?: string): Promise
  * Creates an anonymous session for users who haven't signed up yet
  */
 export async function signInAnonymously(): Promise<AuthResult> {
-	try {
-		const { data, error } = await supabase.auth.signInAnonymously();
+  try {
+    const { data, error } = await supabase.auth.signInAnonymously();
 
-		if (error) {
-			console.error('Anonymous sign-in error:', error);
-			return {
-				success: false,
-				error: error.message
-			};
-		}
+    if (error) {
+      console.error('Anonymous sign-in error:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
 
-		return {
-			success: true,
-			user: data.user
-		};
-	} catch (err) {
-		console.error('Unexpected error during anonymous sign-in:', err);
-		return {
-			success: false,
-			error: err instanceof Error ? err.message : 'Unknown error occurred'
-		};
-	}
+    return {
+      success: true,
+      user: data.user
+    };
+  } catch (err) {
+    console.error('Unexpected error during anonymous sign-in:', err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : 'Unknown error occurred'
+    };
+  }
 }
 
 /**
  * Sign out the current user
  */
 export async function signOut(): Promise<AuthResult> {
-	try {
-		const { error } = await supabase.auth.signOut({ scope: 'local' });
+  try {
+    const { error } = await supabase.auth.signOut({ scope: 'local' });
 
-		if (error) {
-			return {
-				success: false,
-				error: error.message
-			};
-		}
+    if (error) {
+      return {
+        success: false,
+        error: error.message
+      };
+    }
 
-		return {
-			success: true
-		};
-	} catch (err) {
-		return {
-			success: false,
-			error: err instanceof Error ? err.message : 'Unknown error occurred'
-		};
-	}
+    return {
+      success: true
+    };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : 'Unknown error occurred'
+    };
+  }
 }
 
 /**
  * Get the current user session
  */
 export async function getCurrentUser(): Promise<User | null> {
-	try {
-		const {
-			data: { user }
-		} = await supabase.auth.getUser();
-		return user;
-	} catch (err) {
-		console.error('Error getting current user:', err);
-		return null;
-	}
+  try {
+    const {
+      data: { user }
+    } = await supabase.auth.getUser();
+    return user;
+  } catch (err) {
+    console.error('Error getting current user:', err);
+    return null;
+  }
 }
 
 /**
  * Get the current session
  */
 export async function getSession() {
-	try {
-		const {
-			data: { session }
-		} = await supabase.auth.getSession();
-		return session;
-	} catch (err) {
-		console.error('Error getting session:', err);
-		return null;
-	}
+  try {
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+    return session;
+  } catch (err) {
+    console.error('Error getting session:', err);
+    return null;
+  }
 }
 
 /**
@@ -145,14 +145,14 @@ export async function getSession() {
  * Returns an unsubscribe function
  */
 export function onAuthStateChange(callback: (user: User | null) => void) {
-	const {
-		data: { subscription }
-	} = supabase.auth.onAuthStateChange((_event, session) => {
-		callback(session?.user ?? null);
-	});
+  const {
+    data: { subscription }
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    callback(session?.user ?? null);
+  });
 
-	// Return unsubscribe function
-	return () => {
-		subscription.unsubscribe();
-	};
+  // Return unsubscribe function
+  return () => {
+    subscription.unsubscribe();
+  };
 }
