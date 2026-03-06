@@ -112,11 +112,11 @@ export async function expandGoalModal(page: Page): Promise<void> {
 }
 
 /**
- * Closes the modal using Escape key
+ * Closes the modal using Escape key and waits for it to fully disappear
  */
 export async function closeModal(page: Page): Promise<void> {
 	await page.keyboard.press('Escape');
-	await page.waitForTimeout(200);
+	await page.getByTestId('goal-modal').waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
 }
 
 /**

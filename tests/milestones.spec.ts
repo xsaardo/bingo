@@ -90,11 +90,15 @@ test.describe('updateMilestone', () => {
 		await page.getByTestId('milestone-item').click();
 		await page.waitForTimeout(200);
 
-		// Edit title
+		// Edit title and wait for the debounced save to reach the server
 		const titleInput = page.locator('input[placeholder="Milestone title..."]');
+		const saveRequest = page.waitForResponse(
+			(resp) => resp.url().includes('/milestones') && resp.request().method() === 'PATCH',
+			{ timeout: 5000 }
+		);
 		await titleInput.clear();
 		await titleInput.fill('Updated Title');
-		await page.waitForTimeout(600); // Wait for auto-save
+		await saveRequest;
 
 		const milestoneData = await getMilestoneForGoal(page, firstGoalId, 'title');
 		expect(milestoneData?.title).toBe('Updated Title');
