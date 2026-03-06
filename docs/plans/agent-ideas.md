@@ -8,15 +8,15 @@ Brainstormed applications of agent-native architecture principles to the goal-tr
 
 Every UI action needs an agent equivalent (parity principle). No workflow-shaped tools — those are outcomes, not primitives.
 
-| Tool | Description |
-| ---- | ----------- |
-| `list_boards()` | Returns all boards with name, size, completion % |
-| `create_board(name, size)` | Creates a new board |
-| `get_board(id)` | Returns goals with positions and completion state |
-| `add_goal(board_id, position, title, notes?)` | Adds a goal at a specific grid position |
-| `update_goal(goal_id, title?, notes?, completed?)` | Updates any goal field |
-| `delete_goal(goal_id)` | Removes a goal |
-| `check_bingo(board_id)` | Returns which rows/cols/diagonals are complete |
+| Tool                                               | Description                                       |
+| -------------------------------------------------- | ------------------------------------------------- |
+| `list_boards()`                                    | Returns all boards with name, size, completion %  |
+| `create_board(name, size)`                         | Creates a new board                               |
+| `get_board(id)`                                    | Returns goals with positions and completion state |
+| `add_goal(board_id, position, title, notes?)`      | Adds a goal at a specific grid position           |
+| `update_goal(goal_id, title?, notes?, completed?)` | Updates any goal field                            |
+| `delete_goal(goal_id)`                             | Removes a goal                                    |
+| `check_bingo(board_id)`                            | Returns which rows/cols/diagonals are complete    |
 
 These primitives unlock emergent behavior. `organize_board_by_theme()` is not a tool — it's a prompt.
 
@@ -54,7 +54,7 @@ Prevents the agent from asking "what boards do you have?" every time.
 
 ### 1. Board Population from Freeform Text
 
-User types unstructured intent: *"I want to read more, exercise 3x/week, call my parents, learn to cook..."*
+User types unstructured intent: _"I want to read more, exercise 3x/week, call my parents, learn to cook..."_
 
 Agent parses intent, distributes goals across the grid, and calls `add_goal` for each. No form filling required.
 
@@ -62,9 +62,9 @@ Agent parses intent, distributes goals across the grid, and calls `add_goal` for
 
 ### 2. Strategic Goal Placement
 
-The bingo mechanic is underused as a *design* tool. An agent could reason: "Put your 5 most-likely goals in one row so you'll get a bingo early and stay motivated." A human would never do this manually — an agent naturally reasons about it.
+The bingo mechanic is underused as a _design_ tool. An agent could reason: "Put your 5 most-likely goals in one row so you'll get a bingo early and stay motivated." A human would never do this manually — an agent naturally reasons about it.
 
-Prompt: *"Rearrange my board so I'm most likely to get a bingo soon."*
+Prompt: _"Rearrange my board so I'm most likely to get a bingo soon."_
 Agent reads completion state, reasons about probability, calls `update_goal` with new positions.
 
 ### 3. Cross-Board Pattern Recognition
@@ -79,7 +79,7 @@ With `list_boards` + `get_board` in a loop, the agent can surface insights the U
 
 Agent reads all incomplete goals, flags ones that are vague or unmeasurable, and suggests rewrites. User approves each in conversation.
 
-Example: *"Learn guitar"* → *"Practice guitar for 20 minutes, 3x per week"*
+Example: _"Learn guitar"_ → _"Practice guitar for 20 minutes, 3x per week"_
 
 ---
 

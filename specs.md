@@ -25,19 +25,19 @@ A web app that allows users to create and track their new year goals using an in
 
 ```typescript
 interface Goal {
-	id: string;
-	title: string;
-	notes: string;
-	completed: boolean;
+  id: string;
+  title: string;
+  notes: string;
+  completed: boolean;
 }
 
 interface Board {
-	id: string;
-	name: string;
-	size: number; // e.g., 3 for 3x3, 5 for 5x5
-	goals: Goal[]; // length = size * size
-	createdAt: string;
-	updatedAt: string;
+  id: string;
+  name: string;
+  size: number; // e.g., 3 for 3x3, 5 for 5x5
+  goals: Goal[]; // length = size * size
+  createdAt: string;
+  updatedAt: string;
 }
 ```
 

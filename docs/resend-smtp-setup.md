@@ -41,7 +41,7 @@ Supabase's built-in SMTP is limited to **2 emails per hour**, which is fine for 
 5. Fill in the following fields:
 
    | Field            | Value                          |
-   |------------------|--------------------------------|
+   | ---------------- | ------------------------------ |
    | **Host**         | `smtp.resend.com`              |
    | **Port**         | `465`                          |
    | **Username**     | `resend`                       |
@@ -99,23 +99,23 @@ Adding a custom domain lets you send from your own address (e.g., `noreply@yourd
 
 ### DNS records you will add (Resend provides exact values):
 
-| Type  | Purpose                                  |
-|-------|------------------------------------------|
-| TXT   | SPF — authorizes Resend to send for you  |
-| CNAME | DKIM — cryptographic email signing       |
-| TXT   | DMARC — policy for failed verification   |
+| Type  | Purpose                                 |
+| ----- | --------------------------------------- |
+| TXT   | SPF — authorizes Resend to send for you |
+| CNAME | DKIM — cryptographic email signing      |
+| TXT   | DMARC — policy for failed verification  |
 
 ---
 
 ## Summary
 
-| Setting        | Without Custom Domain        | With Custom Domain              |
-|----------------|------------------------------|---------------------------------|
-| Host           | `smtp.resend.com`            | `smtp.resend.com`               |
-| Port           | `465`                        | `465`                           |
-| Username       | `resend`                     | `resend`                        |
-| Password       | Resend API key               | Resend API key                  |
-| Sender email   | `onboarding@resend.dev`      | `you@yourdomain.com`            |
+| Setting      | Without Custom Domain   | With Custom Domain   |
+| ------------ | ----------------------- | -------------------- |
+| Host         | `smtp.resend.com`       | `smtp.resend.com`    |
+| Port         | `465`                   | `465`                |
+| Username     | `resend`                | `resend`             |
+| Password     | Resend API key          | Resend API key       |
+| Sender email | `onboarding@resend.dev` | `you@yourdomain.com` |
 
 ---
 

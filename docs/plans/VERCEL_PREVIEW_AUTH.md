@@ -167,7 +167,7 @@ PUBLIC_AUTH_CALLBACK_URL=https://your-domain.com/auth/callback
 import { PUBLIC_AUTH_CALLBACK_URL } from '$env/static/public';
 
 const callbackUrl =
-	redirectTo || PUBLIC_AUTH_CALLBACK_URL || `${window.location.origin}/auth/callback`;
+  redirectTo || PUBLIC_AUTH_CALLBACK_URL || `${window.location.origin}/auth/callback`;
 ```
 
 However, using `window.location.origin` (current approach) is simpler and works automatically for all environments.

@@ -35,16 +35,17 @@ Not "another goal tracker." Not "gamified productivity." It's specifically for p
 
 ### Key Differentiators
 
-| What we're NOT | What we ARE |
-|---|---|
-| Another productivity app competing with Notion/Todoist | A TikTok-native tool for an existing trend |
-| Serious/enterprise goal tracking | Fun, visual, shareable goal tracking |
-| Designed for habit streaks and daily check-ins | Designed for medium-term goals you check monthly |
-| Feature-heavy with complex workflows | Dead simple: make board → share board → check off goals → re-share progress |
+| What we're NOT                                         | What we ARE                                                                 |
+| ------------------------------------------------------ | --------------------------------------------------------------------------- |
+| Another productivity app competing with Notion/Todoist | A TikTok-native tool for an existing trend                                  |
+| Serious/enterprise goal tracking                       | Fun, visual, shareable goal tracking                                        |
+| Designed for habit streaks and daily check-ins         | Designed for medium-term goals you check monthly                            |
+| Feature-heavy with complex workflows                   | Dead simple: make board → share board → check off goals → re-share progress |
 
 ### Target Audience Segments
 
 **Primary: TikTok Goal-Setters (18-28, female-skewed)**
+
 - Already making paper bingo boards
 - Active on TikTok, Instagram, Pinterest
 - Setting 2026 goals in categories: fitness, reading, travel, personal growth
@@ -52,12 +53,14 @@ Not "another goal tracker." Not "gamified productivity." It's specifically for p
 - Share their progress visually
 
 **Secondary: Casual Goal Trackers (25-35)**
+
 - Like the idea of New Year's goals but don't stick to them
 - Have tried journaling/apps but found them too heavy
 - Attracted to the fun/game aspect of bingo
 - Would share if it looked good enough
 
 **Not our audience (at launch):**
+
 - Serious productivity optimizers (they want more features than we offer)
 - Corporate goal-tracking (OKRs, performance management)
 - Daily habit trackers (this is monthly/quarterly goals)
@@ -66,9 +69,10 @@ Not "another goal tracker." Not "gamified productivity." It's specifically for p
 
 **TikTok/Instagram (Primary Acquisition Channel)**
 
-Headline: *"Stop losing your goals bingo board"*
+Headline: _"Stop losing your goals bingo board"_
 
 Hook:
+
 - "POV: You made a goals bingo board in January and forgot about it by March"
 - "Your 2026 goals deserve better than a crumpled piece of paper"
 - Show side-by-side: hand-drawn board (January) → our app (still checking it in July)
@@ -77,7 +81,7 @@ Call-to-action: "Create yours in 30 seconds" → link to app
 
 **Product Hunt / Indie Hackers**
 
-Headline: *"Bingo boards for goals — but digital and shareable"*
+Headline: _"Bingo boards for goals — but digital and shareable"_
 
 Angle: Riding an existing trend, not inventing one. Built with SvelteKit, zero friction (anonymous auth), viral loop built-in (share-as-image).
 
@@ -85,7 +89,7 @@ Emphasize: We're not trying to out-feature Notion. We're trying to be faster tha
 
 **Reddit (r/productivity, r/getdisciplined)**
 
-Headline: *"I built a goals bingo board app because paper ones get forgotten"*
+Headline: _"I built a goals bingo board app because paper ones get forgotten"_
 
 Angle: Personal story. "I saw the trend on TikTok. Made my own. Lost it within a month. Built this so it actually sticks around."
 
@@ -100,22 +104,26 @@ Attach: Screenshot or video of the board + share feature
 ### Growth Strategy
 
 **Viral Loop:**
+
 1. User creates board (anonymous, zero friction)
 2. User shares board image to TikTok/Instagram (watermarked with app branding)
 3. New user sees the watermark → clicks → lands on app → creates board (repeat)
 
 **Why this works:**
+
 - Share-as-image is core to the product, not tacked on
 - The exported image looks better than hand-drawn versions (users actually prefer sharing ours)
 - Watermark is subtle but visible (bottom corner, small text)
 - Anonymous creation means zero friction from viral traffic
 
 **Retention Strategy:**
+
 - Push notifications for monthly check-ins (opt-in)
 - Email: "You haven't updated your board in 30 days — here's what's left"
 - Re-share moments: "You just completed your first bingo! Share your progress"
 
 **Monetization (Future):**
+
 - Freemium: 1 board free, unlimited boards for $3/month
 - Premium themes/fonts/export options
 - Remove watermark from exports (paid tier)
@@ -123,12 +131,14 @@ Attach: Screenshot or video of the board + share feature
 ### Why Now?
 
 **Timing is critical:**
+
 - The TikTok trend is happening **right now** (Jan-Feb 2026)
 - If we launch in March, we ride the wave
 - If we wait until next January, the trend may be stale
 - Paper boards have obvious pain points (easily lost, not shareable digitally, no progress tracking)
 
 **Competitive landscape:**
+
 - No direct competitors targeting this specific trend
 - Generic goal apps (Notion, Todoist) are too heavy
 - Bingo board makers exist but aren't designed for goals + sharing
@@ -137,16 +147,19 @@ Attach: Screenshot or video of the board + share feature
 ### Success Metrics
 
 **Week 1:**
+
 - 1,000 boards created (validates low-friction creation)
 - 200 shares via share-as-image (validates core loop)
 - 10% anonymous → sign-up conversion
 
 **Month 1:**
+
 - 10,000 total boards created
 - 20% of users re-sharing progress (proves retention value)
 - Organic TikTok mentions from watermarked shares
 
 **Month 3:**
+
 - 50% of traffic coming from watermarked shares (viral loop working)
 - Avg 2.5 boards per signed-up user
 - Users checking back monthly (not daily — that's correct for this use case)
@@ -154,25 +167,30 @@ Attach: Screenshot or video of the board + share feature
 ### Taglines / Copy Options
 
 **Hero Section (Landing Page):**
+
 - "Turn your 2026 goals into a bingo board you'll actually finish"
 - "Make it. Share it. Actually do it."
 - "Goals bingo, but you won't lose this one in February"
 
 **App Store / Chrome Extension:**
+
 - "Bingo boards for your goals — track visually, share progress, celebrate bingos"
 
 **Social Proof:**
+
 - "Join 10,000+ people actually finishing their 2026 goals"
 - "The bingo board you won't forget in your drawer"
 
 ### Content Strategy
 
 **Launch Week:**
+
 - TikTok video: "I built this after losing my paper goals board"
 - Product Hunt: "Bingo boards for goals, built for the TikTok generation"
 - Twitter thread: "Why paper bingo boards fail + how we fixed it"
 
 **Ongoing:**
+
 - User testimonials: Before/after (paper board → app → actually completing goals)
 - Progress shares: Repost users hitting their first bingo
 - Templates: Pre-filled boards for fitness, reading, travel
@@ -185,6 +203,7 @@ Attach: Screenshot or video of the board + share feature
 ### Problem
 
 The current flow:
+
 1. User lands on `/` → redirect to `/auth/login`
 2. Enter email → wait for magic link → check email → click link → redirect to `/dashboard`
 3. Create board via modal (name + size) → navigate to board → start adding goals
@@ -224,28 +243,34 @@ It sets up sharing (Feature 2) cleanly since the board has a real database ID fr
 No schema changes needed. The existing `boards.user_id` will reference the anonymous user's UUID (Supabase assigns one on anonymous sign-in). When the user converts to a real account via `linkIdentity()`, the UUID stays the same, so all foreign keys remain valid.
 
 **RLS policy addition needed:**
+
 - Boards need a new SELECT policy allowing unauthenticated reads for public/shared boards (see Feature 2). The existing `auth.uid() = user_id` policies handle anonymous users fine since they do get a `uid`.
 
 ### Implementation Scope
 
 **Routes:**
+
 - `src/routes/+page.svelte` — Replace redirect-to-login with inline board creation UI
 - `src/routes/auth/login/+page.svelte` — Keep as-is for explicit login
 
 **Stores:**
+
 - `src/lib/stores/auth.ts` — Add `signInAnonymously()` method, auto-trigger on first visit if no session
 - `src/lib/stores/boards.ts` — No changes needed (already uses `supabase.auth.getUser()`)
 
 **Components:**
+
 - `src/lib/components/AuthGuard.svelte` — Update to allow anonymous users through (they're authenticated, just anonymous)
 - New: inline board creation on landing page (replace the redirect logic)
 
 **Supabase dashboard:**
+
 - Enable anonymous sign-in in Authentication → Providers
 
 ### Conversion Prompt
 
 When to prompt sign-up:
+
 - User taps "Share" (Feature 2)
 - User returns to the app after 24 hours (gentle nudge, not blocking)
 - User creates a second board
@@ -296,12 +321,14 @@ One tap → a shareable image of the board, ready to post on TikTok/Instagram/X.
 Use `html-to-image` (or `html2canvas`) to render the board component to a PNG/JPEG.
 
 **Why `html-to-image`:**
+
 - Renders DOM to canvas/SVG/PNG directly
 - Handles CSS (including Tailwind) accurately
 - Small bundle size (~5KB gzipped)
 - Actively maintained, widely used
 
 **Flow:**
+
 1. User taps "Share" button (new button in board header)
 2. App renders a dedicated export-ready version of the board (hidden in DOM, styled for export)
 3. `html-to-image` converts it to a PNG blob
@@ -315,6 +342,7 @@ The visible board has responsive sizing, hover states, and interactive elements 
 ### Image Sizing
 
 Target formats for social media:
+
 - **Default: 1080x1080px** (square, works everywhere — TikTok, Instagram, X)
 - Future: 1080x1920px (9:16 for TikTok/Instagram stories)
 
@@ -323,16 +351,20 @@ The export component should render at a fixed pixel size regardless of screen di
 ### Implementation Scope
 
 **New dependency:**
+
 - `html-to-image` (or `dom-to-image-more` as alternative)
 
 **Components:**
+
 - New: `ShareButton` component in board header (next to font selector)
 - New: `ExportableBoard` component — a non-interactive, fixed-size version of the board styled for image export. Rendered hidden in the DOM, used only as input to `html-to-image`
 
 **Routes:**
+
 - `src/routes/boards/[id]/+page.svelte` — Add ShareButton to header
 
 **Utilities:**
+
 - New: `src/lib/utils/export.ts` — Export logic: render to image, trigger download/share
 
 ### UX Details
