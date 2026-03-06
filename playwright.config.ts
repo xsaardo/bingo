@@ -37,10 +37,14 @@ export default defineConfig({
 
 	/* Configure projects for major browsers */
 	projects: [
-		// Setup project - runs first to create auth state
+		// Setup projects - run first to create auth states
 		{
 			name: 'setup',
-			testMatch: /.*\.setup\.ts/
+			testMatch: /.*auth\.setup\.ts/
+		},
+		{
+			name: 'anon-setup',
+			testMatch: /.*anon\.setup\.ts/
 		},
 
 		{
@@ -50,7 +54,7 @@ export default defineConfig({
 				// Use saved auth state
 				storageState: 'tests/.auth/user.json'
 			},
-			dependencies: ['setup']
+			dependencies: ['setup', 'anon-setup']
 		},
 
 		{
@@ -60,7 +64,7 @@ export default defineConfig({
 				// Use saved auth state
 				storageState: 'tests/.auth/user.json'
 			},
-			dependencies: ['setup']
+			dependencies: ['setup', 'anon-setup']
 		},
 
 		{
@@ -70,7 +74,7 @@ export default defineConfig({
 				// Use saved auth state
 				storageState: 'tests/.auth/user.json'
 			},
-			dependencies: ['setup']
+			dependencies: ['setup', 'anon-setup']
 		}
 
 		/* Test against mobile viewports. */
