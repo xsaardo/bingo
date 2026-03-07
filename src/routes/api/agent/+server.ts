@@ -34,24 +34,24 @@ import { supabase } from '$lib/supabaseClient';
  *   Authorization: Bearer <supabase_access_token>
  */
 async function getAuthenticatedUser(request: Request) {
-	const authHeader = request.headers.get('Authorization');
-	if (!authHeader || !authHeader.startsWith('Bearer ')) {
-		return null;
-	}
-	const token = authHeader.slice(7).trim();
-	if (!token) return null;
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  const token = authHeader.slice(7).trim();
+  if (!token) return null;
 
-	const { data, error } = await supabase.auth.getUser(token);
-	if (error || !data.user) return null;
-	return data.user;
+  const { data, error } = await supabase.auth.getUser(token);
+  if (error || !data.user) return null;
+  return data.user;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-	// Require an authenticated session via Bearer token.
-	const user = await getAuthenticatedUser(request);
-	if (!user) {
-		return json({ error: 'Unauthorized' }, { status: 401 });
-	}
+  // Require an authenticated session via Bearer token.
+  const user = await getAuthenticatedUser(request);
+  if (!user) {
+    return json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   let body: { tool?: unknown; input?: unknown };
   try {
@@ -70,14 +70,14 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ error: '`input` must be a non-null object' }, { status: 400 });
   }
 
-	try {
-		const result = await executeTool(tool, input as Record<string, unknown>, user.id);
-		return json({ result });
-	} catch (err) {
-		// Do not leak internal error details to the client.
-		console.error('[/api/agent] executeTool error:', err);
-		return json({ error: 'An internal error occurred' }, { status: 500 });
-	}
+  try {
+    const result = await executeTool(tool, input as Record<string, unknown>, user.id);
+    return json({ result });
+  } catch (err) {
+    // Do not leak internal error details to the client.
+    console.error('[/api/agent] executeTool error:', err);
+    return json({ error: 'An internal error occurred' }, { status: 500 });
+  }
 };
 
 /**
@@ -87,9 +87,9 @@ export const POST: RequestHandler = async ({ request }) => {
  * Requires authentication to prevent information disclosure.
  */
 export const GET: RequestHandler = async ({ request }) => {
-	const user = await getAuthenticatedUser(request);
-	if (!user) {
-		return json({ error: 'Unauthorized' }, { status: 401 });
-	}
-	return json({ tools: AGENT_TOOLS });
+  const user = await getAuthenticatedUser(request);
+  if (!user) {
+    return json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  return json({ tools: AGENT_TOOLS });
 };

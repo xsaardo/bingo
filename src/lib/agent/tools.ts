@@ -57,7 +57,7 @@ export const AGENT_TOOLS: ClaudeTool[] = [GET_GOALS_TOOL];
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function isValidUuid(value: unknown): value is string {
-	return typeof value === 'string' && UUID_REGEX.test(value);
+  return typeof value === 'string' && UUID_REGEX.test(value);
 }
 
 // ---------------------------------------------------------------------------
@@ -86,27 +86,27 @@ export interface GetGoalsResult {
  * @returns       `{ board_id, goals }` on success; throws on error.
  */
 export async function getGoals(input: GetGoalsInput, userId: string): Promise<GetGoalsResult> {
-	const { board_id } = input;
+  const { board_id } = input;
 
-	// Validate board_id format to prevent injection or unexpected DB queries.
-	if (!isValidUuid(board_id)) {
-		throw new Error('Invalid board_id: must be a valid UUID');
-	}
+  // Validate board_id format to prevent injection or unexpected DB queries.
+  if (!isValidUuid(board_id)) {
+    throw new Error('Invalid board_id: must be a valid UUID');
+  }
 
-	// Verify the board exists and belongs to the authenticated user.
-	// The additional .eq('user_id', userId) check provides defense-in-depth
-	// alongside Supabase RLS policies.
-	const { data: boardData, error: boardError } = await supabase
-		.from('boards')
-		.select('id')
-		.eq('id', board_id)
-		.eq('user_id', userId)
-		.single();
+  // Verify the board exists and belongs to the authenticated user.
+  // The additional .eq('user_id', userId) check provides defense-in-depth
+  // alongside Supabase RLS policies.
+  const { data: boardData, error: boardError } = await supabase
+    .from('boards')
+    .select('id')
+    .eq('id', board_id)
+    .eq('user_id', userId)
+    .single();
 
-	if (boardError || !boardData) {
-		// Do not reveal whether the board exists or belongs to another user.
-		throw new Error('Board not found or access denied');
-	}
+  if (boardError || !boardData) {
+    // Do not reveal whether the board exists or belongs to another user.
+    throw new Error('Board not found or access denied');
+  }
 
   // Fetch all goals for the board, ordered by position.
   const { data: goalsData, error: goalsError } = await supabase
@@ -137,11 +137,11 @@ export async function getGoals(input: GetGoalsInput, userId: string): Promise<Ge
     .eq('board_id', board_id)
     .order('position', { ascending: true });
 
-	if (goalsError) {
-		// Log internally but do not expose DB error details to callers.
-		console.error('[getGoals] DB error fetching goals:', goalsError);
-		throw new Error('Failed to fetch goals');
-	}
+  if (goalsError) {
+    // Log internally but do not expose DB error details to callers.
+    console.error('[getGoals] DB error fetching goals:', goalsError);
+    throw new Error('Failed to fetch goals');
+  }
 
   const goals: Goal[] = (goalsData ?? []).map((g: any) => ({
     id: g.id,
@@ -182,15 +182,15 @@ export async function getGoals(input: GetGoalsInput, userId: string): Promise<Ge
  * @returns         Tool result (shape depends on the tool).
  */
 export async function executeTool(
-	toolName: string,
-	input: Record<string, unknown>,
-	userId: string
+  toolName: string,
+  input: Record<string, unknown>,
+  userId: string
 ): Promise<unknown> {
-	switch (toolName) {
-		case 'get_goals':
-			return getGoals(input as unknown as GetGoalsInput, userId);
-		default:
-			// Do not enumerate valid tool names in the error — prevents probing.
-			throw new Error('Unknown or unsupported tool');
-	}
+  switch (toolName) {
+    case 'get_goals':
+      return getGoals(input as unknown as GetGoalsInput, userId);
+    default:
+      // Do not enumerate valid tool names in the error — prevents probing.
+      throw new Error('Unknown or unsupported tool');
+  }
 }
