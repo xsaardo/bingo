@@ -8,25 +8,25 @@
 import { writable, derived } from 'svelte/store';
 import type { User } from '@supabase/supabase-js';
 import {
-  getCurrentUser,
-  onAuthStateChange,
-  sendMagicLink,
-  signInAnonymously,
-  signOut
+	getCurrentUser,
+	onAuthStateChange,
+	sendMagicLink,
+	signInAnonymously,
+	signOut
 } from '$lib/utils/auth';
 
 interface AuthState {
-  user: User | null;
-  loading: boolean;
-  initialized: boolean;
-  error: string | null;
+	user: User | null;
+	loading: boolean;
+	initialized: boolean;
+	error: string | null;
 }
 
 const initialState: AuthState = {
-  user: null,
-  loading: true,
-  initialized: false,
-  error: null
+	user: null,
+	loading: true,
+	initialized: false,
+	error: null
 };
 
 // Create the writable store
@@ -40,8 +40,8 @@ export const isAuthenticated = derived(authState, ($authState) => !!$authState.u
 
 // Derived store to check if the current user is anonymous (no email)
 export const isAnonymous = derived(
-  authState,
-  ($authState) => $authState.user?.is_anonymous === true
+	authState,
+	($authState) => $authState.user?.is_anonymous === true
 );
 
 // Derived store to check if auth is loading TODO
@@ -63,106 +63,106 @@ let cancelAuthListener: (() => void) | null = null;
  * Main interface for authentication operations
  */
 export const authStore = {
-  subscribe: authState.subscribe,
+	subscribe: authState.subscribe,
 
-  /**
-   * Initialize auth state
-   * Call this once on app startup (in root layout), or again to retry after failure
-   */
-  async init() {
-    // Cancel any previous auth state listener before re-registering
-    if (cancelAuthListener) {
-      cancelAuthListener();
-      cancelAuthListener = null;
-    }
+	/**
+	 * Initialize auth state
+	 * Call this once on app startup (in root layout), or again to retry after failure
+	 */
+	async init() {
+		// Cancel any previous auth state listener before re-registering
+		if (cancelAuthListener) {
+			cancelAuthListener();
+			cancelAuthListener = null;
+		}
 
-    authState.update((state) => ({
-      ...state,
-      loading: true,
-      initialized: false,
-      error: null
-    }));
+		authState.update((state) => ({
+			...state,
+			loading: true,
+			initialized: false,
+			error: null
+		}));
 
-    try {
-      // Check for existing session
-      let user = await getCurrentUser();
+		try {
+			// Check for existing session
+			let user = await getCurrentUser();
 
-      // If no existing session, create anonymous session
-      if (!user) {
-        const result = await signInAnonymously();
+			// If no existing session, create anonymous session
+			if (!user) {
+				const result = await signInAnonymously();
 
-        if (!result.success) {
-          authState.update((state) => ({
-            ...state,
-            user: null,
-            loading: false,
-            initialized: true,
-            error: result.error ?? 'Failed to create session'
-          }));
-          return;
-        }
+				if (!result.success) {
+					authState.update((state) => ({
+						...state,
+						user: null,
+						loading: false,
+						initialized: true,
+						error: result.error ?? 'Failed to create session'
+					}));
+					return;
+				}
 
-        user = result.user ?? null;
-      }
+				user = result.user ?? null;
+			}
 
-      authState.update((state) => ({
-        ...state,
-        user,
-        loading: false,
-        initialized: true,
-        error: null
-      }));
+			authState.update((state) => ({
+				...state,
+				user,
+				loading: false,
+				initialized: true,
+				error: null
+			}));
 
-      // Listen for auth state changes
-      cancelAuthListener = onAuthStateChange((user) => {
-        authState.update((state) => ({
-          ...state,
-          user,
-          loading: false
-        }));
-      });
-    } catch (error) {
-      console.error('Failed to initialize auth:', error);
-      authState.update((state) => ({
-        ...state,
-        user: null,
-        loading: false,
-        initialized: true,
-        error: error instanceof Error ? error.message : 'Failed to initialize'
-      }));
-    }
-  },
+			// Listen for auth state changes
+			cancelAuthListener = onAuthStateChange((user) => {
+				authState.update((state) => ({
+					...state,
+					user,
+					loading: false
+				}));
+			});
+		} catch (error) {
+			console.error('Failed to initialize auth:', error);
+			authState.update((state) => ({
+				...state,
+				user: null,
+				loading: false,
+				initialized: true,
+				error: error instanceof Error ? error.message : 'Failed to initialize'
+			}));
+		}
+	},
 
-  /**
-   * Send magic link to user's email
-   */
-  async sendMagicLink(email: string, redirectTo?: string) {
-    return await sendMagicLink(email, redirectTo);
-  },
+	/**
+	 * Send magic link to user's email
+	 */
+	async sendMagicLink(email: string, redirectTo?: string) {
+		return await sendMagicLink(email, redirectTo);
+	},
 
-  /**
-   * Sign out the current user
-   */
-  async logout() {
-    const result = await signOut();
+	/**
+	 * Sign out the current user
+	 */
+	async logout() {
+		const result = await signOut();
 
-    if (result.success) {
-      authState.update((state) => ({
-        ...state,
-        user: null
-      }));
-    }
+		if (result.success) {
+			authState.update((state) => ({
+				...state,
+				user: null
+			}));
+		}
 
-    return result;
-  },
+		return result;
+	},
 
-  /**
-   * Manually set user (useful for testing or manual updates)
-   */
-  setUser(user: User | null) {
-    authState.update((state) => ({
-      ...state,
-      user
-    }));
-  }
+	/**
+	 * Manually set user (useful for testing or manual updates)
+	 */
+	setUser(user: User | null) {
+		authState.update((state) => ({
+			...state,
+			user
+		}));
+	}
 };

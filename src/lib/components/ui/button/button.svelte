@@ -70,14 +70,14 @@
 	<a
 		{href}
 		class={cn(buttonVariants({ variant, size }), className)}
-		{...(restProps as HTMLAnchorAttributes)}
+		{...restProps as HTMLAnchorAttributes}
 	>
 		{@render children?.()}
 	</a>
 {:else}
 	<button
 		class={cn(buttonVariants({ variant, size }), className)}
-		{...(restProps as HTMLButtonAttributes)}
+		{...restProps as HTMLButtonAttributes}
 	>
 		{@render children?.()}
 	</button>
