@@ -14,7 +14,7 @@ export function detectBingo(board: Board): BingoLine[] {
   for (let row = 0; row < size; row++) {
     const rowIndices = Array.from({ length: size }, (_, col) => row * size + col);
     if (rowIndices.every((i) => goals[i].completed)) {
-      // eslint-disable-line security/detect-object-injection
+       
       completedLines.push({ type: 'row', index: row, indices: rowIndices });
     }
   }
@@ -23,7 +23,7 @@ export function detectBingo(board: Board): BingoLine[] {
   for (let col = 0; col < size; col++) {
     const colIndices = Array.from({ length: size }, (_, row) => row * size + col);
     if (colIndices.every((i) => goals[i].completed)) {
-      // eslint-disable-line security/detect-object-injection
+       
       completedLines.push({ type: 'column', index: col, indices: colIndices });
     }
   }
@@ -31,14 +31,14 @@ export function detectBingo(board: Board): BingoLine[] {
   // Check diagonal (top-left to bottom-right)
   const diagonal1 = Array.from({ length: size }, (_, i) => i * size + i);
   if (diagonal1.every((i) => goals[i].completed)) {
-    // eslint-disable-line security/detect-object-injection
+     
     completedLines.push({ type: 'diagonal', indices: diagonal1 });
   }
 
   // Check diagonal (top-right to bottom-left)
   const diagonal2 = Array.from({ length: size }, (_, i) => i * size + (size - 1 - i));
   if (diagonal2.every((i) => goals[i].completed)) {
-    // eslint-disable-line security/detect-object-injection
+     
     completedLines.push({ type: 'diagonal', indices: diagonal2 });
   }
 
