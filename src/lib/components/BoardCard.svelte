@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Board } from '$lib/types';
   import { boardsStore } from '$lib/stores/boards';
+  import { Badge } from '$lib/components/ui/badge';
 
   interface Props {
     board: Board;
@@ -223,10 +224,8 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-2">
         {#if !hasContent}
-          <span
-            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
-          >
-            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Badge variant="secondary">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -235,12 +234,10 @@
               />
             </svg>
             Empty
-          </span>
+          </Badge>
         {:else if completedGoals === totalGoals}
-          <span
-            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-          >
-            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Badge variant="outline" class="border-green-500 bg-green-50 text-green-700">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -249,12 +246,10 @@
               />
             </svg>
             Complete
-          </span>
+          </Badge>
         {:else if completedGoals > 0}
-          <span
-            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-          >
-            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Badge variant="outline" class="border-blue-400 bg-blue-50 text-blue-700">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -263,12 +258,10 @@
               />
             </svg>
             In Progress
-          </span>
+          </Badge>
         {:else}
-          <span
-            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
-          >
-            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Badge variant="outline" class="border-yellow-400 bg-yellow-50 text-yellow-700">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -277,7 +270,7 @@
               />
             </svg>
             Not Started
-          </span>
+          </Badge>
         {/if}
       </div>
 
