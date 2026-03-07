@@ -27,6 +27,11 @@
   let titleInput: HTMLInputElement;
   let isExpanded = $state(false);
 
+  // Suggestion state
+  let suggestions = $state<string[]>([]);
+  let isSuggesting = $state(false);
+  let suggestError = $state<string | null>(null);
+
   // Check if user is anonymous
   const isAnonymous = $derived($currentUser?.is_anonymous === true);
 
@@ -46,6 +51,30 @@
   function handleBackdropClick(e: MouseEvent) {
     if (e.target === e.currentTarget) {
       handleClose();
+    }
+  }
+
+  async function handleSuggest() {
+    isSuggesting = true;
+    suggestError = null;
+    suggestions = [];
+    try {
+      const existingGoals = $currentBoard?.goals.map((g) => g.title).filter(Boolean) ?? [];
+      const res = await fetch('/api/suggest-goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ existingGoals })
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? `Request failed (${res.status})`);
+      }
+      const data = await res.json();
+      suggestions = data.suggestions ?? [];
+    } catch (err) {
+      suggestError = err instanceof Error ? err.message : 'Failed to fetch suggestions';
+    } finally {
+      isSuggesting = false;
     }
   }
 
@@ -131,6 +160,58 @@
           class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           data-testid="modal-title-input"
         />
+      </div>
+
+      <!-- Goal Suggestions -->
+      <div>
+        <button
+          onclick={handleSuggest}
+          disabled={isSuggesting}
+          class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-purple-600 hover:text-purple-700 border border-purple-200 hover:border-purple-300 rounded-lg hover:bg-purple-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          data-testid="suggest-goals-button"
+        >
+          {#if isSuggesting}
+            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              ></path>
+            </svg>
+            Suggesting...
+          {:else}
+            ✨ Suggest
+          {/if}
+        </button>
+
+        {#if suggestError}
+          <p class="mt-2 text-sm text-red-600" data-testid="suggest-error">{suggestError}</p>
+        {/if}
+
+        {#if suggestions.length > 0}
+          <div class="mt-2 flex flex-wrap gap-2" data-testid="suggestions-list">
+            {#each suggestions as suggestion}
+              <button
+                onclick={() => {
+                  title = suggestion;
+                  suggestions = [];
+                }}
+                class="px-3 py-1 text-sm bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full transition-colors text-left"
+                data-testid="suggestion-chip"
+              >
+                {suggestion}
+              </button>
+            {/each}
+          </div>
+        {/if}
       </div>
 
       <!-- Expanded section -->
