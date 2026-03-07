@@ -1,155 +1,157 @@
 <script lang="ts">
-	import { boardsStore } from '$lib/stores/boards';
-	import type { Board } from '$lib/types';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
+  import { boardsStore } from '$lib/stores/boards';
+  import type { Board } from '$lib/types';
+  import * as Dialog from '$lib/components/ui/dialog/index.js';
 
-	interface Props {
-		isOpen: boolean;
-		board: Board | null;
-		onClose: () => void;
-		onDeleted?: (boardName: string) => void;
-	}
+  interface Props {
+    isOpen: boolean;
+    board: Board | null;
+    onClose: () => void;
+    onDeleted?: (boardName: string) => void;
+  }
 
-	let { isOpen, board, onClose, onDeleted }: Props = $props();
+  let { isOpen, board, onClose, onDeleted }: Props = $props();
 
-	let loading = $state(false);
-	let error = $state('');
+  let loading = $state(false);
+  let error = $state('');
 
-	// Reset error when modal opens/closes
-	$effect(() => {
-		if (isOpen) {
-			error = '';
-		}
-	});
+  // Reset error when modal opens/closes
+  $effect(() => {
+    if (isOpen) {
+      error = '';
+    }
+  });
 
-	async function handleDelete() {
-		if (!board) return;
+  async function handleDelete() {
+    if (!board) return;
 
-		loading = true;
-		error = '';
+    loading = true;
+    error = '';
 
-		const result = await boardsStore.deleteBoard(board.id);
+    const result = await boardsStore.deleteBoard(board.id);
 
-		loading = false;
+    loading = false;
 
-		if (result.success) {
-			const name = board.name;
-			onClose();
-			onDeleted?.(name);
-		} else {
-			error = result.error || 'Failed to delete board';
-		}
-	}
+    if (result.success) {
+      const name = board.name;
+      onClose();
+      onDeleted?.(name);
+    } else {
+      error = result.error || 'Failed to delete board';
+    }
+  }
 
-	function handleOpenChange(open: boolean) {
-		if (!open && !loading) {
-			onClose();
-		}
-	}
+  function handleOpenChange(open: boolean) {
+    if (!open && !loading) {
+      onClose();
+    }
+  }
 </script>
 
 <Dialog.Root open={isOpen && board !== null} onOpenChange={handleOpenChange}>
-	<Dialog.Content class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden p-0 border-0 gap-0">
-		<!-- Header with Warning Icon -->
-		<div class="bg-red-50 px-6 py-5 border-b border-red-100">
-			<div class="flex items-start">
-				<div class="flex-shrink-0">
-					<div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-						<svg
-							class="w-6 h-6 text-red-600"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-							/>
-						</svg>
-					</div>
-				</div>
-				<div class="ml-4 flex-1">
-					<Dialog.Title class="text-xl font-bold text-gray-900">Delete Board?</Dialog.Title>
-					<Dialog.Description class="text-sm text-gray-600 mt-1">This action cannot be undone</Dialog.Description>
-				</div>
-				{#if !loading}
-					<Dialog.Close class="text-gray-400 hover:text-gray-600 rounded-lg p-1 transition-colors" aria-label="Close modal">
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M6 18L18 6M6 6l12 12"
-							/>
-						</svg>
-					</Dialog.Close>
-				{/if}
-			</div>
-		</div>
+  <Dialog.Content
+    class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden p-0 border-0 gap-0"
+  >
+    <!-- Header with Warning Icon -->
+    <div class="bg-red-50 px-6 py-5 border-b border-red-100">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="ml-4 flex-1">
+          <Dialog.Title class="text-xl font-bold text-gray-900">Delete Board?</Dialog.Title>
+          <Dialog.Description class="text-sm text-gray-600 mt-1"
+            >This action cannot be undone</Dialog.Description
+          >
+        </div>
+        {#if !loading}
+          <Dialog.Close
+            class="text-gray-400 hover:text-gray-600 rounded-lg p-1 transition-colors"
+            aria-label="Close modal"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </Dialog.Close>
+        {/if}
+      </div>
+    </div>
 
-		<!-- Content -->
-		<div class="p-6 space-y-4">
-			<!-- Board Info -->
-			{#if board}
-				<div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-					<p class="text-sm text-gray-600 mb-1">Board to delete:</p>
-					<p class="font-semibold text-gray-900 text-lg">{board.name}</p>
-				</div>
-			{/if}
+    <!-- Content -->
+    <div class="p-6 space-y-4">
+      <!-- Board Info -->
+      {#if board}
+        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <p class="text-sm text-gray-600 mb-1">Board to delete:</p>
+          <p class="font-semibold text-gray-900 text-lg">{board.name}</p>
+        </div>
+      {/if}
 
-			<!-- Warning Message -->
-			<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-				<div class="flex items-start">
-					<svg
-						class="w-5 h-5 text-yellow-600 mr-2 flex-shrink-0 mt-0.5"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-						/>
-					</svg>
-					<div class="text-sm text-yellow-800">
-						<p class="font-medium mb-1">Warning: Permanent Deletion</p>
-						<ul class="list-disc list-inside space-y-1">
-							<li>All goals will be permanently deleted</li>
-							<li>All progress will be lost</li>
-							<li>This action cannot be undone</li>
-						</ul>
-					</div>
-				</div>
-			</div>
+      <!-- Warning Message -->
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div class="flex items-start">
+          <svg
+            class="w-5 h-5 text-yellow-600 mr-2 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+          <div class="text-sm text-yellow-800">
+            <p class="font-medium mb-1">Warning: Permanent Deletion</p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>All goals will be permanently deleted</li>
+              <li>All progress will be lost</li>
+              <li>This action cannot be undone</li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-			<!-- Error Message -->
-			{#if error}
-				<div
-					role="alert"
-					aria-live="polite"
-					class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start"
-				>
-					<svg
-						class="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5"
-						aria-hidden="true"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
-					</svg>
-					<p class="text-sm text-red-800">{error}</p>
-				</div>
-			{/if}
+      <!-- Error Message -->
+      {#if error}
+        <div
+          role="alert"
+          aria-live="polite"
+          class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start"
+        >
+          <svg
+            class="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p class="text-sm text-red-800">{error}</p>
+        </div>
+      {/if}
 
 			<!-- Actions -->
 			<div class="flex items-center justify-end space-x-3 pt-2">
