@@ -172,8 +172,19 @@
         >
           {#if isSuggesting}
             <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              ></path>
             </svg>
             Suggesting...
           {:else}
@@ -189,7 +200,10 @@
           <div class="mt-2 flex flex-wrap gap-2" data-testid="suggestions-list">
             {#each suggestions as suggestion}
               <button
-                onclick={() => { title = suggestion; suggestions = []; }}
+                onclick={() => {
+                  title = suggestion;
+                  suggestions = [];
+                }}
                 class="px-3 py-1 text-sm bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full transition-colors text-left"
                 data-testid="suggestion-chip"
               >
