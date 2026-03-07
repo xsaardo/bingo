@@ -2,22 +2,16 @@
 <!-- ABOUTME: Maintains backward-compatible onclick/testid API over the bits-ui Checkbox primitive -->
 
 <script lang="ts">
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+  import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 
-	interface Props {
-		checked: boolean;
-		onclick: (e: MouseEvent) => void;
-		testid?: string;
-		class?: string;
-	}
+  interface Props {
+    checked: boolean;
+    onclick: (e: MouseEvent) => void;
+    testid?: string;
+    class?: string;
+  }
 
-	let { checked, onclick, testid = 'checkbox', class: className = 'w-5 h-5' }: Props = $props();
+  let { checked, onclick, testid = 'checkbox', class: className = 'w-5 h-5' }: Props = $props();
 </script>
 
-<Checkbox
-	{checked}
-	onCheckedChange={() => {}}
-	{onclick}
-	data-testid={testid}
-	class={className}
-/>
+<Checkbox {checked} onCheckedChange={() => {}} {onclick} data-testid={testid} class={className} />
