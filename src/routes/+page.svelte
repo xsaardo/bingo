@@ -128,9 +128,7 @@
           <div class="space-y-6">
             <!-- Board Name -->
             <div>
-              <Label for="board-name" class="block mb-2">
-                What's your board called?
-              </Label>
+              <Label for="board-name" class="block mb-2">What's your board called?</Label>
               <Input
                 bind:ref={nameInput}
                 id="board-name"
