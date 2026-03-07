@@ -64,8 +64,22 @@
     boardSize === 3 ? 'text-[10px]' : boardSize === 4 ? 'text-[10px]' : 'text-[8px]'
   );
 
-  async function toggleComplete() {
-    await currentBoardStore.toggleComplete(goal.id);
+  // Debounce rapid checkbox taps to avoid flooding Supabase with duplicate
+  // updates when the user double-clicks or taps quickly.
+  let toggleTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function toggleComplete() {
+    if (toggleTimer !== null) {
+      // A toggle is already queued — cancel the previous one so we don't
+      // fire multiple writes for a single intended toggle.
+      clearTimeout(toggleTimer);
+      toggleTimer = null;
+      return;
+    }
+    toggleTimer = setTimeout(async () => {
+      toggleTimer = null;
+      await currentBoardStore.toggleComplete(goal.id);
+    }, 300);
   }
 
   function selectGoal() {
