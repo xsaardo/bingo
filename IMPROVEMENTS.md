@@ -37,8 +37,8 @@ This follows the **industry standard pattern** for task management apps (Trello,
 ```typescript
 // In MilestoneList.svelte handleFinalize()
 if (!result.success) {
-	console.error('Failed to reorder milestones:', result.error);
-	toast.error('Changes not saved. Refresh to sync.');
+  console.error('Failed to reorder milestones:', result.error);
+  toast.error('Changes not saved. Refresh to sync.');
 }
 ```
 
@@ -52,12 +52,12 @@ if (!result.success) {
 
 ```typescript
 if (!result.success) {
-	// Silently retry once
-	const retry = await currentBoardStore.reorderMilestones(goalId, newOrder);
-	if (!retry.success) {
-		console.error('Retry failed:', retry.error);
-		// Optional: show toast notification
-	}
+  // Silently retry once
+  const retry = await currentBoardStore.reorderMilestones(goalId, newOrder);
+  if (!retry.success) {
+    console.error('Retry failed:', retry.error);
+    // Optional: show toast notification
+  }
 }
 ```
 
