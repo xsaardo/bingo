@@ -56,12 +56,7 @@
 {/if}
 
 <!-- ARIA live region: announces goal completions and bingo events to screen readers -->
-<div
-  role="status"
-  aria-live="polite"
-  aria-atomic="true"
-  class="sr-only"
->
+<div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
   {liveAnnouncement}
 </div>
 
