@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { focusTrap } from '$lib/actions/focusTrap';
+
   interface Props {
     isOpen: boolean;
     title: string;
@@ -20,6 +22,14 @@
   }: Props = $props();
 
   let loading = $state(false);
+  let cancelButton = $state<HTMLButtonElement | null>(null);
+
+  $effect(() => {
+    if (isOpen) {
+      // Focus cancel button on open — safer default for destructive/confirmations
+      setTimeout(() => cancelButton?.focus(), 50);
+    }
+  });
 
   async function handleConfirm() {
     loading = true;
@@ -69,6 +79,7 @@
     aria-modal="true"
     aria-labelledby="confirmation-modal-title"
     tabindex="-1"
+    use:focusTrap
   >
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scale-in">
       <!-- Header with Icon -->
@@ -117,6 +128,7 @@
       <!-- Footer -->
       <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3">
         <button
+          bind:this={cancelButton}
           onclick={onCancel}
           disabled={loading}
           class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"

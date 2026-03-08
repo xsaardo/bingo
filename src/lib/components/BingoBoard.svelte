@@ -15,11 +15,55 @@
   let bingoLines = $derived<BingoLine[]>($currentBoard ? detectBingo($currentBoard) : []);
   let hasBingo = $derived(bingoLines.length > 0);
   let bingoIndices = $derived(new Set(bingoLines.flatMap((line) => line.indices)));
+
+  // ARIA live region announcement text
+  let liveAnnouncement = $state('');
+
+  // Track previous counts to detect changes (plain variables — not reactive state)
+  let prevCompletedCount = 0;
+  let prevBingoCount = 0;
+
+  $effect(() => {
+    const completedCount = $currentBoard?.goals.filter((g) => g.completed).length ?? 0;
+    const currentBingoCount = bingoLines.length;
+
+    // Announce goal completion (only when a goal is newly completed, not a new bingo)
+    if (completedCount > prevCompletedCount && currentBingoCount <= prevBingoCount) {
+      liveAnnouncement = 'Goal marked complete.';
+    }
+
+    // Announce newly detected bingo lines
+    if (currentBingoCount > prevBingoCount) {
+      const newLine = bingoLines[currentBingoCount - 1];
+      let description: string;
+      if (newLine.type === 'row') {
+        description = `Row ${(newLine.index ?? 0) + 1}`;
+      } else if (newLine.type === 'column') {
+        description = `Column ${(newLine.index ?? 0) + 1}`;
+      } else {
+        description = 'Diagonal';
+      }
+      liveAnnouncement = `Bingo! ${description} complete.`;
+    }
+
+    prevCompletedCount = completedCount;
+    prevBingoCount = currentBingoCount;
+  });
 </script>
 
 {#if hasBingo}
   <Confetti />
 {/if}
+
+<!-- ARIA live region: announces goal completions and bingo events to screen readers -->
+<div
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+  class="sr-only"
+>
+  {liveAnnouncement}
+</div>
 
 {#if $currentBoard}
   <div class="bg-white rounded-lg shadow-lg p-2 sm:p-3 md:p-4 relative h-full">

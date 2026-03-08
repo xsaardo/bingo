@@ -12,6 +12,7 @@
   import { Input } from '$lib/components/ui/input/index.js';
   import DateMetadata from './DateMetadata.svelte';
   import MilestoneList from './MilestoneList.svelte';
+  import { focusTrap } from '$lib/actions/focusTrap';
 
   interface Props {
     goal: Goal;
@@ -80,12 +81,14 @@
   <div
     role="dialog"
     aria-label="Edit goal"
+    aria-modal="true"
     tabindex="0"
     in:scale={{ duration: 200, start: 0.95 }}
     class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
     onclick={(e) => e.stopPropagation()}
     onkeydown={(e) => e.key === 'Escape' && handleClose()}
     data-testid="goal-modal"
+    use:focusTrap
   >
     <!-- Header -->
     <div class="flex items-center justify-end px-6 pt-3 pb-1">
