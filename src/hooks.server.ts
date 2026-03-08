@@ -15,6 +15,7 @@
 
 import { rateLimit, retryAfterSeconds } from '$lib/server/rateLimit';
 import { error, type Handle } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
 
 /** Extract the best available client IP from common proxy headers. */
 function getClientIp(request: Request): string {
@@ -28,6 +29,12 @@ function getClientIp(request: Request): string {
 export const handle: Handle = async ({ event, resolve }) => {
   const { pathname } = event.url;
   const ip = getClientIp(event.request);
+
+  // Skip rate limiting in test environments to prevent throttling e2e tests
+  const rateLimitingDisabled = env.DISABLE_RATE_LIMITING === 'true';
+  if (rateLimitingDisabled) {
+    return resolve(event);
+  }
 
   // ── Auth routes: strict limit to deter magic-link spam ──────────────────
   if (pathname.startsWith('/auth/')) {
