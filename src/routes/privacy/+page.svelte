@@ -20,27 +20,46 @@
         <p class="text-sm text-gray-400 mb-8">Effective date: March 7, 2026</p>
 
         <div class="prose prose-gray max-w-none space-y-8 text-gray-700 leading-relaxed">
-
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">1. What We Collect</h2>
             <p>When you use Bingoal, we may collect the following information:</p>
             <ul class="list-disc pl-5 mt-2 space-y-1">
-              <li><strong>Email address</strong> — when you sign in via magic link (Supabase authentication). We use this solely to authenticate you.</li>
-              <li><strong>Board content</strong> — the names and completion status of goals you enter on your bingo board.</li>
-              <li><strong>Anonymous session data</strong> — if you use Bingoal without signing in, we assign your board to an anonymous session stored in your browser's local storage. No personal information is collected.</li>
+              <li>
+                <strong>Email address</strong> — when you sign in via magic link (Supabase authentication).
+                We use this solely to authenticate you.
+              </li>
+              <li>
+                <strong>Board content</strong> — the names and completion status of goals you enter on
+                your bingo board.
+              </li>
+              <li>
+                <strong>Anonymous session data</strong> — if you use Bingoal without signing in, we assign
+                your board to an anonymous session stored in your browser's local storage. No personal
+                information is collected.
+              </li>
             </ul>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">2. How We Store Your Data</h2>
-            <p>Your data is stored securely using <strong>Supabase</strong>, a cloud database service hosted in the <strong>United States</strong>. Supabase encrypts data at rest and in transit. We do not store passwords — authentication is handled via email magic links.</p>
+            <p>
+              Your data is stored securely using <strong>Supabase</strong>, a cloud database service
+              hosted in the <strong>United States</strong>. Supabase encrypts data at rest and in
+              transit. We do not store passwords — authentication is handled via email magic links.
+            </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">3. How Long We Keep It</h2>
             <ul class="list-disc pl-5 space-y-1">
-              <li><strong>Anonymous boards</strong> are automatically deleted after <strong>30 days of inactivity</strong>.</li>
-              <li><strong>Signed-in accounts</strong> and their boards are retained until you request deletion or close your account.</li>
+              <li>
+                <strong>Anonymous boards</strong> are automatically deleted after
+                <strong>30 days of inactivity</strong>.
+              </li>
+              <li>
+                <strong>Signed-in accounts</strong> and their boards are retained until you request deletion
+                or close your account.
+              </li>
             </ul>
           </section>
 
@@ -48,34 +67,50 @@
             <h2 class="text-lg font-semibold text-gray-900 mb-3">4. How to Request Deletion</h2>
             <p>
               To request deletion of your data, email us at
-              <a href="mailto:privacy@bingoal.app" class="text-blue-600 hover:text-blue-700 underline">privacy@bingoal.app</a>.
-              We will delete your account and associated data within 30 days of receiving your request.
+              <a
+                href="mailto:privacy@bingoal.app"
+                class="text-blue-600 hover:text-blue-700 underline">privacy@bingoal.app</a
+              >. We will delete your account and associated data within 30 days of receiving your
+              request.
             </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">5. Third Parties</h2>
-            <p>We do <strong>not</strong> sell, rent, or share your personal data with any third parties for marketing purposes. We use Supabase solely to store and serve your data as part of the product.</p>
+            <p>
+              We do <strong>not</strong> sell, rent, or share your personal data with any third parties
+              for marketing purposes. We use Supabase solely to store and serve your data as part of the
+              product.
+            </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">6. Cookies &amp; Local Storage</h2>
-            <p>Bingoal uses browser local storage to keep track of your anonymous board session. We do not use advertising or tracking cookies.</p>
+            <p>
+              Bingoal uses browser local storage to keep track of your anonymous board session. We
+              do not use advertising or tracking cookies.
+            </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">7. Changes to This Policy</h2>
-            <p>We may update this Privacy Policy from time to time. When we do, we'll update the effective date at the top of this page. Continued use of Bingoal after changes constitutes your acceptance of the updated policy.</p>
+            <p>
+              We may update this Privacy Policy from time to time. When we do, we'll update the
+              effective date at the top of this page. Continued use of Bingoal after changes
+              constitutes your acceptance of the updated policy.
+            </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">8. Contact</h2>
             <p>
               Questions? Email us at
-              <a href="mailto:privacy@bingoal.app" class="text-blue-600 hover:text-blue-700 underline">privacy@bingoal.app</a>.
+              <a
+                href="mailto:privacy@bingoal.app"
+                class="text-blue-600 hover:text-blue-700 underline">privacy@bingoal.app</a
+              >.
             </p>
           </section>
-
         </div>
       </div>
     </div>

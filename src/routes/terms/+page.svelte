@@ -20,10 +20,12 @@
         <p class="text-sm text-gray-400 mb-8">Effective date: March 7, 2026</p>
 
         <div class="prose prose-gray max-w-none space-y-8 text-gray-700 leading-relaxed">
-
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
-            <p>By using Bingoal ("the Service"), you agree to these Terms of Service. If you don't agree, please don't use the Service.</p>
+            <p>
+              By using Bingoal ("the Service"), you agree to these Terms of Service. If you don't
+              agree, please don't use the Service.
+            </p>
           </section>
 
           <section>
@@ -40,37 +42,60 @@
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">3. Your Content</h2>
-            <p>You own the content you create on Bingoal — your board names, goal descriptions, and any other input you provide. By using the Service, you grant us a limited license to store and display your content solely to operate the Service. We will never claim ownership of your content.</p>
+            <p>
+              You own the content you create on Bingoal — your board names, goal descriptions, and
+              any other input you provide. By using the Service, you grant us a limited license to
+              store and display your content solely to operate the Service. We will never claim
+              ownership of your content.
+            </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">4. No Warranty — As-Is Service</h2>
-            <p>Bingoal is provided <strong>"as is"</strong> and <strong>"as available"</strong> without warranties of any kind, express or implied. We don't guarantee that the Service will be uninterrupted, error-free, or that data will never be lost. Use it at your own risk.</p>
+            <p>
+              Bingoal is provided <strong>"as is"</strong> and <strong>"as available"</strong> without
+              warranties of any kind, express or implied. We don't guarantee that the Service will be
+              uninterrupted, error-free, or that data will never be lost. Use it at your own risk.
+            </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">5. Limitation of Liability</h2>
-            <p>To the maximum extent permitted by law, Bingoal and its creators are not liable for any indirect, incidental, special, or consequential damages arising from your use (or inability to use) the Service, even if we have been advised of the possibility of such damages.</p>
+            <p>
+              To the maximum extent permitted by law, Bingoal and its creators are not liable for
+              any indirect, incidental, special, or consequential damages arising from your use (or
+              inability to use) the Service, even if we have been advised of the possibility of such
+              damages.
+            </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">6. Termination</h2>
-            <p>We reserve the right to suspend or terminate your access to the Service at any time, with or without notice, if we believe you have violated these Terms or are misusing the Service. You may also stop using the Service at any time.</p>
+            <p>
+              We reserve the right to suspend or terminate your access to the Service at any time,
+              with or without notice, if we believe you have violated these Terms or are misusing
+              the Service. You may also stop using the Service at any time.
+            </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">7. Changes to These Terms</h2>
-            <p>We may update these Terms from time to time. When we do, we'll update the effective date above. Continued use of the Service after changes constitutes your acceptance of the revised Terms.</p>
+            <p>
+              We may update these Terms from time to time. When we do, we'll update the effective
+              date above. Continued use of the Service after changes constitutes your acceptance of
+              the revised Terms.
+            </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">8. Contact</h2>
             <p>
               Questions about these Terms? Email us at
-              <a href="mailto:hello@bingoal.app" class="text-blue-600 hover:text-blue-700 underline">hello@bingoal.app</a>.
+              <a href="mailto:hello@bingoal.app" class="text-blue-600 hover:text-blue-700 underline"
+                >hello@bingoal.app</a
+              >.
             </p>
           </section>
-
         </div>
       </div>
     </div>
