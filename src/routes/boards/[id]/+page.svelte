@@ -6,6 +6,8 @@
   import UserMenu from '$lib/components/UserMenu.svelte';
   import BingoBoard from '$lib/components/BingoBoard.svelte';
   import ErrorAlert from '$lib/components/ErrorAlert.svelte';
+  import ExportableBoard from '$lib/components/ExportableBoard.svelte';
+  import ShareButton from '$lib/components/ShareButton.svelte';
   import {
     currentBoardStore,
     currentBoard,
@@ -13,6 +15,8 @@
     currentBoardError
   } from '$lib/stores/currentBoard';
   import { isAnonymous } from '$lib/stores/auth';
+
+  let exportElement: HTMLDivElement | undefined = $state();
 
   const boardId = $derived($page.params.id!);
 
@@ -158,6 +162,7 @@
                   />
                 </svg>
               </button>
+              <ShareButton boardName={$currentBoard.name} {exportElement} />
             {/if}
 
             <UserMenu />
@@ -222,4 +227,32 @@
       {/if}
     </main>
   </div>
+  <!-- Off-screen export board — always rendered when board is loaded so html-to-image can capture it -->
+  {#if $currentBoard}
+    <ExportableBoard board={$currentBoard} bind:exportRef={exportElement} />
+  {/if}
+
+  <!-- Toast notification -->
+  {#if toastMessage}
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      <div
+        class="flex items-center gap-3 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg text-sm"
+      >
+        <svg
+          class="w-4 h-4 text-green-400 flex-shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+        <span>{toastMessage}</span>
+      </div>
+    </div>
+  {/if}
 </AuthGuard>
