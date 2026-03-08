@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Milestone } from '$lib/types';
   import MilestoneItem from './MilestoneItem.svelte';
+  import { Input } from '$lib/components/ui/input/index.js';
   import { currentBoardStore } from '$lib/stores/currentBoard';
   import { currentUser } from '$lib/stores/auth';
   import { dndzone } from 'svelte-dnd-action';
@@ -114,10 +115,10 @@
 
   {#if showAddInput}
     <div class="flex gap-2">
-      <input
+      <Input
         bind:value={newMilestoneTitle}
         placeholder="New milestone..."
-        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+        class="flex-1 px-3 py-2 h-auto text-sm"
         onkeydown={(e) => e.key === 'Enter' && handleAdd()}
       />
       <button

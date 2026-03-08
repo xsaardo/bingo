@@ -76,7 +76,7 @@
     <div class="flex-1 flex items-center justify-center text-center px-1 overflow-hidden min-h-0">
       {#if goal.title}
         <p
-          class="{titleTextClass} font-medium line-clamp-3 {goal.completed
+          class="{titleTextClass} font-medium line-clamp-3 break-words w-full {goal.completed
             ? 'text-green-900'
             : 'text-gray-900'}"
         >

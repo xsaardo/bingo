@@ -2,15 +2,15 @@
 <!-- ABOUTME: Shows title and completion toggle by default; signed-in users can expand for notes and milestones -->
 
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { fade, scale } from 'svelte/transition';
   import { currentBoardStore, currentBoard } from '$lib/stores/currentBoard';
   import { uiStore } from '$lib/stores/board';
   import { currentUser } from '$lib/stores/auth';
   import type { Goal } from '$lib/types';
   import RichTextEditor from './RichTextEditor.svelte';
+  import { Input } from '$lib/components/ui/input/index.js';
   import DateMetadata from './DateMetadata.svelte';
   import MilestoneList from './MilestoneList.svelte';
+  import * as Dialog from '$lib/components/ui/dialog/index.js';
 
   interface Props {
     goal: Goal;
@@ -24,7 +24,7 @@
 
   let title = $state(goal.title);
   let notes = $state(goal.notes);
-  let titleInput: HTMLInputElement;
+  let titleInput: HTMLInputElement | null = null;
   let isExpanded = $state(false);
 
   // Check if user is anonymous
@@ -43,58 +43,31 @@
     await currentBoardStore.toggleComplete(goal.id);
   }
 
-  function handleBackdropClick(e: MouseEvent) {
-    if (e.target === e.currentTarget) {
+  function handleOpenChange(open: boolean) {
+    if (!open) {
       handleClose();
     }
   }
 
-  // Handle escape key
-  onMount(() => {
-    function handleKeydown(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        handleClose();
-      }
-    }
-    window.addEventListener('keydown', handleKeydown);
-
-    // Auto-focus the title input when modal opens
-    titleInput?.focus();
-
-    return () => window.removeEventListener('keydown', handleKeydown);
+  // Auto-focus title input when modal opens
+  $effect(() => {
+    setTimeout(() => titleInput?.focus(), 50);
   });
 </script>
 
-<!-- Backdrop -->
-<div
-  role="button"
-  tabindex="-1"
-  onclick={handleBackdropClick}
-  onkeydown={(e) => e.key === 'Escape' && handleClose()}
-  in:fade={{ duration: 150 }}
-  class="fixed inset-0 flex items-center justify-center z-50 p-4"
-  style="background-color: rgba(0, 0, 0, 0.3);"
->
-  <!-- Modal -->
-  <div
-    role="dialog"
-    aria-label="Edit goal"
-    tabindex="0"
-    in:scale={{ duration: 200, start: 0.95 }}
-    class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
-    onclick={(e) => e.stopPropagation()}
-    onkeydown={(e) => e.key === 'Escape' && handleClose()}
+<Dialog.Root open={true} onOpenChange={handleOpenChange}>
+  <Dialog.Content
+    class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden p-0 border-0 gap-0"
     data-testid="goal-modal"
   >
     <!-- Header -->
     <div class="flex items-center justify-end px-6 pt-3 pb-1">
-      <button
-        onclick={handleClose}
+      <Dialog.Close
         class="text-gray-500 hover:text-gray-700 text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200 transition-colors"
         data-testid="close-modal-button"
       >
         ×
-      </button>
+      </Dialog.Close>
     </div>
 
     <!-- Scrollable Content -->
@@ -121,14 +94,14 @@
             </svg>
           {/if}
         </button>
-        <input
-          bind:this={titleInput}
+        <Input
+          bind:ref={titleInput}
           id="modal-goal-title"
           type="text"
           bind:value={title}
           placeholder="Enter your goal..."
           onkeydown={(e) => e.key === 'Enter' && handleSave()}
-          class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          class="flex-1 px-3 py-2 h-auto"
           data-testid="modal-title-input"
         />
       </div>
@@ -204,5 +177,5 @@
         Save
       </button>
     </div>
-  </div>
-</div>
+  </Dialog.Content>
+</Dialog.Root>
