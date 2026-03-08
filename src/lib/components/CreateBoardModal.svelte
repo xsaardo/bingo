@@ -1,5 +1,7 @@
 <script lang="ts">
   import { boardsStore } from '$lib/stores/boards';
+  import { Input } from '$lib/components/ui/input/index.js';
+  import { Label } from '$lib/components/ui/label/index.js';
 
   interface Props {
     isOpen: boolean;
@@ -11,7 +13,7 @@
   let name = $state('');
   let loading = $state(false);
   let error = $state('');
-  let nameInput = $state<HTMLInputElement | undefined>(undefined);
+  let nameInput = $state<HTMLInputElement | null>(null);
 
   // Reset form and focus when modal opens
   $effect(() => {
@@ -100,19 +102,19 @@
       <form onsubmit={handleSubmit} class="p-6 space-y-5">
         <!-- Board Name -->
         <div>
-          <label for="board-name" class="block text-sm font-medium text-gray-700 mb-2">
+          <Label for="board-name" class="block mb-2">
             Board Name <span class="text-red-500">*</span>
-          </label>
-          <input
-            bind:this={nameInput}
+          </Label>
+          <Input
+            bind:ref={nameInput}
             id="board-name"
             type="text"
             bind:value={name}
             placeholder="e.g., 2026 Goals, Reading Challenge, Fitness Bingo"
             required
-            maxlength="255"
+            maxlength={255}
             disabled={loading}
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
+            class="w-full px-4 py-3 h-auto"
           />
           <p class="text-xs text-gray-500 mt-1">Give your board a memorable name</p>
         </div>

@@ -9,6 +9,7 @@
   import { currentUser } from '$lib/stores/auth';
   import type { Goal } from '$lib/types';
   import RichTextEditor from './RichTextEditor.svelte';
+  import { Input } from '$lib/components/ui/input/index.js';
   import DateMetadata from './DateMetadata.svelte';
   import MilestoneList from './MilestoneList.svelte';
 
@@ -24,7 +25,7 @@
 
   let title = $state(goal.title);
   let notes = $state(goal.notes);
-  let titleInput: HTMLInputElement;
+  let titleInput: HTMLInputElement | null = null;
   let isExpanded = $state(false);
 
   // Check if user is anonymous
@@ -121,14 +122,14 @@
             </svg>
           {/if}
         </button>
-        <input
-          bind:this={titleInput}
+        <Input
+          bind:ref={titleInput}
           id="modal-goal-title"
           type="text"
           bind:value={title}
           placeholder="Enter your goal..."
           onkeydown={(e) => e.key === 'Enter' && handleSave()}
-          class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          class="flex-1 px-3 py-2 h-auto"
           data-testid="modal-title-input"
         />
       </div>

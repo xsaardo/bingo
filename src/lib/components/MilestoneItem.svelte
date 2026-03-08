@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { Milestone } from '$lib/types';
   import RichTextEditor from './RichTextEditor.svelte';
+  import { Input } from '$lib/components/ui/input/index.js';
+  import { Label } from '$lib/components/ui/label/index.js';
   import CheckboxButton from './CheckboxButton.svelte';
   import DragHandle from './DragHandle.svelte';
   import { format } from 'date-fns';
@@ -94,14 +96,14 @@
       </button>
     </div>
 
-    <input
+    <Input
       bind:value={title}
       placeholder="Milestone title..."
-      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+      class="w-full px-3 py-2 h-auto text-sm"
     />
 
     <div>
-      <label class="block text-xs text-gray-600 mb-1">Notes (optional)</label>
+      <Label class="block text-xs mb-1">Notes (optional)</Label>
       <RichTextEditor
         content={notes}
         placeholder="Additional details..."
