@@ -1,6 +1,7 @@
 <script lang="ts">
   import { boardsStore } from '$lib/stores/boards';
   import type { Board } from '$lib/types';
+  import { focusTrap } from '$lib/actions/focusTrap';
 
   interface Props {
     isOpen: boolean;
@@ -13,11 +14,14 @@
 
   let loading = $state(false);
   let error = $state('');
+  let cancelButton = $state<HTMLButtonElement | null>(null);
 
-  // Reset error when modal opens/closes
+  // Reset error and set initial focus when modal opens
   $effect(() => {
     if (isOpen) {
       error = '';
+      // Focus the cancel button so the destructive action isn't the default
+      setTimeout(() => cancelButton?.focus(), 50);
     }
   });
 
@@ -62,6 +66,7 @@
     aria-modal="true"
     aria-labelledby="delete-modal-title"
     tabindex="-1"
+    use:focusTrap
   >
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scale-in">
       <!-- Header with Warning Icon -->
@@ -170,6 +175,7 @@
         <!-- Actions -->
         <div class="flex items-center justify-end space-x-3 pt-2">
           <button
+            bind:this={cancelButton}
             type="button"
             onclick={onClose}
             disabled={loading}

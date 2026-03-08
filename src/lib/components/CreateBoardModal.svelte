@@ -2,6 +2,7 @@
   import { boardsStore } from '$lib/stores/boards';
   import { Input } from '$lib/components/ui/input/index.js';
   import { Label } from '$lib/components/ui/label/index.js';
+  import { focusTrap } from '$lib/actions/focusTrap';
 
   interface Props {
     isOpen: boolean;
@@ -75,6 +76,7 @@
     aria-modal="true"
     aria-labelledby="modal-title"
     tabindex="-1"
+    use:focusTrap
   >
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scale-in">
       <!-- Header -->
