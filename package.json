@@ -67,6 +67,7 @@
     "bits-ui": "^2.16.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "html-to-image": "^1.11.13",
     "svelte-dnd-action": "^0.9.69",
     "svelte-sonner": "^1.0.8",
     "tailwind-merge": "^3.5.0",

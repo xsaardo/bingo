@@ -6,6 +6,8 @@
   import UserMenu from '$lib/components/UserMenu.svelte';
   import BingoBoard from '$lib/components/BingoBoard.svelte';
   import ErrorAlert from '$lib/components/ErrorAlert.svelte';
+  import ExportableBoard from '$lib/components/ExportableBoard.svelte';
+  import ShareButton from '$lib/components/ShareButton.svelte';
   import {
     currentBoardStore,
     currentBoard,
@@ -13,6 +15,8 @@
     currentBoardError
   } from '$lib/stores/currentBoard';
   import { isAnonymous } from '$lib/stores/auth';
+
+  let exportElement: HTMLDivElement | undefined = $state();
 
   const boardId = $derived($page.params.id!);
 
@@ -158,6 +162,7 @@
                   />
                 </svg>
               </button>
+              <ShareButton boardName={$currentBoard.name} {exportElement} />
             {/if}
 
             <UserMenu />
@@ -222,4 +227,8 @@
       {/if}
     </main>
   </div>
+  <!-- Off-screen export board — always rendered when board is loaded so html-to-image can capture it -->
+  {#if $currentBoard}
+    <ExportableBoard board={$currentBoard} bind:exportRef={exportElement} />
+  {/if}
 </AuthGuard>

@@ -137,9 +137,9 @@ test.describe('RichTextEditor Component', () => {
     await page.keyboard.press('ControlOrMeta+A');
     await page.getByTestId('editor-bold-button').click();
 
-    // Save and close modal
+    // Save — modal closes automatically after save completes
     await page.getByTestId('save-goal-button').click();
-    await closeModal(page);
+    await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
     // Check database contains HTML
     const goalData = await getGoalData(page, firstGoalId, 'notes');
