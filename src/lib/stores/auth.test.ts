@@ -14,6 +14,7 @@ vi.mock('$lib/utils/auth', () => ({
 import { get } from 'svelte/store';
 import { authStore, authError, isAuthenticated, isAuthInitialized } from './auth';
 import * as authUtils from '$lib/utils/auth';
+import type { User } from '@supabase/supabase-js';
 
 describe('authStore.init()', () => {
   beforeEach(() => {
@@ -48,7 +49,7 @@ describe('authStore.init()', () => {
   });
 
   it('clears error and sets user when sign-in succeeds', async () => {
-    const mockUser = { id: 'anon-1', is_anonymous: true } as any;
+    const mockUser = { id: 'anon-1', is_anonymous: true } as Partial<User> as User;
     vi.mocked(authUtils.getCurrentUser).mockResolvedValue(null);
     vi.mocked(authUtils.signInAnonymously).mockResolvedValue({
       success: true,
@@ -63,7 +64,7 @@ describe('authStore.init()', () => {
   });
 
   it('uses existing session without calling signInAnonymously', async () => {
-    const mockUser = { id: 'existing-user' } as any;
+    const mockUser = { id: 'existing-user' } as Partial<User> as User;
     vi.mocked(authUtils.getCurrentUser).mockResolvedValue(mockUser);
 
     await authStore.init();

@@ -9,6 +9,29 @@ import { writable, derived } from 'svelte/store';
 import { supabase } from '$lib/supabaseClient';
 import type { Board } from '$lib/types';
 
+interface DbGoal {
+  id: string;
+  position: number;
+  title: string;
+  notes: string | null;
+  completed: boolean;
+  started_at: string | null;
+  completed_at: string | null;
+  last_updated_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface DbBoard {
+  id: string;
+  name: string;
+  size: number;
+  is_public: boolean | null;
+  created_at: string;
+  updated_at: string;
+  goals: DbGoal[];
+}
+
 interface BoardsState {
   boards: Board[];
   loading: boolean;
@@ -90,14 +113,14 @@ export const boardsStore = {
       }
 
       // Transform the data to match our Board type
-      const boards: Board[] = (data || []).map((board: any) => ({
+      const boards: Board[] = (data || []).map((board: DbBoard) => ({
         id: board.id,
         name: board.name,
         size: board.size,
         isPublic: board.is_public ?? false,
         goals: (board.goals || [])
-          .sort((a: any, b: any) => a.position - b.position)
-          .map((goal: any) => ({
+          .sort((a: DbGoal, b: DbGoal) => a.position - b.position)
+          .map((goal: DbGoal) => ({
             id: goal.id,
             title: goal.title,
             notes: goal.notes || '',
@@ -220,8 +243,8 @@ export const boardsStore = {
         size: completeBoard.size,
         isPublic: completeBoard.is_public ?? false,
         goals: (completeBoard.goals || [])
-          .sort((a: any, b: any) => a.position - b.position)
-          .map((goal: any) => ({
+          .sort((a: DbGoal, b: DbGoal) => a.position - b.position)
+          .map((goal: DbGoal) => ({
             id: goal.id,
             title: goal.title,
             notes: goal.notes || '',

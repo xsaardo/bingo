@@ -133,6 +133,7 @@
             {#if $currentBoard}
               <button
                 onclick={handleShare}
+                data-testid="share-button"
                 class="p-2 rounded-lg transition-colors {$currentBoard.isPublic
                   ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
                   : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}"
@@ -147,6 +148,16 @@
                   />
                 </svg>
               </button>
+              {#if $currentBoard.isPublic}
+                <input
+                  type="text"
+                  readonly
+                  value={shareUrl}
+                  data-testid="share-url"
+                  class="text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded px-2 py-1 w-48 truncate"
+                  aria-label="Share URL"
+                />
+              {/if}
             {/if}
 
             <UserMenu />

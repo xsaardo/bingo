@@ -17,8 +17,15 @@ import { getGoals, executeTool } from './tools';
 import { supabase } from '$lib/supabaseClient';
 
 // Helper to build a chainable Supabase query mock
-function makeQueryChain(result: { data: any; error: any }) {
-  const chain: any = {};
+interface QueryChain {
+  select: ReturnType<typeof vi.fn>;
+  eq: ReturnType<typeof vi.fn>;
+  single: ReturnType<typeof vi.fn>;
+  order: ReturnType<typeof vi.fn>;
+}
+
+function makeQueryChain(result: { data: unknown; error: unknown }): QueryChain {
+  const chain = {} as QueryChain;
   const terminal = vi.fn().mockResolvedValue(result);
   chain.select = vi.fn().mockReturnValue(chain);
   chain.eq = vi.fn().mockReturnValue(chain);
