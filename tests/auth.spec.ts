@@ -132,11 +132,11 @@ test.describe('Authenticated user', () => {
     const userMenuTrigger = page.getByTestId('user-menu-button');
     await userMenuTrigger.click();
 
-    // Click sign-out in the dropdown
-    await page.getByRole('button', { name: /sign out|log out|logout/i }).click();
+    // Click sign-out in the dropdown (it's a menuitem, not a button)
+    await page.getByRole('menuitem', { name: /sign out/i }).click();
 
     // Confirm in the confirmation modal
-    await page.getByRole('button', { name: /sign out|log out|logout/i }).click();
+    await page.getByRole('button', { name: /sign out/i }).click();
 
     // After logout should land on login or root
     await expect(page).toHaveURL(/\/(auth\/login|$)/, { timeout: 10000 });

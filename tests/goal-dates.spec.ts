@@ -137,6 +137,9 @@ test.describe('Date metadata display', () => {
   });
 
   test('shows completedAt when goal is completed', async ({ page }) => {
+    // Ensure no modal is open before starting
+    await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden', timeout: 5000 }).catch(() => {});
+
     // Mark goal as complete
     await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
     await page.waitForTimeout(300);
@@ -364,6 +367,9 @@ test.describe('Goal date tracking', () => {
 
   test.describe('completedAt', () => {
     test('is set when goal is completed', async ({ page }) => {
+      // Ensure no modal is open before starting
+      await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden', timeout: 5000 }).catch(() => {});
+
       // Mark goal as complete
       await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
       await page.waitForTimeout(300);
