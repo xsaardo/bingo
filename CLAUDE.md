@@ -54,6 +54,7 @@ Only pause to ask for confirmation when:
 ## Writing code
 
 - Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.
+- Always use shadcn-svelte components (from `$lib/components/ui/`) whenever possible instead of raw HTML elements. Use `toast` from `svelte-sonner` for user feedback instead of custom error UI.
 - When submitting work, verify that you have FOLLOWED ALL RULES. (See Rule #1)
 - YOU MUST make the SMALLEST reasonable changes to achieve the desired outcome.
 - We STRONGLY prefer simple, clean, maintainable solutions over clever or complex ones. Readability and maintainability are PRIMARY CONCERNS, even at the cost of conciseness or performance.
@@ -190,6 +191,7 @@ npm run check
 
 - **Framework:** SvelteKit (with TypeScript)
 - **Styling:** Tailwind CSS
+- **UI Components:** shadcn-svelte (`$lib/components/ui/`) — use these instead of raw HTML whenever a component exists
 - **State Management:** Svelte stores
 - **Data Persistence:** Supabase
 

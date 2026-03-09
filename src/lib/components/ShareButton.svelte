@@ -1,5 +1,9 @@
+<!-- ABOUTME: Button that exports the bingo board as a downloadable image. -->
+<!-- ABOUTME: Shows a spinner while exporting and uses toast for error feedback. -->
 <script lang="ts">
   import { exportBoardAsImage } from '$lib/utils/export';
+  import { Button } from '$lib/components/ui/button';
+  import { toast } from 'svelte-sonner';
 
   interface Props {
     boardName: string;
@@ -9,39 +13,34 @@
   let { boardName, exportElement }: Props = $props();
 
   let loading = $state(false);
-  let error = $state('');
 
   async function handleExport() {
     if (!exportElement) return;
 
     loading = true;
-    error = '';
 
     try {
       await exportBoardAsImage(exportElement, boardName);
     } catch (err) {
       console.error('Export failed:', err);
-      error = 'Export failed. Please try again.';
-      setTimeout(() => {
-        error = '';
-      }, 3000);
+      toast.error('Export failed. Please try again.');
     } finally {
       loading = false;
     }
   }
 </script>
 
-<button
+<Button
   onclick={handleExport}
   disabled={loading || !exportElement}
   aria-label="Export board as image"
   title="Save as image"
-  class="p-2 rounded-lg transition-colors text-gray-500 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+  variant="ghost"
+  size="icon"
 >
   {#if loading}
-    <!-- Spinner -->
     <svg
-      class="w-5 h-5 animate-spin"
+      class="animate-spin"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
@@ -55,8 +54,7 @@
       ></path>
     </svg>
   {:else}
-    <!-- Download/image icon -->
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -65,27 +63,4 @@
       />
     </svg>
   {/if}
-</button>
-
-{#if error}
-  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-    <div
-      class="flex items-center gap-3 bg-red-900 text-white px-4 py-3 rounded-lg shadow-lg text-sm"
-    >
-      <svg
-        class="w-4 h-4 text-red-300 flex-shrink-0"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
-      <span>{error}</span>
-    </div>
-  </div>
-{/if}
+</Button>

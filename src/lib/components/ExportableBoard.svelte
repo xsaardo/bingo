@@ -1,5 +1,7 @@
 <script lang="ts">
   import { detectBingo, type BingoLine } from '$lib/utils/bingo';
+  import { currentBackground } from '$lib/stores/theme';
+  import backgroundPatternUrl from '$lib/assets/background-pattern.png';
   import type { Board } from '$lib/types';
 
   interface Props {
@@ -22,18 +24,28 @@
   const GAP = 6;
   let CELL_SIZE = $derived(Math.floor((GRID_SIZE - GAP * (board.size - 1)) / board.size));
   let FONT_SIZE = $derived(board.size === 5 ? 13 : board.size === 4 ? 16 : 20);
+
+  const BACKGROUNDS: Record<string, string> = {
+    horse: `url(${backgroundPatternUrl}) repeat center center / 400px 400px`
+  };
+  const DEFAULT_BACKGROUND = 'linear-gradient(135deg, #f0f4ff 0%, #fafbff 50%, #f5f0ff 100%)';
+
+  let background = $derived(BACKGROUNDS[$currentBackground] ?? DEFAULT_BACKGROUND);
 </script>
 
-<!-- Off-screen export container — must be rendered (not display:none) so html-to-image works -->
+<!-- Export container kept in viewport at opacity:0 so the browser paints it (required for html-to-image). -->
+<!-- pointer-events:none prevents interaction with the invisible element. -->
 <div
   bind:this={exportRef}
   style="
     position: fixed;
-    left: -9999px;
+    left: 0;
     top: 0;
+    opacity: 0;
+    pointer-events: none;
     width: 1080px;
     height: 1080px;
-    background: linear-gradient(135deg, #f0f4ff 0%, #fafbff 50%, #f5f0ff 100%);
+    background: {background};
     display: flex;
     flex-direction: column;
     align-items: center;
