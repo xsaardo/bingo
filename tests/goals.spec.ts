@@ -174,7 +174,9 @@ test.describe('Goal completion', () => {
     for (let i = 0; i < gridSize; i++) {
       await squares.nth(i).click();
       await page.waitForSelector('[data-testid="goal-modal"]');
-      await page.getByTestId('modal-checkbox').check();
+      // Use click() instead of check() — checkbox is async/controlled; check() can't verify state change
+      await page.getByTestId('modal-checkbox').click();
+      await page.waitForTimeout(200);
       await page.getByTestId('save-goal-button').click();
       await expect(page.getByTestId('goal-modal')).not.toBeVisible();
     }

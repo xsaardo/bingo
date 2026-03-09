@@ -131,7 +131,18 @@
             {/if}
 
             {#if $currentBoard}
+              {#if $currentBoard.isPublic}
+                <input
+                  data-testid="share-url"
+                  type="text"
+                  readonly
+                  value={shareUrl}
+                  class="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 w-56 truncate"
+                  onclick={(e) => (e.target as HTMLInputElement).select()}
+                />
+              {/if}
               <button
+                data-testid="share-button"
                 onclick={handleShare}
                 class="p-2 rounded-lg transition-colors {$currentBoard.isPublic
                   ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'

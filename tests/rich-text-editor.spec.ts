@@ -8,6 +8,7 @@ import {
   getFirstGoalId,
   openFirstGoalModal,
   expandGoalModal,
+  closeModal,
   getGoalData
 } from './test-helpers';
 
@@ -61,7 +62,7 @@ test.describe('RichTextEditor Component', () => {
         await editor.click();
         await editor.type(text);
 
-        // Select all text (ControlOrMeta maps to Ctrl on Linux/Windows, Cmd on Mac)
+        // Select all text (use Meta on Mac, Control on others)
         await page.keyboard.press('ControlOrMeta+A');
 
         // Click formatting button
@@ -111,9 +112,9 @@ test.describe('RichTextEditor Component', () => {
     await page.keyboard.press('ControlOrMeta+A');
     await page.getByTestId('editor-bold-button').click();
 
-    // Save — button closes modal after async save completes
+    // Save and close modal
     await page.getByTestId('save-goal-button').click();
-    await page.getByTestId('goal-modal').waitFor({ state: 'hidden', timeout: 5000 });
+    await closeModal(page);
 
     // Reopen modal
     await openFirstGoalModal(page);
@@ -136,9 +137,9 @@ test.describe('RichTextEditor Component', () => {
     await page.keyboard.press('ControlOrMeta+A');
     await page.getByTestId('editor-bold-button').click();
 
-    // Save — button closes modal after async save completes
+    // Save and close modal
     await page.getByTestId('save-goal-button').click();
-    await page.getByTestId('goal-modal').waitFor({ state: 'hidden', timeout: 5000 });
+    await closeModal(page);
 
     // Check database contains HTML
     const goalData = await getGoalData(page, firstGoalId, 'notes');

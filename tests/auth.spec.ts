@@ -132,10 +132,13 @@ test.describe('Authenticated user', () => {
     const userMenuTrigger = page.getByTestId('user-menu-button');
     await userMenuTrigger.click();
 
-    // Click sign-out in the dropdown
-    await page.getByRole('button', { name: /sign out|log out|logout/i }).click();
+    // Click sign-out in the dropdown (rendered as menuitem by bits-ui DropdownMenu)
+    const signOutItem = page
+      .getByRole('menuitem', { name: /sign out|log out|logout/i })
+      .or(page.getByRole('button', { name: /sign out|log out|logout/i }));
+    await signOutItem.first().click();
 
-    // Confirm in the confirmation modal
+    // Confirm in the confirmation modal (native button)
     await page.getByRole('button', { name: /sign out|log out|logout/i }).click();
 
     // After logout should land on login or root
