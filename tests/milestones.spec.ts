@@ -86,9 +86,9 @@ test.describe('updateMilestone', () => {
     await expandGoalModal(page);
     await addMilestone(page, 'Original Title');
 
-    // Expand milestone by clicking the row
+    // Expand milestone by clicking the row and wait for the title input to appear
     await page.getByTestId('milestone-item').click();
-    await page.waitForTimeout(200);
+    await page.waitForSelector('input[placeholder="Milestone title..."]', { timeout: 3000 });
 
     // Edit title and wait for the debounced save to reach the server
     const titleInput = page.locator('input[placeholder="Milestone title..."]');
@@ -111,10 +111,14 @@ test.describe('toggleMilestoneComplete', () => {
     await expandGoalModal(page);
     await addMilestone(page, 'Test Milestone');
 
-    // Click milestone checkbox
+    // Click milestone checkbox and wait for the PATCH to confirm persistence
     const milestoneCheckbox = page.getByTestId('milestone-checkbox');
+    const markCompleteResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/milestones') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await milestoneCheckbox.click();
-    await page.waitForTimeout(300);
+    await markCompleteResponse;
 
     const milestoneData = await getMilestoneForGoal(page, firstGoalId, 'completed, completed_at');
     expect(milestoneData?.completed).toBe(true);
@@ -127,12 +131,22 @@ test.describe('toggleMilestoneComplete', () => {
     await addMilestone(page, 'Test Milestone');
 
     const milestoneCheckbox = page.getByTestId('milestone-checkbox');
-    await milestoneCheckbox.click();
-    await page.waitForTimeout(300);
 
-    // Uncheck milestone
+    // Check the milestone
+    const firstCheckResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/milestones') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await milestoneCheckbox.click();
-    await page.waitForTimeout(300);
+    await firstCheckResponse;
+
+    // Uncheck the milestone
+    const secondCheckResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/milestones') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
+    await milestoneCheckbox.click();
+    await secondCheckResponse;
 
     const milestoneData = await getMilestoneForGoal(page, firstGoalId, 'completed, completed_at');
     expect(milestoneData?.completed).toBe(false);
@@ -146,13 +160,17 @@ test.describe('deleteMilestone', () => {
     await expandGoalModal(page);
     await addMilestone(page, 'Test Milestone');
 
-    // Expand milestone by clicking the row
+    // Expand milestone by clicking the row and wait for the delete button to appear
     await page.getByTestId('milestone-item').click();
-    await page.waitForTimeout(200);
+    await page.waitForSelector('button:has-text("Delete")', { timeout: 3000 });
 
-    // Click delete button
+    // Click delete button and wait for the DELETE request to confirm removal
+    const deleteResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/milestones') && resp.request().method() === 'DELETE',
+      { timeout: 5000 }
+    );
     await page.click('button:has-text("Delete")');
-    await page.waitForTimeout(300);
+    await deleteResponse;
 
     // Verify milestone is gone from UI
     const milestoneCount = await page.locator('text=Test Milestone').count();
@@ -280,7 +298,7 @@ test.describe('Milestone ordering', () => {
         }, 50);
       });
     });
-    await page.waitForTimeout(1000);
+    await page.waitForSelector('[data-testid="milestone-item"]', { timeout: 3000 });
 
     const milestoneData = await getMilestonesForGoal(page, firstGoalId, 'title, position');
     expect(milestoneData![0].title).toBe('Second');
@@ -316,7 +334,7 @@ test.describe('Milestone ordering', () => {
       steps: 20
     });
     await page.mouse.up();
-    await page.waitForTimeout(1000);
+    await page.waitForSelector('[data-testid="milestone-item"]', { timeout: 3000 });
 
     const milestoneData = await getMilestonesForGoal(page, firstGoalId, 'title, position');
     expect(milestoneData).toHaveLength(3);
@@ -362,7 +380,7 @@ test.describe('Milestone ordering', () => {
       steps: 10
     });
     await page.mouse.up();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="milestone-item"]', { timeout: 3000 });
 
     const updatedData = await getGoalData<{ last_updated_at: string }>(
       page,
@@ -381,7 +399,8 @@ test.describe('Milestone ordering', () => {
 
     // Expand first milestone (click on the milestone row, not checkbox or handle)
     await page.getByTestId('milestone-item').nth(0).click();
-    await page.waitForTimeout(200);
+    // Wait for the title input to confirm expansion
+    await page.waitForSelector('input[placeholder="Milestone title..."]', { timeout: 3000 });
 
     // Verify expanded (should have input field visible)
     const titleInput = await page.locator('input[placeholder="Milestone title..."]').count();
@@ -405,7 +424,7 @@ test.describe('Milestone ordering', () => {
       steps: 20
     });
     await page.mouse.up();
-    await page.waitForTimeout(1000);
+    await page.waitForSelector('[data-testid="milestone-item"]', { timeout: 3000 });
 
     // Verify milestone is still expanded
     const titleInputAfter = await page.locator('input[placeholder="Milestone title..."]').count();
@@ -438,7 +457,7 @@ test.describe('Milestone ordering', () => {
     await page.mouse.down();
     await page.mouse.move(firstBox.x + firstBox.width / 2 + 5, firstBox.y + firstBox.height / 2);
     await page.mouse.up();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="milestone-item"]', { timeout: 3000 });
 
     const finalData = await getMilestonesForGoal(page, firstGoalId, 'title, position');
     expect(finalData).toEqual(initialData);

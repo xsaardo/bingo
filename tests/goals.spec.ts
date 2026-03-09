@@ -142,18 +142,20 @@ test.describe('Goal completion', () => {
     const titleInput = page.locator('input').first();
     await titleInput.fill('Test Goal Title');
 
-    // Save and close
+    // Save and wait for modal to close
     await page.getByTestId('save-goal-button').click();
-    await page.waitForTimeout(200);
+    await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
     // Verify title is displayed
     await expect(page.locator('text=Test Goal Title').first()).toBeVisible();
 
-    // Toggle completion
+    // Toggle completion — watch for the PATCH response to confirm the update was persisted
+    const completionResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
-
-    // Wait for update
-    await page.waitForTimeout(300);
+    await completionResponse;
 
     // Verify completed styling
     const goalSquare = page.getByTestId('goal-square').first();
@@ -176,19 +178,22 @@ test.describe('Goal completion', () => {
       await page.waitForSelector('[data-testid="goal-modal"]');
       // Use click() instead of check() — checkbox is async/controlled; check() can't verify state change
       await page.getByTestId('modal-checkbox').click();
-      await page.waitForTimeout(200);
       await page.getByTestId('save-goal-button').click();
       await expect(page.getByTestId('goal-modal')).not.toBeVisible();
     }
 
-    // Confetti or bingo indicator should appear
+    // Confetti or bingo indicator should appear — wait for any matching element
+    await page
+      .waitForSelector(
+        '[data-testid="bingo-confetti"], [class*="confetti"], [data-testid="bingo-indicator"], [class*="bingo"]',
+        { timeout: 5000 }
+      )
+      .catch(() => {});
+
+    // Either a visual confetti element appeared, or the board shows a bingo indicator
     const confetti = page
       .locator('[data-testid="bingo-confetti"], [class*="confetti"], canvas')
       .first();
-    // Allow some time for animation to trigger
-    await page.waitForTimeout(500);
-
-    // Either a visual confetti element appeared, or the board shows a bingo indicator
     const bingoIndicator = page
       .locator('[data-testid="bingo-indicator"], [class*="bingo"]')
       .first();
