@@ -35,6 +35,7 @@ set +a
 run_check "Lint"           npm run lint
 run_check "Type check"     npm run check
 run_check "Build"          npm run build
+run_check "Bundle size"    npm run size
 run_check "Unit tests"     npm run test:unit
 run_check "Security audit" npm audit --audit-level=high
 
