@@ -201,12 +201,17 @@ The build output will be in the `build/` directory.
 
 ### Environment Variables
 
-Required environment variables for production:
+> **Important:** Production and staging use separate Supabase projects. See [Environment Setup Guide](docs/plans/ENVIRONMENT_SETUP.md) for the full environment separation strategy.
 
-```env
-PUBLIC_SUPABASE_URL=your-production-supabase-url
-PUBLIC_SUPABASE_ANON_KEY=your-production-anon-key
-```
+Required environment variables — set per-environment in Vercel dashboard:
+
+| Variable                   | Production           | Staging/Preview     |
+| -------------------------- | -------------------- | ------------------- |
+| `PUBLIC_SUPABASE_URL`      | prod project URL     | staging project URL |
+| `PUBLIC_SUPABASE_ANON_KEY` | prod anon key        | staging anon key    |
+| `PUBLIC_BMC_URL`           | your BMC profile URL | (omit)              |
+
+See `.env.example` for local development setup.
 
 ### Deployment Platforms
 
@@ -219,19 +224,32 @@ The application can be deployed to:
 
 See the [SvelteKit deployment docs](https://kit.svelte.dev/docs/adapters) for platform-specific adapters.
 
+### Environment Strategy
+
+| Branch        | URL                                             | Environment        |
+| ------------- | ----------------------------------------------- | ------------------ |
+| `main`        | `https://yourdomain.com`                        | Production         |
+| `develop`     | `https://staging.yourdomain.com`                | Staging (pre-prod) |
+| any PR branch | `https://bingo-git-[branch]-xsaardo.vercel.app` | Preview            |
+
+See [Environment Setup Guide](docs/plans/ENVIRONMENT_SETUP.md) for full details including Supabase project setup, Vercel environment variable configuration, and staging domain setup.
+
 ### Vercel Preview Branches
 
 When deploying to Vercel, preview branches need special configuration for magic link authentication to work correctly.
 
 **Quick Setup:**
 
-1. Go to Supabase Dashboard → Authentication → URL Configuration
+1. Go to **staging** Supabase Dashboard → Authentication → URL Configuration
 2. Add to Redirect URLs:
    ```
    https://bingo-*.vercel.app/**
    https://bingo-git-*.vercel.app/**
+   https://staging.yourdomain.com/**
    ```
 3. Magic links will now redirect to the correct preview branch URL
+
+> Note: The **production** Supabase project should NOT have wildcard `*.vercel.app` redirect URLs — only exact production domain URLs.
 
 ## Contributing
 
