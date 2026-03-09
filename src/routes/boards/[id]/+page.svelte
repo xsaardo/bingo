@@ -15,8 +15,10 @@
     currentBoardError
   } from '$lib/stores/currentBoard';
   import { isAnonymous } from '$lib/stores/auth';
+  import ConversionPrompt from '$lib/components/ConversionPrompt.svelte';
 
   let exportElement: HTMLDivElement | undefined = $state();
+  let showShareConversionPrompt = $state(false);
 
   const boardId = $derived($page.params.id!);
 
@@ -37,6 +39,10 @@
 
   async function handleShare() {
     if (!$currentBoard) return;
+    if ($isAnonymous) {
+      showShareConversionPrompt = true;
+      return;
+    }
     if ($currentBoard.isPublic) {
       await currentBoardStore.setPublic(boardId, false);
       toast('Sharing disabled');
@@ -45,6 +51,10 @@
       await navigator.clipboard.writeText(shareUrl);
       toast.success('Link copied to clipboard');
     }
+  }
+
+  function handleShareConversionDismiss() {
+    showShareConversionPrompt = false;
   }
 </script>
 
@@ -231,4 +241,11 @@
   {#if $currentBoard}
     <ExportableBoard board={$currentBoard} bind:exportRef={exportElement} />
   {/if}
+
+  <!-- Conversion Prompt for anonymous share attempt -->
+  <ConversionPrompt
+    trigger="share"
+    isOpen={showShareConversionPrompt}
+    onDismiss={handleShareConversionDismiss}
+  />
 </AuthGuard>

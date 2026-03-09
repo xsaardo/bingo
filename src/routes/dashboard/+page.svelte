@@ -8,9 +8,12 @@
   import DeleteBoardModal from '$lib/components/DeleteBoardModal.svelte';
   import ErrorAlert from '$lib/components/ErrorAlert.svelte';
   import { boardsStore, boards, boardsLoading, boardsError, hasBoards } from '$lib/stores/boards';
+  import { isAnonymous } from '$lib/stores/auth';
+  import ConversionPrompt from '$lib/components/ConversionPrompt.svelte';
   import type { Board } from '$lib/types';
 
   let showCreateModal = $state(false);
+  let showCreateConversionPrompt = $state(false);
   let showDeleteModal = $state(false);
   let boardToDelete: Board | null = $state(null);
 
@@ -20,7 +23,15 @@
   });
 
   function handleCreateBoard() {
+    if ($isAnonymous && $boards.length >= 1) {
+      showCreateConversionPrompt = true;
+      return;
+    }
     showCreateModal = true;
+  }
+
+  function handleCreateConversionDismiss() {
+    showCreateConversionPrompt = false;
   }
 
   function handleCloseCreateModal() {
@@ -238,5 +249,12 @@
     board={boardToDelete}
     onClose={handleCloseDeleteModal}
     onDeleted={handleBoardDeleted}
+  />
+
+  <!-- Conversion Prompt for anonymous second board creation -->
+  <ConversionPrompt
+    trigger="share"
+    isOpen={showCreateConversionPrompt}
+    onDismiss={handleCreateConversionDismiss}
   />
 </AuthGuard>
