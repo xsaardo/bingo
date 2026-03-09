@@ -4,6 +4,18 @@
 import { test, expect } from '@playwright/test';
 import { createTestBoard, deleteTestBoard, getFirstGoalId, getGoalData } from './test-helpers';
 
+// Helper to ensure any open modals are closed
+async function closeAnyOpenModals(page) {
+  const modalVisible = await page
+    .locator('[data-testid="goal-modal"]')
+    .isVisible()
+    .catch(() => false);
+  if (modalVisible) {
+    await page.keyboard.press('Escape');
+    await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+  }
+}
+
 // ── Date formatting utility tests ──────────────────────────────────────────
 // These tests call page.goto('/dashboard') directly and don't need a board.
 test.describe('Date formatting utility', () => {
@@ -86,6 +98,7 @@ test.describe('Date metadata display', () => {
 
   test.beforeEach(async ({ page }) => {
     testBoardId = await createTestBoard(page);
+    await closeAnyOpenModals(page);
   });
 
   test.afterEach(async ({ page }) => {
@@ -137,9 +150,6 @@ test.describe('Date metadata display', () => {
   });
 
   test('shows completedAt when goal is completed', async ({ page }) => {
-    // Ensure no modal is open before starting
-    await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden', timeout: 5000 }).catch(() => {});
-
     // Mark goal as complete
     await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
     await page.waitForTimeout(300);
@@ -229,6 +239,7 @@ test.describe('Goal date tracking', () => {
   test.beforeEach(async ({ page }) => {
     testBoardId = await createTestBoard(page);
     firstGoalId = await getFirstGoalId(page, testBoardId);
+    await closeAnyOpenModals(page);
   });
 
   test.afterEach(async ({ page }) => {
@@ -367,9 +378,6 @@ test.describe('Goal date tracking', () => {
 
   test.describe('completedAt', () => {
     test('is set when goal is completed', async ({ page }) => {
-      // Ensure no modal is open before starting
-      await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden', timeout: 5000 }).catch(() => {});
-
       // Mark goal as complete
       await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
       await page.waitForTimeout(300);
