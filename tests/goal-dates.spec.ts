@@ -6,6 +6,7 @@ import { createTestBoard, deleteTestBoard, getFirstGoalId, getGoalData } from '.
 
 // Helper to ensure any open modals are closed
 async function closeAnyOpenModals(page) {
+  // Close goal-modal if visible
   const modalVisible = await page
     .locator('[data-testid="goal-modal"]')
     .isVisible()
@@ -14,6 +15,27 @@ async function closeAnyOpenModals(page) {
     await page.keyboard.press('Escape');
     await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
   }
+
+  // Also close any lingering dialog overlay (e.g. from bits-ui dialogs animating out)
+  const overlayVisible = await page
+    .locator('[data-dialog-overlay]')
+    .isVisible()
+    .catch(() => false);
+  if (overlayVisible) {
+    await page.keyboard.press('Escape');
+    await page
+      .locator('[data-dialog-overlay]')
+      .waitFor({ state: 'hidden', timeout: 5000 })
+      .catch(() => {});
+  }
+
+  // Wait for any animations to settle and all overlays to clear
+  await page.waitForTimeout(300);
+  // Final check: ensure no dialog overlays remain
+  await page
+    .locator('[data-dialog-overlay]')
+    .waitFor({ state: 'hidden', timeout: 3000 })
+    .catch(() => {});
 }
 
 // ── Date formatting utility tests ──────────────────────────────────────────

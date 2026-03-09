@@ -9,6 +9,30 @@ import { writable, derived } from 'svelte/store';
 import { supabase } from '$lib/supabaseClient';
 import type { Board, Goal, Milestone } from '$lib/types';
 
+interface DbMilestone {
+  id: string;
+  title: string;
+  notes: string | null;
+  completed: boolean;
+  completed_at: string | null;
+  created_at: string;
+  position: number;
+}
+
+interface DbGoal {
+  id: string;
+  position: number;
+  title: string;
+  notes?: string | null;
+  completed: boolean;
+  started_at?: string | null;
+  completed_at?: string | null;
+  last_updated_at?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  milestones?: DbMilestone[];
+}
+
 interface CurrentBoardState {
   board: Board | null;
   loading: boolean;
@@ -102,8 +126,8 @@ export const currentBoardStore = {
         size: data.size,
         isPublic: data.is_public ?? false,
         goals: (data.goals || [])
-          .sort((a: any, b: any) => a.position - b.position)
-          .map((goal: any) => ({
+          .sort((a: DbGoal, b: DbGoal) => a.position - b.position)
+          .map((goal: DbGoal) => ({
             id: goal.id,
             title: goal.title,
             notes: goal.notes || '',
@@ -112,8 +136,8 @@ export const currentBoardStore = {
             completedAt: goal.completed_at || null,
             lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
             milestones: (goal.milestones || [])
-              .sort((a: any, b: any) => a.position - b.position)
-              .map((milestone: any) => ({
+              .sort((a: DbMilestone, b: DbMilestone) => a.position - b.position)
+              .map((milestone: DbMilestone) => ({
                 id: milestone.id,
                 title: milestone.title,
                 notes: milestone.notes || '',
@@ -378,7 +402,7 @@ export const currentBoardStore = {
       });
 
       // Update in database
-      const dbUpdates: any = {};
+      const dbUpdates: Record<string, string | boolean | number | null | undefined> = {};
       if (updates.title !== undefined) dbUpdates.title = updates.title;
       if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
       if (updates.completed !== undefined) dbUpdates.completed = updates.completed;
@@ -567,7 +591,12 @@ export const currentBoardStore = {
       const errorMessage =
         error instanceof Error
           ? error.message
-          : ((error as any)?.message ?? 'Failed to update sharing');
+          : error &&
+              typeof error === 'object' &&
+              'message' in error &&
+              typeof error.message === 'string'
+            ? error.message
+            : 'Failed to update sharing';
       return { success: false, error: errorMessage };
     }
   },
@@ -618,8 +647,8 @@ export const currentBoardStore = {
         size: data.size,
         isPublic: data.is_public ?? false,
         goals: (data.goals || [])
-          .sort((a: any, b: any) => a.position - b.position)
-          .map((goal: any) => ({
+          .sort((a: DbGoal, b: DbGoal) => a.position - b.position)
+          .map((goal: DbGoal) => ({
             id: goal.id,
             title: goal.title,
             notes: '',

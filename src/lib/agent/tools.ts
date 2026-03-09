@@ -12,6 +12,32 @@ import { supabase } from '$lib/supabaseClient';
 import type { Goal, Milestone } from '$lib/types';
 
 // ---------------------------------------------------------------------------
+// Database Response Types
+// ---------------------------------------------------------------------------
+
+interface DbMilestone {
+  id: string;
+  title: string;
+  notes: string | null;
+  completed: boolean;
+  completed_at: string | null;
+  created_at: string;
+  position: number;
+}
+
+interface DbGoal {
+  id: string;
+  title: string;
+  notes: string | null;
+  completed: boolean;
+  started_at: string | null;
+  completed_at: string | null;
+  last_updated_at: string | null;
+  updated_at: string;
+  milestones: DbMilestone[];
+}
+
+// ---------------------------------------------------------------------------
 // Tool Definitions (Claude tool-use API format)
 // ---------------------------------------------------------------------------
 
@@ -125,7 +151,7 @@ export async function getGoals(input: GetGoalsInput): Promise<GetGoalsResult> {
     throw new Error(`Failed to fetch goals: ${goalsError.message}`);
   }
 
-  const goals: Goal[] = (goalsData ?? []).map((g: any) => ({
+  const goals: Goal[] = (goalsData ?? []).map((g: DbGoal) => ({
     id: g.id,
     title: g.title,
     notes: g.notes ?? '',
@@ -133,10 +159,10 @@ export async function getGoals(input: GetGoalsInput): Promise<GetGoalsResult> {
     startedAt: g.started_at ?? null,
     completedAt: g.completed_at ?? null,
     lastUpdatedAt: g.last_updated_at ?? g.updated_at,
-    milestones: ((g.milestones as any[]) ?? [])
-      .sort((a: any, b: any) => a.position - b.position)
+    milestones: (g.milestones ?? [])
+      .sort((a: DbMilestone, b: DbMilestone) => a.position - b.position)
       .map(
-        (m: any): Milestone => ({
+        (m: DbMilestone): Milestone => ({
           id: m.id,
           title: m.title,
           notes: m.notes ?? '',

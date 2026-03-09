@@ -23,6 +23,12 @@ export async function createTestBoard(page: Page): Promise<string> {
   // Wait for modal to close
   await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 5000 });
 
+  // Wait for dialog overlay to fully disappear (bits-ui dialogs animate out)
+  await page
+    .locator('[data-dialog-overlay]')
+    .waitFor({ state: 'hidden', timeout: 5000 })
+    .catch(() => {});
+
   // Wait for the new board to appear and click it
   await page.waitForSelector(`text=${boardName}`, { timeout: 5000 });
   await page.click(`text=${boardName}`);
