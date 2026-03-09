@@ -61,6 +61,7 @@
     size = 'default',
     class: className,
     href,
+    type = 'button',
     children,
     ...restProps
   }: Props = $props();
@@ -76,6 +77,7 @@
   </a>
 {:else}
   <button
+    {type}
     class={cn(buttonVariants({ variant, size }), className)}
     {...restProps as HTMLButtonAttributes}
   >

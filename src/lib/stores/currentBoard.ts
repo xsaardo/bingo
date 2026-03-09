@@ -608,6 +608,10 @@ export const currentBoardStore = {
         throw new Error('Board not found');
       }
 
+      if (!data.is_public) {
+        throw new Error('Board not available');
+      }
+
       const board: Board = {
         id: data.id,
         name: data.name,

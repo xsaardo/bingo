@@ -41,6 +41,7 @@
       <DropdownMenu.Trigger
         class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
         aria-label="User menu"
+        data-testid="user-menu-button"
       >
         <!-- User Avatar -->
         <div
