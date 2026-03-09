@@ -77,7 +77,7 @@
   </a>
 {:else}
   <button
-    {type}
+    type={type as HTMLButtonAttributes['type']}
     class={cn(buttonVariants({ variant, size }), className)}
     {...restProps as HTMLButtonAttributes}
   >

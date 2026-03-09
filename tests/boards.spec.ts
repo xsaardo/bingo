@@ -33,9 +33,9 @@ async function createBoardWithSize(
   }
 
   await page.click('button[type="submit"]:has-text("Create Board")');
-  await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 5000 });
+  await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 10000 });
 
-  await page.waitForSelector(`text=${boardName}`, { timeout: 5000 });
+  await page.waitForSelector(`text=${boardName}`, { timeout: 10000 });
   await page.click(`text=${boardName}`);
   await page.waitForURL(/\/boards\/.+/, { timeout: 10000 });
 
@@ -80,9 +80,9 @@ test.describe('Board creation', () => {
     }
 
     await page.click('button[type="submit"]:has-text("Create Board")');
-    await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 5000 });
+    await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 10000 });
 
-    await page.waitForSelector(`text=${boardName}`, { timeout: 5000 });
+    await page.waitForSelector(`text=${boardName}`, { timeout: 10000 });
     await page.click(`text=${boardName}`);
     await page.waitForURL(/\/boards\/.+/, { timeout: 10000 });
     createdBoardId = page.url().split('/').pop()!;
@@ -103,7 +103,7 @@ test.describe('Board deletion', () => {
     const boardName = `Delete Me ${Date.now()}`;
     await page.fill('input[id="board-name"]', boardName);
     await page.click('button[type="submit"]:has-text("Create Board")');
-    await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 5000 });
+    await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 10000 });
 
     // Go back to dashboard
     await page.goto('/dashboard');

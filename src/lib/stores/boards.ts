@@ -173,7 +173,12 @@ export const boardsStore = {
         completed: false
       }));
 
-      const { error: goalsError } = await supabase.from('goals').insert(goals);
+      const { data: insertedGoals, error: goalsError } = await supabase
+        .from('goals')
+        .insert(goals)
+        .select(
+          'id, position, title, notes, completed, started_at, completed_at, last_updated_at, created_at, updated_at'
+        );
 
       if (goalsError) {
         // If goals creation fails, delete the board to maintain consistency
@@ -181,45 +186,13 @@ export const boardsStore = {
         throw goalsError;
       }
 
-      // Fetch the complete board with goals
-      const { data: completeBoard, error: fetchError } = await supabase
-        .from('boards')
-        .select(
-          `
-					id,
-					name,
-					size,
-					is_public,
-					created_at,
-					updated_at,
-					goals (
-						id,
-						position,
-						title,
-						notes,
-						completed,
-						started_at,
-						completed_at,
-						last_updated_at,
-						created_at,
-						updated_at
-					)
-				`
-        )
-        .eq('id', board.id)
-        .single();
-
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      // Transform to Board type
+      // Transform to Board type using data already returned from inserts
       const newBoard: Board = {
-        id: completeBoard.id,
-        name: completeBoard.name,
-        size: completeBoard.size,
-        isPublic: completeBoard.is_public ?? false,
-        goals: (completeBoard.goals || [])
+        id: board.id,
+        name: board.name,
+        size: board.size,
+        isPublic: board.is_public ?? false,
+        goals: (insertedGoals || [])
           .sort((a: any, b: any) => a.position - b.position)
           .map((goal: any) => ({
             id: goal.id,
@@ -231,8 +204,8 @@ export const boardsStore = {
             lastUpdatedAt: goal.last_updated_at || new Date().toISOString(),
             milestones: []
           })),
-        createdAt: completeBoard.created_at,
-        updatedAt: completeBoard.updated_at
+        createdAt: board.created_at,
+        updatedAt: board.updated_at
       };
 
       // Add to store
