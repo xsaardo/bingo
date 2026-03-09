@@ -4,7 +4,11 @@ export async function exportBoardAsImage(element: HTMLElement, boardName: string
   const dataUrl = await toPng(element, {
     width: 1080,
     height: 1080,
-    style: { transform: 'scale(1)', transformOrigin: 'top left' }
+    cacheBust: true,
+    // The element lives at (0,0) with opacity:0 so the browser paints it.
+    // Override position so the clone renders at the foreignObject origin, and restore opacity for the capture.
+    // opacity is not inherited, so only the root needs overriding — children already compute opacity:1.
+    style: { position: 'relative', left: '0', top: '0', opacity: '1' }
   });
 
   const blob = await (await fetch(dataUrl)).blob();
