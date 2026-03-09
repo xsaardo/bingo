@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
+  import { toast } from 'svelte-sonner';
   import AuthGuard from '$lib/components/AuthGuard.svelte';
   import UserMenu from '$lib/components/UserMenu.svelte';
   import BingoBoard from '$lib/components/BingoBoard.svelte';
@@ -16,8 +17,6 @@
   const boardId = $derived($page.params.id!);
 
   let shareUrl = $derived($currentBoard ? `${$page.url.origin}/share/${$currentBoard.id}` : '');
-  let toastMessage = $state('');
-
   // Load board when component mounts
   onMount(() => {
     currentBoardStore.loadBoard(boardId);
@@ -32,22 +31,15 @@
     await currentBoardStore.loadBoard(boardId);
   }
 
-  function showToast(message: string) {
-    toastMessage = message;
-    setTimeout(() => {
-      toastMessage = '';
-    }, 2000);
-  }
-
   async function handleShare() {
     if (!$currentBoard) return;
     if ($currentBoard.isPublic) {
       await currentBoardStore.setPublic(boardId, false);
-      showToast('Sharing disabled');
+      toast('Sharing disabled');
     } else {
       await currentBoardStore.setPublic(boardId, true);
       await navigator.clipboard.writeText(shareUrl);
-      showToast('Link copied to clipboard');
+      toast.success('Link copied to clipboard');
     }
   }
 </script>
@@ -139,19 +131,8 @@
             {/if}
 
             {#if $currentBoard}
-              {#if $currentBoard.isPublic}
-                <input
-                  type="text"
-                  readonly
-                  value={shareUrl}
-                  data-testid="share-url"
-                  class="text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded px-2 py-1 w-48 truncate"
-                />
-              {/if}
               <button
                 onclick={handleShare}
-                data-testid="share-button"
-                aria-label={$currentBoard.isPublic ? 'Disable sharing' : 'Share board'}
                 class="p-2 rounded-lg transition-colors {$currentBoard.isPublic
                   ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
                   : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}"
@@ -230,27 +211,4 @@
       {/if}
     </main>
   </div>
-  <!-- Toast notification -->
-  {#if toastMessage}
-    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      <div
-        class="flex items-center gap-3 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg text-sm"
-      >
-        <svg
-          class="w-4 h-4 text-green-400 flex-shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
-        <span>{toastMessage}</span>
-      </div>
-    </div>
-  {/if}
 </AuthGuard>

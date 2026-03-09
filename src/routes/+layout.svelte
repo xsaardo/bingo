@@ -4,6 +4,7 @@
   import favicon from '$lib/assets/favicon.svg';
   import { authStore } from '$lib/stores/auth';
   import { currentBackground, themeStore } from '$lib/stores/theme';
+  import { Toaster } from 'svelte-sonner';
 
   let { children } = $props();
 
@@ -23,3 +24,5 @@
 <div class="{themeClass} min-h-screen">
   {@render children()}
 </div>
+
+<Toaster richColors closeButton />
