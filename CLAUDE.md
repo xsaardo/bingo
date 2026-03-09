@@ -240,7 +240,7 @@ The app supports multi-user boards with authentication:
 
 - **Users:** Authenticated via Supabase magic link (email-based)
 - **Boards:** Each user can create multiple boards
-  - Each board has: id, user_id, name, size (3, 4, or 5), created_at
+  - Each board has: id, user_id, name, size (only 5x5 at the moment), created_at
 - **Goals:** Each board contains goals arranged in a grid
   - Each goal has: id, board_id, title, notes, completed status, position
 - **Bingo detection:** Checks rows, columns, and diagonals for completion
@@ -250,7 +250,6 @@ The app supports multi-user boards with authentication:
 - **Multi-user authentication:** Email-based magic link authentication via Supabase
 - **Multiple boards:** Users can create and manage multiple bingo boards
 - **Dashboard:** Central hub for viewing and managing all user boards
-- **Customizable board size:** 3x3, 4x4, or 5x5 grids
 - **Enhanced notes:** Slide-out sidebar for detailed goal notes
 - **Visual feedback:** Highlight completed bingo lines (rows, columns, diagonals)
 - **Real-time persistence:** Auto-save to Supabase database
