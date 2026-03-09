@@ -32,9 +32,10 @@ set -a
 [[ -f .env.test ]] && source .env.test
 set +a
 
-run_check "Lint"          npm run lint
-run_check "Type check"    npm run check
-run_check "Unit tests"    npm run test:unit
+run_check "Lint"           npm run lint
+run_check "Type check"     npm run check
+run_check "Build"          npm run build
+run_check "Unit tests"     npm run test:unit
 run_check "Security audit" npm audit --audit-level=high
 
 # Playwright requires secrets — skip if env vars are missing
