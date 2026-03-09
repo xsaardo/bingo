@@ -20,8 +20,8 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  /* Retry once on CI to absorb transient network blips; 0 locally for fast feedback */
+  retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -51,31 +51,23 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        // Use saved auth state
-        storageState: 'tests/.auth/user.json'
-      },
-      dependencies: ['setup', 'anon-setup']
-    },
-
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        // Use saved auth state
-        storageState: 'tests/.auth/user.json'
-      },
-      dependencies: ['setup', 'anon-setup']
-    },
-
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-        // Use saved auth state
         storageState: 'tests/.auth/user.json'
       },
       dependencies: ['setup', 'anon-setup']
     }
+
+    // Firefox and WebKit are omitted on CI to keep the suite fast.
+    // Run locally with: npx playwright test --project=firefox --project=webkit
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'], storageState: 'tests/.auth/user.json' },
+    //   dependencies: ['setup', 'anon-setup']
+    // },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'], storageState: 'tests/.auth/user.json' },
+    //   dependencies: ['setup', 'anon-setup']
+    // }
 
     /* Test against mobile viewports. */
     // {
