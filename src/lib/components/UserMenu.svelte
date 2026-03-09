@@ -2,21 +2,12 @@
   import { goto } from '$app/navigation';
   import { currentUser, authStore } from '$lib/stores/auth';
   import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 
-  let isOpen = false;
-  let showLogoutConfirm = false;
-
-  function toggleMenu() {
-    isOpen = !isOpen;
-  }
-
-  function closeMenu() {
-    isOpen = false;
-  }
+  let showLogoutConfirm = $state(false);
 
   function showLogoutConfirmation() {
     showLogoutConfirm = true;
-    closeMenu();
   }
 
   async function handleLogout() {
@@ -33,20 +24,7 @@
   function handleCancelLogout() {
     showLogoutConfirm = false;
   }
-
-  // Close menu when clicking outside
-  function handleClickOutside(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    const menu = document.getElementById('user-menu');
-    const button = document.getElementById('user-menu-button');
-
-    if (menu && button && !menu.contains(target) && !button.contains(target)) {
-      closeMenu();
-    }
-  }
 </script>
-
-<svelte:window on:click={handleClickOutside} />
 
 <div class="relative">
   {#if !$currentUser?.email}
@@ -58,101 +36,86 @@
       Login
     </a>
   {:else}
-    <!-- User Menu Button -->
-    <button
-      id="user-menu-button"
-      data-testid="user-menu-button"
-      onclick={toggleMenu}
-      class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-      aria-expanded={isOpen}
-      aria-haspopup="true"
-    >
-      <!-- User Avatar -->
-      <div
-        class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+    <!-- User Dropdown Menu -->
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger
+        class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+        aria-label="User menu"
       >
-        {$currentUser.email.charAt(0).toUpperCase()}
-      </div>
+        <!-- User Avatar -->
+        <div
+          class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+        >
+          {$currentUser.email.charAt(0).toUpperCase()}
+        </div>
 
-      <!-- Dropdown Arrow -->
-      <svg
-        class="w-4 h-4 text-gray-500 transition-transform {isOpen ? 'rotate-180' : ''}"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
+        <!-- Dropdown Arrow -->
+        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </DropdownMenu.Trigger>
 
-    <!-- Dropdown Menu -->
-    {#if isOpen}
-      <div
-        id="user-menu"
-        class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
-      >
-        <!-- User Info -->
-        <div class="px-4 py-3 border-b border-gray-100">
-          <p class="text-sm text-gray-500">Signed in as</p>
+      <DropdownMenu.Content class="w-64" align="end">
+        <!-- User Info Label -->
+        <div class="px-3 py-3 border-b border-gray-100">
+          <p class="text-xs text-gray-500">Signed in as</p>
           <p class="text-sm font-medium text-gray-900 truncate">{$currentUser?.email}</p>
         </div>
 
         <!-- Menu Items -->
-        <div class="py-1">
-          <!-- Test Auth (dev only) -->
-          {#if import.meta.env.DEV}
-            <a
-              href="/test-auth"
-              onclick={closeMenu}
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              <div class="flex items-center">
-                <svg
-                  class="w-4 h-4 mr-3 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                Test Auth (Debug)
-              </div>
-            </a>
-          {/if}
-        </div>
-
-        <!-- Logout -->
-        <div class="border-t border-gray-100 py-1">
-          <button
-            onclick={showLogoutConfirmation}
-            class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-          >
-            <div class="flex items-center">
-              <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {#if import.meta.env.DEV}
+          <DropdownMenu.Item>
+            <a href="/test-auth" class="flex items-center w-full">
+              <svg
+                class="w-4 h-4 mr-3 text-gray-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              Sign out
-            </div>
-          </button>
-        </div>
-      </div>
-    {/if}
+              Test Auth (Debug)
+            </a>
+          </DropdownMenu.Item>
+        {/if}
+
+        <DropdownMenu.Separator />
+
+        <!-- Logout -->
+        <DropdownMenu.Item
+          class="text-red-600 hover:bg-red-50 focus:bg-red-50"
+          onclick={showLogoutConfirmation}
+        >
+          <div class="flex items-center">
+            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            Sign out
+          </div>
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   {/if}
 </div>
 
