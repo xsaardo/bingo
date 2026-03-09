@@ -2,10 +2,11 @@
 // ABOUTME: Covers startedAt/completedAt/lastUpdatedAt lifecycle, DateMetadata UI, and date utilities
 
 import { test, expect } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import { createTestBoard, deleteTestBoard, getFirstGoalId, getGoalData } from './test-helpers';
 
 // Helper to ensure any open modals are closed
-async function closeAnyOpenModals(page) {
+async function closeAnyOpenModals(page: Page) {
   // Close goal-modal if visible
   const modalVisible = await page
     .locator('[data-testid="goal-modal"]')
@@ -153,6 +154,10 @@ test.describe('Date metadata display', () => {
     await titleInput.fill('My Goal');
     await page.getByTestId('save-goal-button').click();
 
+    // Ensure modal is fully closed before reopening
+    await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+    await closeAnyOpenModals(page);
+
     // Reopen and expand modal to see updated data
     await page.getByTestId('goal-square').first().click();
     await page.waitForSelector('[data-testid="goal-modal"]');
@@ -172,6 +177,9 @@ test.describe('Date metadata display', () => {
   });
 
   test('shows completedAt when goal is completed', async ({ page }) => {
+    // Ensure no modal overlay is blocking
+    await closeAnyOpenModals(page);
+
     // Mark goal as complete
     await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
     await page.waitForTimeout(300);
@@ -203,6 +211,9 @@ test.describe('Date metadata display', () => {
   });
 
   test('hides completedAt when goal is uncompleted', async ({ page }) => {
+    // Ensure no modal overlay is blocking
+    await closeAnyOpenModals(page);
+
     // Mark goal as complete
     await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
     await page.waitForTimeout(300);
@@ -359,6 +370,9 @@ test.describe('Goal date tracking', () => {
     });
 
     test('does not change on subsequent saves', async ({ page }) => {
+      // Ensure no modal overlay is blocking
+      await closeAnyOpenModals(page);
+
       // First save — sets startedAt
       await page.getByTestId('goal-square').first().click();
       await page.waitForSelector('[data-testid="goal-modal"]');
@@ -379,12 +393,16 @@ test.describe('Goal date tracking', () => {
       // Wait to ensure a subsequent timestamp would differ
       await page.waitForTimeout(100);
 
+      // Ensure modal is fully closed before reopening
+      await closeAnyOpenModals(page);
+
       // Second save — startedAt must not change
       await page.getByTestId('goal-square').first().click();
       await page.waitForSelector('[data-testid="goal-modal"]');
 
-      await titleInput.clear();
-      await titleInput.fill('Updated Title');
+      const titleInput2 = page.getByTestId('modal-title-input');
+      await titleInput2.clear();
+      await titleInput2.fill('Updated Title');
 
       await page.getByTestId('save-goal-button').click();
       await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
@@ -400,6 +418,9 @@ test.describe('Goal date tracking', () => {
 
   test.describe('completedAt', () => {
     test('is set when goal is completed', async ({ page }) => {
+      // Ensure no modal overlay is blocking
+      await closeAnyOpenModals(page);
+
       // Mark goal as complete
       await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
       await page.waitForTimeout(300);
@@ -420,6 +441,9 @@ test.describe('Goal date tracking', () => {
     });
 
     test('is cleared when goal is unchecked', async ({ page }) => {
+      // Ensure no modal overlay is blocking
+      await closeAnyOpenModals(page);
+
       const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
 
       // Complete the goal
@@ -448,6 +472,9 @@ test.describe('Goal date tracking', () => {
     });
 
     test('is updated if goal is re-completed', async ({ page }) => {
+      // Ensure no modal overlay is blocking
+      await closeAnyOpenModals(page);
+
       const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
 
       // First completion
@@ -558,6 +585,9 @@ test.describe('Goal date tracking', () => {
 
       // Wait to ensure time difference
       await page.waitForTimeout(100);
+
+      // Ensure no modal overlay is blocking
+      await closeAnyOpenModals(page);
 
       // Toggle completion
       await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();

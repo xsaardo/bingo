@@ -55,7 +55,7 @@ function mockFromChain(returnValue: unknown): MockQueryChain {
     single: vi.fn().mockResolvedValue(returnValue),
     update: vi.fn().mockReturnThis()
   };
-  vi.mocked(supabase.from).mockReturnValue(chain as MockQueryChain);
+  vi.mocked(supabase.from).mockReturnValue(chain as any);
   return chain;
 }
 
@@ -75,7 +75,7 @@ describe('currentBoardStore.setPublic()', () => {
       update: vi.fn().mockReturnThis(),
       eq: vi.fn().mockResolvedValue({ error: null })
     };
-    vi.mocked(supabase.from).mockReturnValue(updateChain as MockUpdateChain);
+    vi.mocked(supabase.from).mockReturnValue(updateChain as any);
 
     await currentBoardStore.setPublic('board-1', true);
 
@@ -91,7 +91,7 @@ describe('currentBoardStore.setPublic()', () => {
       update: vi.fn().mockReturnThis(),
       eq: vi.fn().mockResolvedValue({ error: null })
     };
-    vi.mocked(supabase.from).mockReturnValue(updateChain as MockUpdateChain);
+    vi.mocked(supabase.from).mockReturnValue(updateChain as any);
 
     await currentBoardStore.setPublic('board-1', false);
 
@@ -106,7 +106,7 @@ describe('currentBoardStore.setPublic()', () => {
     const updateMock = vi.fn().mockReturnValue({ eq: eqMock });
     vi.mocked(supabase.from).mockReturnValue({
       update: updateMock
-    } as Partial<MockUpdateChain> as MockUpdateChain);
+    } as any);
 
     await currentBoardStore.setPublic('board-1', true);
 
@@ -122,7 +122,7 @@ describe('currentBoardStore.setPublic()', () => {
     const updateMock = vi.fn().mockReturnValue({ eq: eqMock });
     vi.mocked(supabase.from).mockReturnValue({
       update: updateMock
-    } as Partial<MockUpdateChain> as MockUpdateChain);
+    } as any);
 
     const result = await currentBoardStore.setPublic('board-1', true);
 

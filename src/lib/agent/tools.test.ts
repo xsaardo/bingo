@@ -60,7 +60,9 @@ describe('getGoals', () => {
       error: null
     });
 
-    vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(boardChain as any)
+      .mockReturnValueOnce(goalsChain as any);
 
     const result = await getGoals({ board_id: 'board-1' });
 
@@ -97,7 +99,9 @@ describe('getGoals', () => {
       error: null
     });
 
-    vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(boardChain as any)
+      .mockReturnValueOnce(goalsChain as any);
 
     const result = await getGoals({ board_id: 'board-1' });
     const goal = result.goals[0];
@@ -113,7 +117,7 @@ describe('getGoals', () => {
       error: { message: 'Row not found' }
     });
 
-    vi.mocked(supabase.from).mockReturnValueOnce(boardChain);
+    vi.mocked(supabase.from).mockReturnValueOnce(boardChain as any);
 
     await expect(getGoals({ board_id: 'missing-board' })).rejects.toThrow(
       'Board not found or access denied: Row not found'
@@ -123,7 +127,7 @@ describe('getGoals', () => {
   it('board not found — Supabase returns no data and no error → throws "Board not found or access denied"', async () => {
     const boardChain = makeQueryChain({ data: null, error: null });
 
-    vi.mocked(supabase.from).mockReturnValueOnce(boardChain);
+    vi.mocked(supabase.from).mockReturnValueOnce(boardChain as any);
 
     await expect(getGoals({ board_id: 'missing-board' })).rejects.toThrow(
       'Board not found or access denied: no data returned'
@@ -137,7 +141,9 @@ describe('getGoals', () => {
       error: { message: 'DB connection error' }
     });
 
-    vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(boardChain as any)
+      .mockReturnValueOnce(goalsChain as any);
 
     await expect(getGoals({ board_id: 'board-1' })).rejects.toThrow(
       'Failed to fetch goals: DB connection error'
@@ -193,7 +199,9 @@ describe('getGoals', () => {
       error: null
     });
 
-    vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(boardChain as any)
+      .mockReturnValueOnce(goalsChain as any);
 
     const result = await getGoals({ board_id: 'board-1' });
     const milestones = result.goals[0].milestones;
@@ -205,7 +213,9 @@ describe('getGoals', () => {
     const boardChain = makeQueryChain({ data: { id: 'board-1' }, error: null });
     const goalsChain = makeQueryChain({ data: [], error: null });
 
-    vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(boardChain as any)
+      .mockReturnValueOnce(goalsChain as any);
 
     const result = await getGoals({ board_id: 'board-1' });
     expect(result).toEqual({ board_id: 'board-1', goals: [] });
@@ -221,7 +231,9 @@ describe('executeTool', () => {
     const boardChain = makeQueryChain({ data: { id: 'board-42' }, error: null });
     const goalsChain = makeQueryChain({ data: [], error: null });
 
-    vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(boardChain as any)
+      .mockReturnValueOnce(goalsChain as any);
 
     const result = await executeTool('get_goals', { board_id: 'board-42' });
     expect(result).toEqual({ board_id: 'board-42', goals: [] });
