@@ -132,6 +132,7 @@
 
             {#if $currentBoard}
               <button
+                data-testid="share-button"
                 onclick={handleShare}
                 class="p-2 rounded-lg transition-colors {$currentBoard.isPublic
                   ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
