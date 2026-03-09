@@ -26,6 +26,12 @@ run_check() {
 
 echo -e "${BOLD}Pre-PR checks${RESET}"
 
+# Load env vars for Playwright tests
+set -a
+[[ -f .env ]] && source .env
+[[ -f .env.test ]] && source .env.test
+set +a
+
 run_check "Lint"          npm run lint
 run_check "Type check"    npm run check
 run_check "Unit tests"    npm run test:unit
