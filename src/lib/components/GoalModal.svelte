@@ -11,6 +11,7 @@
   import DateMetadata from './DateMetadata.svelte';
   import MilestoneList from './MilestoneList.svelte';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
+  import CheckboxButton from './CheckboxButton.svelte';
 
   interface Props {
     goal: Goal;
@@ -74,26 +75,15 @@
     <div class="flex-1 overflow-y-scroll px-6 pt-2 pb-2 space-y-3">
       <!-- Title + Completion Toggle inline -->
       <div class="flex items-center gap-3">
-        <button
-          onclick={toggleComplete}
-          role="checkbox"
-          aria-checked={goal.completed}
-          class="shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all active:scale-90 {goal.completed
-            ? 'bg-green-500 border-green-500'
-            : 'border-gray-300 hover:border-green-500'}"
-          data-testid="modal-checkbox"
-        >
-          {#if goal.completed}
-            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="3"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          {/if}
-        </button>
+        <CheckboxButton
+          checked={goal.completed}
+          onclick={(e) => {
+            e.stopPropagation();
+            toggleComplete();
+          }}
+          testid="modal-checkbox"
+          class="shrink-0 w-6 h-6"
+        />
         <Input
           bind:ref={titleInput}
           id="modal-goal-title"
