@@ -37,10 +37,7 @@
             keepMarks: true,
             keepAttributes: false
           },
-          listItem: {
-            keepMarks: true,
-            keepAttributes: false
-          }
+
         }),
         Link.configure({
           openOnClick: false,
