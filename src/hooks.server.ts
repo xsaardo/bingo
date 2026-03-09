@@ -2,14 +2,12 @@
  * SvelteKit server hooks — applied to every server-side request.
  *
  * Rate limiting strategy:
- *  - /auth/*  routes: 10 requests per minute per IP
- *    (guards magic-link spam / OTP abuse)
  *  - /api/*   routes: 60 requests per minute per IP
  *    (guards agent tool-execution endpoint from DoS / quota drain)
  *
- * Dashboard-side rate limits (e.g. Supabase auth OTP limit, SMTP quotas,
- * anonymous sign-in caps) must be configured in the Supabase dashboard under:
- *   Authentication → Rate Limits
+ * Magic-link auth rate limiting is handled by Supabase directly (the send
+ * call goes browser → Supabase API and never hits this server).
+ * Configure limits in: Supabase Dashboard → Authentication → Rate Limits
  * See SECURITY.md for the recommended values.
  */
 
@@ -34,15 +32,6 @@ export const handle: Handle = async ({ event, resolve }) => {
   const rateLimitingDisabled = env.DISABLE_RATE_LIMITING === 'true';
   if (rateLimitingDisabled) {
     return resolve(event);
-  }
-
-  // ── Auth routes: strict limit to deter magic-link spam ──────────────────
-  if (pathname.startsWith('/auth/')) {
-    const allowed = rateLimit(`auth:${ip}`, 10, 60_000);
-    if (!allowed) {
-      const retryAfter = retryAfterSeconds(`auth:${ip}`, 60_000);
-      throw error(429, `Too many requests. Please wait ${retryAfter}s and try again.`);
-    }
   }
 
   // ── API routes: generous limit to prevent quota drain / DoS ─────────────

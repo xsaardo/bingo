@@ -6,10 +6,11 @@
 
 | Route scope | Limit       | Window      |
 | ----------- | ----------- | ----------- |
-| `/auth/*`   | 10 requests | 60 s per IP |
 | `/api/*`    | 60 requests | 60 s per IP |
 
-These are enforced via `src/hooks.server.ts` using an in-memory sliding-window store (`src/lib/server/rateLimit.ts`).
+Enforced via `src/hooks.server.ts` using an in-memory sliding-window store (`src/lib/server/rateLimit.ts`).
+
+> **Note:** `/auth/*` routes are not rate-limited here — magic-link sends go directly from the browser to Supabase's API and never reach this server. Configure auth rate limits in the Supabase dashboard instead (see below).
 
 > **Multi-instance / serverless note:** The in-memory store is per-process. If you deploy across multiple instances (e.g. Vercel Edge, Fly.io multi-region), replace the Map with a shared Redis store (Upstash is a good serverless-compatible option).
 
