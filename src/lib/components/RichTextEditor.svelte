@@ -36,8 +36,7 @@
           orderedList: {
             keepMarks: true,
             keepAttributes: false
-          },
-
+          }
         }),
         Link.configure({
           openOnClick: false,
