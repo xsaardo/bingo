@@ -16,6 +16,12 @@ vi.mock('$lib/supabaseClient', () => {
 import { getGoals, executeTool } from './tools';
 import { supabase } from '$lib/supabaseClient';
 
+// Valid UUIDs required by board_id UUID validation
+const BOARD_UUID = '00000000-0000-0000-0000-000000000001';
+const BOARD_UUID_2 = '00000000-0000-0000-0000-000000000042';
+const MISSING_BOARD_UUID = '00000000-0000-0000-0000-000000000000';
+const TEST_USER_ID = 'test-user-id';
+
 // Helper to build a chainable Supabase query mock
 function makeQueryChain(result: { data: any; error: any }) {
   const chain: any = {};
@@ -33,7 +39,7 @@ describe('getGoals', () => {
   });
 
   it('success path — returns goals with correct field mapping and defaults', async () => {
-    const boardChain = makeQueryChain({ data: { id: 'board-1' }, error: null });
+    const boardChain = makeQueryChain({ data: { id: BOARD_UUID }, error: null });
     const goalsChain = makeQueryChain({
       data: [
         {
@@ -55,9 +61,9 @@ describe('getGoals', () => {
 
     vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
 
-    const result = await getGoals({ board_id: 'board-1' });
+    const result = await getGoals({ board_id: BOARD_UUID }, TEST_USER_ID);
 
-    expect(result.board_id).toBe('board-1');
+    expect(result.board_id).toBe(BOARD_UUID);
     expect(result.goals).toHaveLength(1);
     const goal = result.goals[0];
     expect(goal.id).toBe('goal-1');
@@ -70,7 +76,7 @@ describe('getGoals', () => {
   });
 
   it('success path — maps non-null fields without overriding', async () => {
-    const boardChain = makeQueryChain({ data: { id: 'board-1' }, error: null });
+    const boardChain = makeQueryChain({ data: { id: BOARD_UUID }, error: null });
     const goalsChain = makeQueryChain({
       data: [
         {
@@ -92,7 +98,7 @@ describe('getGoals', () => {
 
     vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
 
-    const result = await getGoals({ board_id: 'board-1' });
+    const result = await getGoals({ board_id: BOARD_UUID }, TEST_USER_ID);
     const goal = result.goals[0];
     expect(goal.notes).toBe('Apply everywhere');
     expect(goal.startedAt).toBe('2024-02-01T00:00:00Z');
@@ -108,8 +114,8 @@ describe('getGoals', () => {
 
     vi.mocked(supabase.from).mockReturnValueOnce(boardChain);
 
-    await expect(getGoals({ board_id: 'missing-board' })).rejects.toThrow(
-      'Board not found or access denied: Row not found'
+    await expect(getGoals({ board_id: MISSING_BOARD_UUID }, TEST_USER_ID)).rejects.toThrow(
+      'Board not found or access denied'
     );
   });
 
@@ -118,13 +124,13 @@ describe('getGoals', () => {
 
     vi.mocked(supabase.from).mockReturnValueOnce(boardChain);
 
-    await expect(getGoals({ board_id: 'missing-board' })).rejects.toThrow(
-      'Board not found or access denied: no data returned'
+    await expect(getGoals({ board_id: MISSING_BOARD_UUID }, TEST_USER_ID)).rejects.toThrow(
+      'Board not found or access denied'
     );
   });
 
   it('goals fetch failure — board lookup succeeds but goals query errors → throws "Failed to fetch goals"', async () => {
-    const boardChain = makeQueryChain({ data: { id: 'board-1' }, error: null });
+    const boardChain = makeQueryChain({ data: { id: BOARD_UUID }, error: null });
     const goalsChain = makeQueryChain({
       data: null,
       error: { message: 'DB connection error' }
@@ -132,13 +138,13 @@ describe('getGoals', () => {
 
     vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
 
-    await expect(getGoals({ board_id: 'board-1' })).rejects.toThrow(
-      'Failed to fetch goals: DB connection error'
+    await expect(getGoals({ board_id: BOARD_UUID }, TEST_USER_ID)).rejects.toThrow(
+      'Failed to fetch goals'
     );
   });
 
   it('milestone sorting — milestones sorted ascending by position regardless of DB order', async () => {
-    const boardChain = makeQueryChain({ data: { id: 'board-1' }, error: null });
+    const boardChain = makeQueryChain({ data: { id: BOARD_UUID }, error: null });
     const goalsChain = makeQueryChain({
       data: [
         {
@@ -188,20 +194,20 @@ describe('getGoals', () => {
 
     vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
 
-    const result = await getGoals({ board_id: 'board-1' });
+    const result = await getGoals({ board_id: BOARD_UUID }, TEST_USER_ID);
     const milestones = result.goals[0].milestones;
     expect(milestones.map((m) => m.position)).toEqual([1, 2, 3]);
     expect(milestones.map((m) => m.id)).toEqual(['m1', 'm2', 'm3']);
   });
 
   it('empty goals — board with zero goals returns { board_id, goals: [] }', async () => {
-    const boardChain = makeQueryChain({ data: { id: 'board-1' }, error: null });
+    const boardChain = makeQueryChain({ data: { id: BOARD_UUID }, error: null });
     const goalsChain = makeQueryChain({ data: [], error: null });
 
     vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
 
-    const result = await getGoals({ board_id: 'board-1' });
-    expect(result).toEqual({ board_id: 'board-1', goals: [] });
+    const result = await getGoals({ board_id: BOARD_UUID }, TEST_USER_ID);
+    expect(result).toEqual({ board_id: BOARD_UUID, goals: [] });
   });
 });
 
@@ -211,16 +217,18 @@ describe('executeTool', () => {
   });
 
   it('dispatches get_goals to getGoals with the given input', async () => {
-    const boardChain = makeQueryChain({ data: { id: 'board-42' }, error: null });
+    const boardChain = makeQueryChain({ data: { id: BOARD_UUID_2 }, error: null });
     const goalsChain = makeQueryChain({ data: [], error: null });
 
     vi.mocked(supabase.from).mockReturnValueOnce(boardChain).mockReturnValueOnce(goalsChain);
 
-    const result = await executeTool('get_goals', { board_id: 'board-42' });
-    expect(result).toEqual({ board_id: 'board-42', goals: [] });
+    const result = await executeTool('get_goals', { board_id: BOARD_UUID_2 }, TEST_USER_ID);
+    expect(result).toEqual({ board_id: BOARD_UUID_2, goals: [] });
   });
 
   it('unknown tool name throws "Unknown tool: …"', async () => {
-    await expect(executeTool('does_not_exist', {})).rejects.toThrow('Unknown tool: does_not_exist');
+    await expect(executeTool('does_not_exist', {}, TEST_USER_ID)).rejects.toThrow(
+      'Unknown or unsupported tool'
+    );
   });
 });
