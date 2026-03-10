@@ -64,22 +64,17 @@
     boardSize === 3 ? 'text-[10px]' : boardSize === 4 ? 'text-[10px]' : 'text-[8px]'
   );
 
-  // Debounce rapid checkbox taps to avoid flooding Supabase with duplicate
-  // updates when the user double-clicks or taps quickly.
-  let toggleTimer: ReturnType<typeof setTimeout> | null = null;
+  // Ignore rapid taps while a write is already in-flight.
+  let toggling = false;
 
-  function toggleComplete() {
-    if (toggleTimer !== null) {
-      // A toggle is already queued — cancel the previous one so we don't
-      // fire multiple writes for a single intended toggle.
-      clearTimeout(toggleTimer);
-      toggleTimer = null;
-      return;
-    }
-    toggleTimer = setTimeout(async () => {
-      toggleTimer = null;
+  async function toggleComplete() {
+    if (toggling) return;
+    toggling = true;
+    try {
       await currentBoardStore.toggleComplete(goal.id);
-    }, 300);
+    } finally {
+      toggling = false;
+    }
   }
 
   function selectGoal() {
