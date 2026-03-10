@@ -21,7 +21,7 @@
   <link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="{themeClass} min-h-screen">
+<div class="{themeClass} min-h-dvh">
   {@render children()}
 </div>
 

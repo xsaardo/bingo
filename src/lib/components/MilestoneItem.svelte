@@ -90,7 +90,7 @@
           e.stopPropagation();
           onDelete();
         }}
-        class="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
+        class="text-red-600 hover:text-red-700 text-sm font-medium transition-colors min-h-[44px] px-2"
       >
         Delete
       </button>

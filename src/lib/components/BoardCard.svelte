@@ -132,7 +132,7 @@
               />
               <button
                 onclick={cancelEdit}
-                class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600 rounded transition-colors"
+                class="flex-shrink-0 p-1 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 rounded transition-colors"
                 title="Cancel"
                 type="button"
               >
@@ -162,7 +162,7 @@
             </h3>
             <button
               onclick={handleEditClick}
-              class="flex-shrink-0 p-1 text-gray-300 hover:text-blue-500 rounded opacity-0 group-hover/name:opacity-100 transition-all"
+              class="flex-shrink-0 p-1 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-300 hover:text-blue-500 rounded opacity-0 group-hover/name:opacity-100 transition-all"
               title="Rename board"
               type="button"
             >
@@ -183,7 +183,7 @@
       {#if onDelete}
         <button
           onclick={handleDeleteClick}
-          class="flex-shrink-0 ml-2 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          class="flex-shrink-0 ml-2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
           title="Delete board"
           aria-label="Delete board"
           data-testid="delete-board-button"

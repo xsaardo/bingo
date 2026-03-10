@@ -70,7 +70,7 @@
 </svelte:head>
 
 <AuthGuard>
-  <div class="h-screen flex flex-col">
+  <div class="h-dvh flex flex-col">
     <!-- Header -->
     <header class="bg-transparent">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -143,7 +143,7 @@
 
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
-              <Button variant="ghost" href="/dashboard">Home</Button>
+              <Button variant="ghost" href="/dashboard" class="hidden sm:inline-flex">Home</Button>
             {/if}
 
             {#if $currentBoard}
@@ -153,7 +153,7 @@
                   type="text"
                   readonly
                   value={shareUrl}
-                  class="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 w-56 truncate"
+                  class="hidden sm:block text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 w-56 truncate"
                   onclick={(e) => (e.target as HTMLInputElement).select()}
                 />
               {/if}
