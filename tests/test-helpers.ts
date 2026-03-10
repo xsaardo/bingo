@@ -102,6 +102,9 @@ export async function getGoalData<T = any>(
 export async function openFirstGoalModal(page: Page): Promise<void> {
   await page.getByTestId('goal-square').first().click();
   await page.waitForSelector('[data-testid="goal-modal"]');
+  // Wait for any in-flight network requests (e.g. a prior save) to settle so
+  // Svelte's reactive graph finishes updating before we interact with the modal.
+  await page.waitForLoadState('networkidle');
 }
 
 /**
