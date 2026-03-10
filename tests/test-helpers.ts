@@ -109,11 +109,19 @@ export async function openFirstGoalModal(page: Page): Promise<void> {
 
 /**
  * Expands the goal modal to show notes, milestones, and date metadata
+ *
+ * Uses waitForFunction + evaluate to click atomically inside the browser,
+ * avoiding the race where Svelte reactive re-renders detach the button between
+ * Playwright's "resolve" and "click" steps (particularly after a save that
+ * triggers an optimistic store update).
  */
 export async function expandGoalModal(page: Page): Promise<void> {
-  const button = page.getByTestId('expand-modal-button');
-  await button.waitFor({ state: 'visible' });
-  await button.click();
+  await page.waitForFunction(() => {
+    const btn = document.querySelector<HTMLElement>('[data-testid="expand-modal-button"]');
+    if (!btn) return false;
+    btn.click();
+    return true;
+  });
 }
 
 /**
