@@ -15,21 +15,22 @@
 
   let { goal, index, isInBingo = false, boardSize, readonly = false }: Props = $props();
 
-  // Calculate responsive text sizes based on board size
+  // Calculate responsive text sizes based on board size.
+  // em units allow font-size on an ancestor to scale all text proportionally.
   let titleTextClass = $derived(
     boardSize === 3
-      ? 'text-xs sm:text-sm md:text-base lg:text-lg'
+      ? 'text-[0.75em] sm:text-[0.875em] md:text-[1em] lg:text-[1.125em]'
       : boardSize === 4
-        ? 'text-[10px] sm:text-xs md:text-sm lg:text-base'
-        : 'text-[8px] sm:text-[10px] md:text-xs lg:text-sm'
+        ? 'text-[0.625em] sm:text-[0.75em] md:text-[0.875em] lg:text-[1em]'
+        : 'text-[0.5em] sm:text-[0.625em] md:text-[0.75em] lg:text-[0.875em]'
   );
 
   let placeholderTextClass = $derived(
     boardSize === 3
-      ? 'text-[10px] sm:text-xs md:text-sm'
+      ? 'text-[0.625em] sm:text-[0.75em] md:text-[0.875em]'
       : boardSize === 4
-        ? 'text-[8px] sm:text-[10px] md:text-xs'
-        : 'text-[7px] sm:text-[8px] md:text-[10px]'
+        ? 'text-[0.5em] sm:text-[0.625em] md:text-[0.75em]'
+        : 'text-[0.4375em] sm:text-[0.5em] md:text-[0.625em]'
   );
 
   let checkboxSizeClass = $derived(
@@ -50,10 +51,10 @@
 
   let notesEmojiClass = $derived(
     boardSize === 3
-      ? 'text-[10px] sm:text-xs md:text-sm'
+      ? 'text-[0.625em] sm:text-[0.75em] md:text-[0.875em]'
       : boardSize === 4
-        ? 'text-[8px] sm:text-[10px] md:text-xs'
-        : 'text-[7px] sm:text-[8px] md:text-[10px]'
+        ? 'text-[0.5em] sm:text-[0.625em] md:text-[0.75em]'
+        : 'text-[0.4375em] sm:text-[0.5em] md:text-[0.625em]'
   );
 
   let lastUpdatedText = $derived(
@@ -61,7 +62,7 @@
   );
 
   let timeTextSize = $derived(
-    boardSize === 3 ? 'text-[10px]' : boardSize === 4 ? 'text-[10px]' : 'text-[8px]'
+    boardSize === 3 ? 'text-[0.625em]' : boardSize === 4 ? 'text-[0.625em]' : 'text-[0.5em]'
   );
 
   // Ignore rapid taps while a write is already in-flight.

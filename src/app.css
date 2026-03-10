@@ -70,6 +70,7 @@
 /* Applied to the board wrapper when font is set to 'chanellie' */
 .font-chanellie {
   font-family: 'Chanellie', cursive;
+  font-size: 1.5em;
 }
 
 /* Preview style used on the toggle button */
