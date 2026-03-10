@@ -29,6 +29,7 @@ export interface Board {
   size: number;
   goals: Goal[];
   isPublic: boolean;
+  font: 'default' | 'chanellie';
   createdAt: string;
   updatedAt: string;
 }

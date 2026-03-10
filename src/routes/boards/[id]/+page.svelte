@@ -16,6 +16,7 @@
   } from '$lib/stores/currentBoard';
   import { isAnonymous } from '$lib/stores/auth';
   import ConversionPrompt from '$lib/components/ConversionPrompt.svelte';
+  import Button from '$lib/components/ui/button/button.svelte';
 
   let exportElement: HTMLDivElement | undefined = $state();
   let showShareConversionPrompt = $state(false);
@@ -55,6 +56,12 @@
 
   function handleShareConversionDismiss() {
     showShareConversionPrompt = false;
+  }
+
+  async function handleToggleFont() {
+    if (!$currentBoard) return;
+    const newFont = $currentBoard.font === 'chanellie' ? 'default' : 'chanellie';
+    await currentBoardStore.setFont(boardId, newFont);
   }
 </script>
 
@@ -136,12 +143,7 @@
 
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
-              <a
-                href="/dashboard"
-                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                Home
-              </a>
+              <Button variant="ghost" href="/dashboard">Home</Button>
             {/if}
 
             {#if $currentBoard}
@@ -155,12 +157,14 @@
                   onclick={(e) => (e.target as HTMLInputElement).select()}
                 />
               {/if}
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 data-testid="share-button"
                 onclick={handleShare}
-                class="p-2 rounded-lg transition-colors {$currentBoard.isPublic
+                class={$currentBoard.isPublic
                   ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}"
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}
                 title={$currentBoard.isPublic ? 'Sharing on — click to stop' : 'Share board'}
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,7 +175,24 @@
                     d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
                   />
                 </svg>
-              </button>
+              </Button>
+              <!-- Font toggle button -->
+              <Button
+                variant="ghost"
+                onclick={handleToggleFont}
+                class={$currentBoard.font === 'chanellie'
+                  ? 'text-purple-600 bg-purple-50 hover:bg-purple-100'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}
+                title={$currentBoard.font === 'chanellie'
+                  ? 'Font: Chanellie — click for default'
+                  : 'Font: Default — click for Chanellie'}
+                aria-pressed={$currentBoard.font === 'chanellie'}
+              >
+                <span class={$currentBoard.font === 'chanellie' ? 'font-chanellie-preview' : ''}
+                  >Aa</span
+                >
+              </Button>
+
               <ShareButton boardName={$currentBoard.name} {exportElement} />
             {/if}
 
@@ -186,7 +207,12 @@
       <!-- Board Title -->
       <div class="shrink-0 mb-2 sm:mb-3 text-center w-full">
         {#if $currentBoard}
-          <h1 class="text-3xl font-bold text-gray-900">{$currentBoard.name}</h1>
+          <h1
+            class="text-3xl font-bold text-gray-900"
+            style:font-family={$currentBoard.font === 'chanellie' ? "'Chanellie', cursive" : ''}
+          >
+            {$currentBoard.name}
+          </h1>
         {:else if !$currentBoardError}
           <div class="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto"></div>
         {/if}
@@ -209,18 +235,8 @@
           <div class="max-w-md mx-auto space-y-4">
             <ErrorAlert error={$currentBoardError} />
             <div class="flex justify-center space-x-3">
-              <button
-                onclick={handleRetry}
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-              >
-                Retry
-              </button>
-              <a
-                href="/dashboard"
-                class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors"
-              >
-                Back to Dashboard
-              </a>
+              <Button onclick={handleRetry}>Retry</Button>
+              <Button variant="secondary" href="/dashboard">Back to Dashboard</Button>
             </div>
           </div>
         </div>
@@ -230,7 +246,10 @@
           class="flex-1 min-h-0 w-full flex items-center justify-center"
           style="container-type: size;"
         >
-          <div style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);">
+          <div
+            class:font-chanellie={$currentBoard.font === 'chanellie'}
+            style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);"
+          >
             <BingoBoard />
           </div>
         </div>

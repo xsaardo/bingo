@@ -54,3 +54,26 @@
   background-repeat: repeat;
   background-size: 400px 400px;
 }
+
+/* =====================================================
+   Chanellie Font — Custom board font preference
+   ===================================================== */
+
+@font-face {
+  font-family: 'Chanellie';
+  src: url('/fonts/Chanelliefont-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Applied to the board wrapper when font is set to 'chanellie' */
+.font-chanellie {
+  font-family: 'Chanellie', cursive;
+  font-size: 1.5em;
+}
+
+/* Preview style used on the toggle button */
+.font-chanellie-preview {
+  font-family: 'Chanellie', cursive;
+}

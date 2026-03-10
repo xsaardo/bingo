@@ -23,7 +23,15 @@
   const GRID_SIZE = 1080 - PADDING * 2 - TITLE_HEIGHT - BRANDING_HEIGHT;
   const GAP = 6;
   let CELL_SIZE = $derived(Math.floor((GRID_SIZE - GAP * (board.size - 1)) / board.size));
-  let FONT_SIZE = $derived(board.size === 5 ? 13 : board.size === 4 ? 16 : 20);
+  let BASE_FONT_SIZE = $derived(board.size === 5 ? 13 : board.size === 4 ? 16 : 20);
+  let FONT_SCALE = $derived(board.font === 'chanellie' ? 1.5 : 1);
+  let FONT_SIZE = $derived(Math.round(BASE_FONT_SIZE * FONT_SCALE));
+  let TITLE_FONT_SIZE = $derived(Math.round(36 * FONT_SCALE));
+  let FONT_FAMILY = $derived(
+    board.font === 'chanellie'
+      ? "'Chanellie', cursive"
+      : "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  );
 
   const BACKGROUNDS: Record<string, string> = {
     horse: `url(${backgroundPatternUrl}) repeat center center / 400px 400px`
@@ -51,7 +59,7 @@
     align-items: center;
     padding: {PADDING}px;
     box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: {FONT_FAMILY};
   "
 >
   <!-- Board title -->
@@ -67,7 +75,7 @@
   >
     <h1
       style="
-        font-size: 36px;
+        font-size: {TITLE_FONT_SIZE}px;
         font-weight: 800;
         color: #111827;
         margin: 0;
