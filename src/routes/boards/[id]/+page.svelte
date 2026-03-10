@@ -17,6 +17,7 @@
   import { isAnonymous } from '$lib/stores/auth';
   import ConversionPrompt from '$lib/components/ConversionPrompt.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
+  import BackgroundSelector from '$lib/components/BackgroundSelector.svelte';
 
   let exportElement: HTMLDivElement | undefined = $state();
   let showShareConversionPrompt = $state(false);
@@ -192,6 +193,9 @@
                   >Aa</span
                 >
               </Button>
+
+              <!-- Background selector -->
+              <BackgroundSelector />
 
               <ShareButton boardName={$currentBoard.name} {exportElement} />
             {/if}

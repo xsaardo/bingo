@@ -55,6 +55,25 @@
   background-size: 400px 400px;
 }
 
+.theme-gradient-blue {
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 50%, #ffffff 100%);
+  background-attachment: fixed;
+}
+
+.theme-gradient-purple {
+  background: linear-gradient(135deg, #ede9fe 0%, #fdf4ff 50%, #fce7f3 100%);
+  background-attachment: fixed;
+}
+
+.theme-gradient-warm {
+  background: linear-gradient(135deg, #fef3c7 0%, #fff7ed 50%, #fdf2f8 100%);
+  background-attachment: fixed;
+}
+
+.theme-solid-white {
+  background: #ffffff;
+}
+
 /* =====================================================
    Chanellie Font — Custom board font preference
    ===================================================== */
