@@ -210,7 +210,9 @@
           <h1
             class="text-3xl font-bold text-gray-900"
             style:font-family={$currentBoard.font === 'chanellie' ? "'Chanellie', cursive" : ''}
-          >{$currentBoard.name}</h1>
+          >
+            {$currentBoard.name}
+          </h1>
         {:else if !$currentBoardError}
           <div class="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto"></div>
         {/if}
