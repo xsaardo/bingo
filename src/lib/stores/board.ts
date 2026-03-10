@@ -37,6 +37,7 @@ function createBoardStore() {
         size,
         goals,
         isPublic: false,
+        font: 'default',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };

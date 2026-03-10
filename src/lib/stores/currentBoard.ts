@@ -59,6 +59,7 @@ export const currentBoardStore = {
 					name,
 					size,
 					is_public,
+					font,
 					created_at,
 					updated_at,
 					goals (
@@ -101,6 +102,7 @@ export const currentBoardStore = {
         name: data.name,
         size: data.size,
         isPublic: data.is_public ?? false,
+        font: (data.font as 'default' | 'chanellie') ?? 'default',
         goals: (data.goals || [])
           .sort((a: any, b: any) => a.position - b.position)
           .map((goal: any) => ({
@@ -573,6 +575,32 @@ export const currentBoardStore = {
   },
 
   /**
+   * Set the font preference for this board
+   */
+  async setFont(boardId: string, font: 'default' | 'chanellie') {
+    try {
+      const { error } = await supabase.from('boards').update({ font }).eq('id', boardId);
+
+      if (error) {
+        throw error;
+      }
+
+      currentBoardState.update((state) => {
+        if (!state.board) return state;
+        return { ...state, board: { ...state.board, font } };
+      });
+
+      return { success: true };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : ((error as any)?.message ?? 'Failed to update font');
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  /**
    * Load a board for public (unauthenticated) viewing — goals only, no milestones
    */
   async loadPublicBoard(boardId: string) {
@@ -587,6 +615,7 @@ export const currentBoardStore = {
 					name,
 					size,
 					is_public,
+					font,
 					created_at,
 					updated_at,
 					goals (
@@ -617,6 +646,7 @@ export const currentBoardStore = {
         name: data.name,
         size: data.size,
         isPublic: data.is_public ?? false,
+        font: (data.font as 'default' | 'chanellie') ?? 'default',
         goals: (data.goals || [])
           .sort((a: any, b: any) => a.position - b.position)
           .map((goal: any) => ({

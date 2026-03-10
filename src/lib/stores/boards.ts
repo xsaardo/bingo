@@ -66,6 +66,7 @@ export const boardsStore = {
 					name,
 					size,
 					is_public,
+					font,
 					created_at,
 					updated_at,
 					goals (
@@ -95,6 +96,7 @@ export const boardsStore = {
         name: board.name,
         size: board.size,
         isPublic: board.is_public ?? false,
+        font: (board.font as 'default' | 'chanellie') ?? 'default',
         goals: (board.goals || [])
           .sort((a: any, b: any) => a.position - b.position)
           .map((goal: any) => ({
@@ -192,6 +194,7 @@ export const boardsStore = {
         name: board.name,
         size: board.size,
         isPublic: board.is_public ?? false,
+        font: (board.font as 'default' | 'chanellie') ?? 'default',
         goals: (insertedGoals || [])
           .sort((a: any, b: any) => a.position - b.position)
           .map((goal: any) => ({

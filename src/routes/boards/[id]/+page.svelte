@@ -56,6 +56,12 @@
   function handleShareConversionDismiss() {
     showShareConversionPrompt = false;
   }
+
+  async function handleToggleFont() {
+    if (!$currentBoard) return;
+    const newFont = $currentBoard.font === 'chanellie' ? 'default' : 'chanellie';
+    await currentBoardStore.setFont(boardId, newFont);
+  }
 </script>
 
 <svelte:head>
@@ -172,6 +178,23 @@
                   />
                 </svg>
               </button>
+              <!-- Font toggle button -->
+              <button
+                onclick={handleToggleFont}
+                class="px-3 py-2 text-sm font-medium rounded-lg transition-colors {$currentBoard.font ===
+                'chanellie'
+                  ? 'text-purple-600 bg-purple-50 hover:bg-purple-100'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}"
+                title={$currentBoard.font === 'chanellie'
+                  ? 'Font: Chanellie — click for default'
+                  : 'Font: Default — click for Chanellie'}
+                aria-pressed={$currentBoard.font === 'chanellie'}
+              >
+                <span class={$currentBoard.font === 'chanellie' ? 'font-chanellie-preview' : ''}
+                  >Aa</span
+                >
+              </button>
+
               <ShareButton boardName={$currentBoard.name} {exportElement} />
             {/if}
 
@@ -230,7 +253,10 @@
           class="flex-1 min-h-0 w-full flex items-center justify-center"
           style="container-type: size;"
         >
-          <div style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);">
+          <div
+            class:font-chanellie={$currentBoard.font === 'chanellie'}
+            style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);"
+          >
             <BingoBoard />
           </div>
         </div>
