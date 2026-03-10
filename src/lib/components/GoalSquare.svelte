@@ -64,8 +64,17 @@
     boardSize === 3 ? 'text-[10px]' : boardSize === 4 ? 'text-[10px]' : 'text-[8px]'
   );
 
+  // Ignore rapid taps while a write is already in-flight.
+  let toggling = false;
+
   async function toggleComplete() {
-    await currentBoardStore.toggleComplete(goal.id);
+    if (toggling) return;
+    toggling = true;
+    try {
+      await currentBoardStore.toggleComplete(goal.id);
+    } finally {
+      toggling = false;
+    }
   }
 
   function selectGoal() {
