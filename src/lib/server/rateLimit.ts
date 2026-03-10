@@ -15,6 +15,11 @@ interface RateLimitEntry {
 
 const store = new Map<string, RateLimitEntry>();
 
+/** Clears all rate-limit state. Only for use in tests. */
+export function resetForTesting(): void {
+  store.clear();
+}
+
 /**
  * Returns `true` if the request is allowed, `false` if rate-limited.
  *
