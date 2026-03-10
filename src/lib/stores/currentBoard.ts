@@ -55,13 +55,7 @@ export const currentBoardStore = {
         .from('boards')
         .select(
           `
-					id,
-					name,
-					size,
-					is_public,
-					font,
-					created_at,
-					updated_at,
+					*,
 					goals (
 						id,
 						position,
@@ -611,13 +605,7 @@ export const currentBoardStore = {
         .from('boards')
         .select(
           `
-					id,
-					name,
-					size,
-					is_public,
-					font,
-					created_at,
-					updated_at,
+					*,
 					goals (
 						id,
 						position,
