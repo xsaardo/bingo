@@ -2,7 +2,7 @@
   import { detectBingo, type BingoLine } from '$lib/utils/bingo';
   import { currentBackground } from '$lib/stores/theme';
   import backgroundPatternUrl from '$lib/assets/background-pattern.png';
-  import type { Board } from '$lib/types';
+  import type { Board, BackgroundTheme } from '$lib/types';
 
   interface Props {
     board: Board;
@@ -33,8 +33,12 @@
       : "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
   );
 
-  const BACKGROUNDS: Record<string, string> = {
-    horse: `url(${backgroundPatternUrl}) repeat center center / 400px 400px`
+  const BACKGROUNDS: Record<BackgroundTheme, string> = {
+    horse: `url(${backgroundPatternUrl}) repeat center center / 400px 400px`,
+    'gradient-blue': 'linear-gradient(135deg, #dbeafe 0%, #eff6ff 50%, #ffffff 100%)',
+    'gradient-purple': 'linear-gradient(135deg, #ede9fe 0%, #fdf4ff 50%, #fce7f3 100%)',
+    'gradient-warm': 'linear-gradient(135deg, #fef3c7 0%, #fff7ed 50%, #fdf2f8 100%)',
+    'solid-white': '#ffffff'
   };
   const DEFAULT_BACKGROUND = 'linear-gradient(135deg, #f0f4ff 0%, #fafbff 50%, #f5f0ff 100%)';
 

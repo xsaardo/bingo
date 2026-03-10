@@ -2,9 +2,10 @@
 // ABOUTME: Provides reactive theme state for background and future theme options
 
 import { writable, derived } from 'svelte/store';
+import type { BackgroundTheme } from '$lib/types';
 
 interface ThemeState {
-  background: 'horse' | string;
+  background: BackgroundTheme;
 }
 
 const STORAGE_KEY = 'bingo-theme';
@@ -34,7 +35,7 @@ export const themeStore = {
     }
   },
 
-  setBackground(background: string) {
+  setBackground(background: BackgroundTheme) {
     themeState.update((state) => ({ ...state, background }));
   }
 };
