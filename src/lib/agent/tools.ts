@@ -12,32 +12,6 @@ import { supabase } from '$lib/supabaseClient';
 import type { Goal, Milestone } from '$lib/types';
 
 // ---------------------------------------------------------------------------
-// Database Response Types
-// ---------------------------------------------------------------------------
-
-interface DbMilestone {
-  id: string;
-  title: string;
-  notes: string | null;
-  completed: boolean;
-  completed_at: string | null;
-  created_at: string;
-  position: number;
-}
-
-interface DbGoal {
-  id: string;
-  title: string;
-  notes: string | null;
-  completed: boolean;
-  started_at: string | null;
-  completed_at: string | null;
-  last_updated_at: string | null;
-  updated_at: string;
-  milestones: DbMilestone[];
-}
-
-// ---------------------------------------------------------------------------
 // Tool Definitions (Claude tool-use API format)
 // ---------------------------------------------------------------------------
 
@@ -77,6 +51,16 @@ export const GET_GOALS_TOOL: ClaudeTool = {
 export const AGENT_TOOLS: ClaudeTool[] = [GET_GOALS_TOOL];
 
 // ---------------------------------------------------------------------------
+// Input validation helpers
+// ---------------------------------------------------------------------------
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function isValidUuid(value: unknown): value is string {
+  return typeof value === 'string' && UUID_REGEX.test(value);
+}
+
+// ---------------------------------------------------------------------------
 // Tool Handlers
 // ---------------------------------------------------------------------------
 
@@ -97,25 +81,31 @@ export interface GetGoalsResult {
  * accessible). An explicit ownership check is also performed so that a clear
  * error is returned when the board doesn't exist or belongs to another user.
  *
- * @param input  Validated tool input containing `board_id`.
- * @returns      `{ board_id, goals }` on success; throws on error.
+ * @param input   Validated tool input containing `board_id`.
+ * @param userId  The authenticated user's ID (passed from the API route).
+ * @returns       `{ board_id, goals }` on success; throws on error.
  */
-export async function getGoals(input: GetGoalsInput): Promise<GetGoalsResult> {
+export async function getGoals(input: GetGoalsInput, userId: string): Promise<GetGoalsResult> {
   const { board_id } = input;
 
+  // Validate board_id format to prevent injection or unexpected DB queries.
+  if (!isValidUuid(board_id)) {
+    throw new Error('Invalid board_id: must be a valid UUID');
+  }
+
   // Verify the board exists and belongs to the authenticated user.
-  // Supabase RLS will enforce this automatically, but a missing board row
-  // produces a clearer error than an empty goals array.
+  // The additional .eq('user_id', userId) check provides defense-in-depth
+  // alongside Supabase RLS policies.
   const { data: boardData, error: boardError } = await supabase
     .from('boards')
     .select('id')
     .eq('id', board_id)
+    .eq('user_id', userId)
     .single();
 
   if (boardError || !boardData) {
-    throw new Error(
-      `Board not found or access denied: ${boardError?.message ?? 'no data returned'}`
-    );
+    // Do not reveal whether the board exists or belongs to another user.
+    throw new Error('Board not found or access denied');
   }
 
   // Fetch all goals for the board, ordered by position.
@@ -148,10 +138,12 @@ export async function getGoals(input: GetGoalsInput): Promise<GetGoalsResult> {
     .order('position', { ascending: true });
 
   if (goalsError) {
-    throw new Error(`Failed to fetch goals: ${goalsError.message}`);
+    // Log internally but do not expose DB error details to callers.
+    console.error('[getGoals] DB error fetching goals:', goalsError);
+    throw new Error('Failed to fetch goals');
   }
 
-  const goals: Goal[] = (goalsData ?? []).map((g: DbGoal) => ({
+  const goals: Goal[] = (goalsData ?? []).map((g: any) => ({
     id: g.id,
     title: g.title,
     notes: g.notes ?? '',
@@ -159,10 +151,10 @@ export async function getGoals(input: GetGoalsInput): Promise<GetGoalsResult> {
     startedAt: g.started_at ?? null,
     completedAt: g.completed_at ?? null,
     lastUpdatedAt: g.last_updated_at ?? g.updated_at,
-    milestones: (g.milestones ?? [])
-      .sort((a: DbMilestone, b: DbMilestone) => a.position - b.position)
+    milestones: ((g.milestones as any[]) ?? [])
+      .sort((a: any, b: any) => a.position - b.position)
       .map(
-        (m: DbMilestone): Milestone => ({
+        (m: any): Milestone => ({
           id: m.id,
           title: m.title,
           notes: m.notes ?? '',
@@ -186,13 +178,19 @@ export async function getGoals(input: GetGoalsInput): Promise<GetGoalsResult> {
  *
  * @param toolName  The `name` field from the Claude tool-use response.
  * @param input     The `input` field from the Claude tool-use response.
+ * @param userId    The authenticated user's ID for ownership enforcement.
  * @returns         Tool result (shape depends on the tool).
  */
-export async function executeTool(toolName: string, input: unknown): Promise<unknown> {
+export async function executeTool(
+  toolName: string,
+  input: Record<string, unknown>,
+  userId: string
+): Promise<unknown> {
   switch (toolName) {
     case 'get_goals':
-      return getGoals(input as GetGoalsInput);
+      return getGoals(input as unknown as GetGoalsInput, userId);
     default:
-      throw new Error(`Unknown tool: ${toolName}`);
+      // Do not enumerate valid tool names in the error — prevents probing.
+      throw new Error('Unknown or unsupported tool');
   }
 }

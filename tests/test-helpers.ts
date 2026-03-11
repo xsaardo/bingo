@@ -129,17 +129,23 @@ export async function closeModal(page: Page): Promise<void> {
 }
 
 /**
- * Wait for auto-save to complete (default 600ms debounce)
+ * Wait for auto-save to complete by watching for the debounced PATCH request to /goals
  */
 export async function waitForAutoSave(page: Page): Promise<void> {
-  await page.waitForTimeout(600);
+  await page.waitForResponse(
+    (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+    { timeout: 5000 }
+  );
 }
 
 /**
- * Wait for checkbox update to complete
+ * Wait for checkbox update to complete by watching for the PATCH request to /goals
  */
 export async function waitForCheckboxUpdate(page: Page): Promise<void> {
-  await page.waitForTimeout(300);
+  await page.waitForResponse(
+    (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+    { timeout: 5000 }
+  );
 }
 
 /**
@@ -148,8 +154,12 @@ export async function waitForCheckboxUpdate(page: Page): Promise<void> {
 export async function addMilestone(page: Page, title: string): Promise<void> {
   await page.click('text=+ Add');
   await page.fill('input[placeholder="New milestone..."]', title);
+  const saveRequest = page.waitForResponse(
+    (resp) => resp.url().includes('/milestones') && resp.request().method() === 'POST',
+    { timeout: 5000 }
+  );
   await page.click('button.bg-blue-500:has-text("Add")');
-  await page.waitForTimeout(300);
+  await saveRequest;
 }
 
 /**
