@@ -145,6 +145,7 @@
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
               <Button variant="ghost" href="/dashboard">My Boards</Button>
+              <div class="h-5 w-px bg-gray-200"></div>
             {/if}
 
             {#if $currentBoard}
