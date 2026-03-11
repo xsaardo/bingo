@@ -1,3 +1,6 @@
+import type { Font } from './fonts';
+export type { Font };
+
 export interface Milestone {
   id: string;
   title: string;
@@ -29,7 +32,7 @@ export interface Board {
   size: number;
   goals: Goal[];
   isPublic: boolean;
-  font: 'default' | 'chanellie';
+  font: Font;
   createdAt: string;
   updatedAt: string;
 }

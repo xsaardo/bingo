@@ -8,6 +8,7 @@
 import { writable, derived } from 'svelte/store';
 import { supabase } from '$lib/supabaseClient';
 import type { Board } from '$lib/types';
+import { parseFont } from '$lib/fonts';
 
 interface BoardsState {
   boards: Board[];
@@ -62,7 +63,13 @@ export const boardsStore = {
         .from('boards')
         .select(
           `
-					*,
+					id,
+					name,
+					size,
+					is_public,
+					font,
+					created_at,
+					updated_at,
 					goals (
 						id,
 						position,
@@ -90,7 +97,7 @@ export const boardsStore = {
         name: board.name,
         size: board.size,
         isPublic: board.is_public ?? false,
-        font: (board.font as 'default' | 'chanellie') ?? 'default',
+        font: parseFont(board.font),
         goals: (board.goals || [])
           .sort((a: any, b: any) => a.position - b.position)
           .map((goal: any) => ({
@@ -188,7 +195,7 @@ export const boardsStore = {
         name: board.name,
         size: board.size,
         isPublic: board.is_public ?? false,
-        font: (board.font as 'default' | 'chanellie') ?? 'default',
+        font: parseFont(board.font),
         goals: (insertedGoals || [])
           .sort((a: any, b: any) => a.position - b.position)
           .map((goal: any) => ({

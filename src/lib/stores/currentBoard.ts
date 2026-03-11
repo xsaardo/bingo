@@ -8,6 +8,7 @@
 import { writable, derived } from 'svelte/store';
 import { supabase } from '$lib/supabaseClient';
 import type { Board, Goal, Milestone } from '$lib/types';
+import { parseFont, type Font } from '$lib/fonts';
 
 interface CurrentBoardState {
   board: Board | null;
@@ -55,7 +56,13 @@ export const currentBoardStore = {
         .from('boards')
         .select(
           `
-					*,
+					id,
+					name,
+					size,
+					is_public,
+					font,
+					created_at,
+					updated_at,
 					goals (
 						id,
 						position,
@@ -96,7 +103,7 @@ export const currentBoardStore = {
         name: data.name,
         size: data.size,
         isPublic: data.is_public ?? false,
-        font: (data.font as 'default' | 'chanellie') ?? 'default',
+        font: parseFont(data.font),
         goals: (data.goals || [])
           .sort((a: any, b: any) => a.position - b.position)
           .map((goal: any) => ({
@@ -571,27 +578,32 @@ export const currentBoardStore = {
   /**
    * Set the font preference for this board
    */
-  async setFont(boardId: string, font: 'default' | 'chanellie') {
-    try {
-      const { error } = await supabase.from('boards').update({ font }).eq('id', boardId);
+  async setFont(boardId: string, font: Font) {
+    let previousFont: Font = 'default';
 
-      if (error) {
-        throw error;
-      }
+    // Optimistic update
+    currentBoardState.update((state) => {
+      if (!state.board) return state;
+      previousFont = state.board.font;
+      return { ...state, board: { ...state.board, font } };
+    });
 
+    const { error } = await supabase.from('boards').update({ font }).eq('id', boardId);
+
+    if (error) {
+      // Revert on failure
       currentBoardState.update((state) => {
         if (!state.board) return state;
-        return { ...state, board: { ...state.board, font } };
+        return { ...state, board: { ...state.board, font: previousFont } };
       });
-
-      return { success: true };
-    } catch (error) {
       const errorMessage =
         error instanceof Error
           ? error.message
           : ((error as any)?.message ?? 'Failed to update font');
       return { success: false, error: errorMessage };
     }
+
+    return { success: true };
   },
 
   /**
@@ -605,7 +617,13 @@ export const currentBoardStore = {
         .from('boards')
         .select(
           `
-					*,
+					id,
+					name,
+					size,
+					is_public,
+					font,
+					created_at,
+					updated_at,
 					goals (
 						id,
 						position,
@@ -634,7 +652,7 @@ export const currentBoardStore = {
         name: data.name,
         size: data.size,
         isPublic: data.is_public ?? false,
-        font: (data.font as 'default' | 'chanellie') ?? 'default',
+        font: parseFont(data.font),
         goals: (data.goals || [])
           .sort((a: any, b: any) => a.position - b.position)
           .map((goal: any) => ({

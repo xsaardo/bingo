@@ -17,6 +17,8 @@
   import { isAnonymous } from '$lib/stores/auth';
   import ConversionPrompt from '$lib/components/ConversionPrompt.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+  import { FONT_REGISTRY, type Font } from '$lib/fonts';
 
   let exportElement: HTMLDivElement | undefined = $state();
   let showShareConversionPrompt = $state(false);
@@ -58,10 +60,9 @@
     showShareConversionPrompt = false;
   }
 
-  async function handleToggleFont() {
+  async function handleSelectFont(font: Font) {
     if (!$currentBoard) return;
-    const newFont = $currentBoard.font === 'chanellie' ? 'default' : 'chanellie';
-    await currentBoardStore.setFont(boardId, newFont);
+    await currentBoardStore.setFont(boardId, font);
   }
 </script>
 
@@ -176,22 +177,47 @@
                   />
                 </svg>
               </Button>
-              <!-- Font toggle button -->
-              <Button
-                variant="ghost"
-                onclick={handleToggleFont}
-                class={$currentBoard.font === 'chanellie'
-                  ? 'text-purple-600 bg-purple-50 hover:bg-purple-100'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}
-                title={$currentBoard.font === 'chanellie'
-                  ? 'Font: Chanellie — click for default'
-                  : 'Font: Default — click for Chanellie'}
-                aria-pressed={$currentBoard.font === 'chanellie'}
-              >
-                <span class={$currentBoard.font === 'chanellie' ? 'font-chanellie-preview' : ''}
-                  >Aa</span
-                >
-              </Button>
+              <!-- Font selector -->
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  {#snippet child({ props })}
+                    <Button
+                      {...props}
+                      variant="ghost"
+                      size="icon"
+                      data-testid="font-button"
+                      class={$currentBoard.font !== 'default'
+                        ? 'text-purple-600 bg-purple-50 hover:bg-purple-100'
+                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}
+                      title="Font"
+                    >
+                      <span class:font-chanellie={$currentBoard.font === 'chanellie'}>Aa</span>
+                    </Button>
+                  {/snippet}
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content align="end">
+                  {#each Object.entries(FONT_REGISTRY) as [key, { label }]}
+                    <DropdownMenu.Item onclick={() => handleSelectFont(key as Font)}>
+                      <span class:font-chanellie={key === 'chanellie'}>{label}</span>
+                      {#if $currentBoard.font === key}
+                        <svg
+                          class="ml-auto w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      {/if}
+                    </DropdownMenu.Item>
+                  {/each}
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
 
               <ShareButton boardName={$currentBoard.name} {exportElement} />
             {/if}
@@ -209,7 +235,7 @@
         {#if $currentBoard}
           <h1
             class="text-3xl font-bold text-gray-900"
-            style:font-family={$currentBoard.font === 'chanellie' ? "'Chanellie', cursive" : ''}
+            class:font-chanellie={$currentBoard.font === 'chanellie'}
           >
             {$currentBoard.name}
           </h1>

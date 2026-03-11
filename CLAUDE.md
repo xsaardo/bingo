@@ -41,6 +41,7 @@ Only pause to ask for confirmation when:
 
 - YAGNI. The best code is no code. Don't add features we don't need right now.
 - When it doesn't conflict with YAGNI, architect for extensibility and flexibility.
+- Use optimistic updates for simple, low-risk mutations (preferences, toggles, text edits). Apply locally first, sync to DB, revert on failure. Use pessimistic updates (wait for server) only when the result is unpredictable or failure is meaningful (e.g. payments, business logic rejections).
 
 ## Test Driven Development (TDD)
 
