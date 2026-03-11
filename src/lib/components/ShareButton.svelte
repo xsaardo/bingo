@@ -22,6 +22,7 @@
     try {
       await exportBoardAsImage(exportElement, boardName);
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       console.error('Export failed:', err);
       toast.error('Export failed. Please try again.');
     } finally {

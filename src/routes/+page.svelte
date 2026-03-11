@@ -96,7 +96,7 @@
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo size="2.5rem" />
-            <h1 class="text-xl font-bold text-gray-900">BINGOAL</h1>
+            <h1 class="text-xl font-bold text-gray-900">BINGOALS</h1>
           </a>
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}

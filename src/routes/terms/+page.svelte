@@ -7,7 +7,7 @@
   <header class="bg-transparent border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <a href="/" class="flex items-center space-x-2">
-        <span class="text-xl font-bold text-gray-900">BINGOAL</span>
+        <span class="text-xl font-bold text-gray-900">BINGOALS</span>
       </a>
     </div>
   </header>

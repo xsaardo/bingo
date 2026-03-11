@@ -139,7 +139,7 @@
                 />
               </svg>
             </div>
-            <span class="text-xl font-bold text-gray-900">BINGOAL</span>
+            <span class="text-xl font-bold text-gray-900">BINGOALS</span>
           </a>
 
           <div class="flex items-center gap-3">

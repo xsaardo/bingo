@@ -219,7 +219,7 @@
           letter-spacing: 1px;
         "
       >
-        BINGOAL
+        BINGOALS
       </span>
     </div>
   </div>

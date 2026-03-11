@@ -25,7 +25,7 @@
 </script>
 
 <svelte:head>
-  <title>{$currentBoard?.name || 'Shared Board'} - BINGOAL</title>
+  <title>{$currentBoard?.name || 'Shared Board'} - BINGOALS</title>
 </svelte:head>
 
 <div class="h-screen flex flex-col">
@@ -35,7 +35,7 @@
       <div class="flex items-center justify-between">
         <a href="/" class="flex items-center space-x-3">
           <Logo />
-          <span class="text-xl font-bold text-gray-900">BINGOAL</span>
+          <span class="text-xl font-bold text-gray-900">BINGOALS</span>
         </a>
 
         <a
@@ -86,7 +86,7 @@
               href="/"
               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
             >
-              Go to BINGOAL
+              Go to BINGOALS
             </a>
           </div>
         </div>
