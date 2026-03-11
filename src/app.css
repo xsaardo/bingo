@@ -67,7 +67,9 @@
   font-display: swap;
 }
 
-/* Applied to the board wrapper when font is set to 'chanellie' */
+/* Applied to the board wrapper when font is set to 'chanellie'.
+   font-size: 1.5em is intentional — Chanellie is a display font that renders
+   too small at body scale; the size bump is part of the intended aesthetic. */
 .font-chanellie {
   font-family: 'Chanellie', cursive;
   font-size: 1.5em;
