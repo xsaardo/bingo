@@ -19,7 +19,7 @@
 </script>
 
 <svelte:head>
-  <title>Sign In - Bingoal</title>
+  <title>Sign In - Bingoals</title>
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center p-4">

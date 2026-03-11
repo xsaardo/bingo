@@ -261,7 +261,7 @@
     </div>
     <footer class="py-6 text-center text-sm text-gray-400">
       <p>
-        © {new Date().getFullYear()} Bingoal &middot;
+        © {new Date().getFullYear()} Bingoals &middot;
         <a href="/privacy" class="hover:text-gray-600 transition-colors">Privacy</a>
         &middot;
         <a href="/terms" class="hover:text-gray-600 transition-colors">Terms</a>

@@ -1,4 +1,4 @@
-<!-- ABOUTME: Bingoal logo mark — a 3x3 bingo grid with stars in the completed cells. -->
+<!-- ABOUTME: Bingoals logo mark — a 3x3 bingo grid with stars in the completed cells. -->
 <!-- ABOUTME: Accepts a size prop (CSS value) to control width/height of the wrapping box. -->
 <script lang="ts">
   let { size = '2.5rem' }: { size?: string } = $props();
