@@ -78,7 +78,9 @@
     }
   }
 
-  // Handle escape key
+  let modalEl: HTMLDivElement;
+
+  // Handle escape key and focus trap
   onMount(() => {
     function handleKeydown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
@@ -92,11 +94,31 @@
 
     return () => window.removeEventListener('keydown', handleKeydown);
   });
+
+  function trapFocus(e: KeyboardEvent) {
+    if (e.key !== 'Tab') return;
+    const focusable = modalEl.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
 </script>
 
 <!-- Backdrop -->
 <div
-  role="button"
+  role="presentation"
   tabindex="-1"
   onclick={handleBackdropClick}
   onkeydown={(e) => e.key === 'Escape' && handleClose()}
@@ -106,13 +128,20 @@
 >
   <!-- Modal -->
   <div
+    bind:this={modalEl}
     role="dialog"
     aria-label="Edit goal"
     tabindex="0"
     in:scale={{ duration: 200, start: 0.95 }}
     class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
     onclick={(e) => e.stopPropagation()}
-    onkeydown={(e) => e.key === 'Escape' && handleClose()}
+    onkeydown={(e) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      } else {
+        trapFocus(e);
+      }
+    }}
     data-testid="goal-modal"
   >
     <!-- Header -->

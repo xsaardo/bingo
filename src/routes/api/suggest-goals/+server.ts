@@ -51,6 +51,9 @@ const SUGGESTIONS_POOL = [
   'Create a morning routine and stick to it'
 ];
 
+// Note: this endpoint is intentionally unauthenticated (serves anonymous users browsing goal suggestions).
+// It accesses only a static in-memory pool — no DB or AI cost — so no rate limiting is applied.
+// If this ever calls an external API or DB, add rate limiting before shipping.
 export const POST: RequestHandler = async ({ request }) => {
   let body: { existingGoals?: unknown };
   try {
@@ -65,8 +68,15 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ error: '`existingGoals` must be an array' }, { status: 400 });
   }
 
-  // Filter out suggestions that are too similar to existing goals
-  const existingLower = (existingGoals as string[]).map((g) => g.toLowerCase());
+  if (existingGoals.length > 100) {
+    return json({ error: '`existingGoals` must contain at most 100 items' }, { status: 400 });
+  }
+
+  // Simple prefix-based dedup (MVP): compares first 10 chars of suggestion vs existing goals.
+  // Intentionally naive — avoids adding a full fuzzy-match dependency for a static suggestion pool.
+  const existingLower = (existingGoals as unknown[])
+    .filter((g): g is string => typeof g === 'string')
+    .map((g) => g.toLowerCase());
   const filtered = SUGGESTIONS_POOL.filter((suggestion) => {
     const suggestionLower = suggestion.toLowerCase();
     return !existingLower.some(
