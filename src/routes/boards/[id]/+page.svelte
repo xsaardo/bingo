@@ -18,10 +18,13 @@
   import ConversionPrompt from '$lib/components/ConversionPrompt.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+  import * as Popover from '$lib/components/ui/popover/index.js';
+  import { Input } from '$lib/components/ui/input/index.js';
   import { FONT_REGISTRY, type Font } from '$lib/fonts';
 
   let exportElement: HTMLDivElement | undefined = $state();
   let showShareConversionPrompt = $state(false);
+  let sharePopoverOpen = $state(false);
 
   const boardId = $derived($page.params.id!);
 
@@ -51,8 +54,7 @@
       toast('Sharing disabled');
     } else {
       await currentBoardStore.setPublic(boardId, true);
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success('Link copied to clipboard');
+      sharePopoverOpen = true;
     }
   }
 
@@ -150,34 +152,66 @@
 
             {#if $currentBoard}
               {#if $currentBoard.isPublic}
-                <input
-                  data-testid="share-url"
-                  type="text"
-                  readonly
-                  value={shareUrl}
-                  class="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 w-56 truncate"
-                  onclick={(e) => (e.target as HTMLInputElement).select()}
-                />
+                <Popover.Root bind:open={sharePopoverOpen}>
+                  <Popover.Trigger>
+                    {#snippet child({ props })}
+                      <Button
+                        {...props}
+                        variant="ghost"
+                        size="icon"
+                        data-testid="share-button"
+                        class="text-blue-600 bg-blue-50 hover:bg-blue-100"
+                        title="Sharing on — view link"
+                      >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                        </svg>
+                      </Button>
+                    {/snippet}
+                  </Popover.Trigger>
+                  <Popover.Content class="w-80 bg-white" align="end">
+                    <p class="text-sm font-medium mb-2">Share link</p>
+                    <div class="flex gap-2">
+                      <Input
+                        data-testid="share-url"
+                        readonly
+                        value={shareUrl}
+                        onclick={(e) => (e.target as HTMLInputElement).select()}
+                        class="text-sm"
+                      />
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        onclick={async () => {
+                          await navigator.clipboard.writeText(shareUrl);
+                          toast.success('Link copied');
+                        }}
+                        title="Copy link"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </Button>
+                    </div>
+                    <Button variant="ghost" size="sm" class="mt-2 w-full text-gray-500" onclick={handleShare}>
+                      Disable sharing
+                    </Button>
+                  </Popover.Content>
+                </Popover.Root>
+              {:else}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  data-testid="share-button"
+                  onclick={handleShare}
+                  class="text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  title="Share board"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                </Button>
               {/if}
-              <Button
-                variant="ghost"
-                size="icon"
-                data-testid="share-button"
-                onclick={handleShare}
-                class={$currentBoard.isPublic
-                  ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}
-                title={$currentBoard.isPublic ? 'Sharing on — click to stop' : 'Share board'}
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-                  />
-                </svg>
-              </Button>
               <!-- Font selector -->
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>

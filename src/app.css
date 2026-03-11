@@ -1,4 +1,9 @@
 @import 'tailwindcss';
+@plugin 'tailwindcss-animate';
+
+@theme {
+  --font-sans: 'Geist Mono', monospace;
+}
 
 /*
   shadcn-svelte CSS variables (oklch format)
