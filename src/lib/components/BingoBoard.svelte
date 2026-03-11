@@ -1,3 +1,5 @@
+<!-- ABOUTME: Interactive bingo board with goal squares, confetti, and ARIA announcements. -->
+<!-- ABOUTME: Uses BoardLayout for the card structure and GoalSquare for each interactive cell. -->
 <script lang="ts">
   import { currentBoard } from '$lib/stores/currentBoard';
   import { uiStore } from '$lib/stores/board';
@@ -5,6 +7,7 @@
   import GoalSquare from './GoalSquare.svelte';
   import GoalModal from './GoalModal.svelte';
   import Confetti from './Confetti.svelte';
+  import BoardLayout from './BoardLayout.svelte';
 
   interface Props {
     readonly?: boolean;
@@ -61,22 +64,21 @@
 </div>
 
 {#if $currentBoard}
-  <div class="bg-white rounded-lg shadow-lg p-2 sm:p-3 md:p-4 relative h-full">
-    <div
-      class="grid gap-2 sm:gap-3 h-full"
-      style="grid-template-columns: repeat({$currentBoard.size}, minmax(0, 1fr)); grid-template-rows: repeat({$currentBoard.size}, minmax(0, 1fr));"
-    >
-      {#each $currentBoard.goals as goal, index}
-        <GoalSquare
-          {goal}
-          {index}
-          isInBingo={bingoIndices.has(index)}
-          boardSize={$currentBoard.size}
-          {readonly}
-        />
-      {/each}
-    </div>
-  </div>
+  <BoardLayout
+    name={$currentBoard.name}
+    size={$currentBoard.size}
+    gridClass="grid gap-2 sm:gap-3 flex-1 min-h-0"
+  >
+    {#snippet cell(index)}
+      <GoalSquare
+        goal={$currentBoard.goals[index]}
+        {index}
+        isInBingo={bingoIndices.has(index)}
+        boardSize={$currentBoard.size}
+        {readonly}
+      />
+    {/snippet}
+  </BoardLayout>
 {/if}
 
 <!-- Goal Modal — not shown in readonly mode -->

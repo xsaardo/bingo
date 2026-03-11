@@ -1,8 +1,11 @@
+<!-- ABOUTME: Off-screen 1080x1080 board rendered for image export via html-to-image. -->
+<!-- ABOUTME: Uses BoardLayout with explicit pixel sizing to produce a pixel-perfect capture. -->
 <script lang="ts">
   import { detectBingo, type BingoLine } from '$lib/utils/bingo';
   import { currentBackground } from '$lib/stores/theme';
   import backgroundPatternUrl from '$lib/assets/background-pattern.png';
   import type { Board } from '$lib/types';
+  import BoardLayout from './BoardLayout.svelte';
 
   interface Props {
     board: Board;
@@ -15,12 +18,15 @@
   let bingoIndices = $derived(new Set(bingoLines.flatMap((line) => line.indices)));
 
   // Cell size for 1080x1080 layout:
-  // Top padding: 80px (title area), bottom padding: 40px (branding), sides: 40px each
-  // Grid area: 1080 - 80 - 40 = 960px tall, 1080 - 80 = 1000px wide
+  // Outer padding: 40px sides/top, branding footer: 44px at bottom
+  // Card internal padding: 20px, title area: 80px
+  // Grid area = card height - card padding*2 - title height
   const PADDING = 40;
+  const CARD_PADDING = 20;
   const TITLE_HEIGHT = 80;
-  const BRANDING_HEIGHT = 36;
-  const GRID_SIZE = 1080 - PADDING * 2 - TITLE_HEIGHT - BRANDING_HEIGHT;
+  const BRANDING_HEIGHT = 44;
+  const CARD_HEIGHT = 1080 - PADDING * 2 - BRANDING_HEIGHT;
+  const GRID_SIZE = CARD_HEIGHT - CARD_PADDING * 2 - TITLE_HEIGHT;
   const GAP = 6;
   let CELL_SIZE = $derived(Math.floor((GRID_SIZE - GAP * (board.size - 1)) / board.size));
   let BASE_FONT_SIZE = $derived(board.size === 5 ? 13 : board.size === 4 ? 16 : 20);
@@ -56,46 +62,16 @@
   "
   class:font-chanellie={board.font === 'chanellie'}
 >
-  <!-- Board title -->
-  <div
-    style="
-      width: 100%;
-      height: {TITLE_HEIGHT}px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 0;
-    "
+  <BoardLayout
+    name={board.name}
+    size={board.size}
+    cellSize={CELL_SIZE}
+    cardStyle="width: 100%; height: {CARD_HEIGHT}px; background: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); display: flex; flex-direction: column; align-items: center; padding: {CARD_PADDING}px; box-sizing: border-box; flex-shrink: 0;"
+    titleStyle="font-size: {TITLE_FONT_SIZE}px; font-weight: 800; color: #111827; margin: 0; text-align: center; letter-spacing: -0.5px; max-width: 900px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; height: {TITLE_HEIGHT}px; width: 100%; display: flex; align-items: center; justify-content: center; padding-bottom: 0; flex-shrink: 0;"
+    gridStyle="gap: {GAP}px; flex-shrink: 0;"
   >
-    <h1
-      style="
-        font-size: {TITLE_FONT_SIZE}px;
-        font-weight: 800;
-        color: #111827;
-        margin: 0;
-        text-align: center;
-        letter-spacing: -0.5px;
-        max-width: 900px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      "
-    >
-      {board.name}
-    </h1>
-  </div>
-
-  <!-- Bingo grid -->
-  <div
-    style="
-      display: grid;
-      grid-template-columns: repeat({board.size}, {CELL_SIZE}px);
-      grid-template-rows: repeat({board.size}, {CELL_SIZE}px);
-      gap: {GAP}px;
-      flex-shrink: 0;
-    "
-  >
-    {#each board.goals as goal, index}
+    {#snippet cell(index)}
+      {@const goal = board.goals[index]}
       {@const inBingo = bingoIndices.has(index)}
       {@const completed = goal.completed}
       <div
@@ -155,72 +131,45 @@
               flex-shrink: 0;
             "
           >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </div>
         {/if}
       </div>
-    {/each}
-  </div>
+    {/snippet}
 
-  <!-- Branding footer -->
-  <div
-    style="
-      width: 100%;
-      height: {BRANDING_HEIGHT}px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      margin-top: auto;
-      padding-top: 8px;
-    "
-  >
-    <div
-      style="
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        opacity: 0.4;
-      "
-    >
-      <!-- Mini logo -->
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 22 22"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect x="1" y="1" width="6" height="6" rx="1.5" fill="#2563eb" />
-        <rect x="8" y="1" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
-        <rect x="15" y="1" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
-        <rect x="1" y="8" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
-        <rect x="8" y="8" width="6" height="6" rx="1.5" fill="#2563eb" />
-        <rect x="15" y="8" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
-        <rect x="1" y="15" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
-        <rect x="8" y="15" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
-        <rect x="15" y="15" width="6" height="6" rx="1.5" fill="#2563eb" />
-      </svg>
-      <span
+    {#snippet footer()}
+      <!-- Branding footer -->
+      <div
         style="
-          font-size: 13px;
-          font-weight: 700;
-          color: #374151;
-          letter-spacing: 1px;
+          width: 100%;
+          height: {BRANDING_HEIGHT}px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          margin-top: auto;
+          padding-top: 8px;
         "
       >
-        BINGOALS
-      </span>
-    </div>
-  </div>
+        <div style="display: flex; align-items: center; gap: 6px; opacity: 0.4;">
+          <!-- Mini logo -->
+          <svg width="16" height="16" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="6" height="6" rx="1.5" fill="#2563eb" />
+            <rect x="8" y="1" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
+            <rect x="15" y="1" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
+            <rect x="1" y="8" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
+            <rect x="8" y="8" width="6" height="6" rx="1.5" fill="#2563eb" />
+            <rect x="15" y="8" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
+            <rect x="1" y="15" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
+            <rect x="8" y="15" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
+            <rect x="15" y="15" width="6" height="6" rx="1.5" fill="#2563eb" />
+          </svg>
+          <span style="font-size: 13px; font-weight: 700; color: #374151; letter-spacing: 1px;">
+            BINGOALS
+          </span>
+        </div>
+      </div>
+    {/snippet}
+  </BoardLayout>
 </div>
