@@ -18,20 +18,23 @@
   let bingoIndices = $derived(new Set(bingoLines.flatMap((line) => line.indices)));
 
   // Cell size for 1080x1080 layout:
-  // Outer padding: 40px sides/top, branding footer: 44px at bottom
-  // Card internal padding: 20px, title area: 80px
-  // Grid area = card height - card padding*2 - title height
+  // Outer padding: 40px all sides, branding footer: 44px at bottom
+  // Card internal padding: 40px all sides, title area: 80px
+  // Card width is derived from grid size so internal padding is equal on all sides
   const PADDING = 40;
-  const CARD_PADDING = 20;
+  const CARD_PADDING = 40;
   const TITLE_HEIGHT = 80;
   const BRANDING_HEIGHT = 44;
   const CARD_HEIGHT = 1080 - PADDING * 2 - BRANDING_HEIGHT;
   const GRID_SIZE = CARD_HEIGHT - CARD_PADDING * 2 - TITLE_HEIGHT;
   const GAP = 6;
   let CELL_SIZE = $derived(Math.floor((GRID_SIZE - GAP * (board.size - 1)) / board.size));
-  let BASE_FONT_SIZE = $derived(board.size === 5 ? 13 : board.size === 4 ? 16 : 20);
+  // Card width is sized to the actual grid so padding is symmetric, not stretched to canvas width
+  let CARD_GRID_SIZE = $derived(CELL_SIZE * board.size + GAP * (board.size - 1));
+  let CARD_WIDTH = $derived(CARD_GRID_SIZE + CARD_PADDING * 2);
+  let BASE_FONT_SIZE = $derived(board.size === 5 ? 18 : board.size === 4 ? 22 : 28);
   let FONT_SIZE = $derived(BASE_FONT_SIZE);
-  let TITLE_FONT_SIZE = 36;
+  let TITLE_FONT_SIZE = 48;
 
   const BACKGROUNDS: Record<string, string> = {
     horse: `url(${backgroundPatternUrl}) repeat center center / 400px 400px`
@@ -66,8 +69,8 @@
     name={board.name}
     size={board.size}
     cellSize={CELL_SIZE}
-    cardStyle="width: 100%; height: {CARD_HEIGHT}px; background: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); display: flex; flex-direction: column; align-items: center; padding: {CARD_PADDING}px; box-sizing: border-box; flex-shrink: 0;"
-    titleStyle="font-size: {TITLE_FONT_SIZE}px; font-weight: 800; color: #111827; margin: 0; text-align: center; letter-spacing: -0.5px; max-width: 900px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; height: {TITLE_HEIGHT}px; width: 100%; display: flex; align-items: center; justify-content: center; padding-bottom: 0; flex-shrink: 0;"
+    cardStyle="width: {CARD_WIDTH}px; height: {CARD_HEIGHT}px; background: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); display: flex; flex-direction: column; padding: {CARD_PADDING}px; box-sizing: border-box; flex-shrink: 0;"
+    titleStyle="font-size: {TITLE_FONT_SIZE}px; font-weight: 800; color: #111827; margin: 0; text-align: center; letter-spacing: -0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; height: {TITLE_HEIGHT}px; width: 100%; display: flex; align-items: center; justify-content: center; padding-bottom: 0; flex-shrink: 0;"
     gridStyle="gap: {GAP}px; flex-shrink: 0;"
   >
     {#snippet cell(index)}
@@ -143,12 +146,11 @@
       <!-- Branding footer -->
       <div
         style="
-          width: 100%;
+          width: {CARD_WIDTH}px;
           height: {BRANDING_HEIGHT}px;
           display: flex;
           align-items: center;
           justify-content: flex-end;
-          margin-top: auto;
           padding-top: 8px;
         "
       >
