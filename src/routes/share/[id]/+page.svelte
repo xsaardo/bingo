@@ -30,7 +30,7 @@
 
 <div class="h-screen flex flex-col">
   <!-- Header -->
-  <header class="bg-transparent">
+  <header class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
         <a href="/" class="flex items-center space-x-3">
@@ -50,17 +50,7 @@
 
   <!-- Main Content -->
   <main class="flex-1 min-h-0 flex flex-col items-center px-4 py-3 sm:py-4 overflow-hidden">
-    <!-- Board Title -->
-    <div class="shrink-0 mb-2 sm:mb-3 text-center w-full">
-      {#if $currentBoard}
-        <h1 class="text-3xl font-bold text-gray-900">{$currentBoard.name}</h1>
-        <p class="text-sm text-gray-500 mt-1">Shared board — view only</p>
-      {:else if !$currentBoardError}
-        <div class="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto"></div>
-      {/if}
-    </div>
-
-    {#if $currentBoardLoading}
+{#if $currentBoardLoading}
       <div
         class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center"
         aria-busy="true"
