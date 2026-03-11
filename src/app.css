@@ -4,6 +4,10 @@
   shadcn-svelte CSS variables (oklch format)
   Primary color mapped to blue-600
 */
+body {
+  font-family: 'Geist Mono', monospace;
+}
+
 :root {
   --radius: 0.5rem;
   --background: oklch(1 0 0);
