@@ -134,7 +134,16 @@
               flex-shrink: 0;
             "
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </div>
@@ -156,7 +165,13 @@
       >
         <div style="display: flex; align-items: center; gap: 6px; opacity: 0.4;">
           <!-- Mini logo -->
-          <svg width="16" height="16" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 22 22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <rect x="1" y="1" width="6" height="6" rx="1.5" fill="#2563eb" />
             <rect x="8" y="1" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />
             <rect x="15" y="1" width="6" height="6" rx="1.5" stroke="#2563eb" stroke-width="1.5" />

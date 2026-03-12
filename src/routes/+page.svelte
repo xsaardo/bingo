@@ -115,7 +115,9 @@
 
     <div class="flex-1 flex items-center justify-center p-4">
       <div class="max-w-2xl w-full">
-        <div class="text-center mb-8 inline-block bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3 w-full">
+        <div
+          class="text-center mb-8 inline-block bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3 w-full"
+        >
           <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             Turn your 2026 goals into a bingo board
           </h1>

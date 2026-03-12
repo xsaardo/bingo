@@ -50,7 +50,7 @@
 
   <!-- Main Content -->
   <main class="flex-1 min-h-0 flex flex-col items-center px-4 py-3 sm:py-4 overflow-hidden">
-{#if $currentBoardLoading}
+    {#if $currentBoardLoading}
       <div
         class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center"
         aria-busy="true"

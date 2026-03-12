@@ -91,8 +91,9 @@
             <h2 class="text-lg font-semibold text-gray-900 mb-3">8. Contact</h2>
             <p>
               Questions about these Terms? Email us at
-              <a href="mailto:hello@bingoals.app" class="text-blue-600 hover:text-blue-700 underline"
-                >hello@bingoals.app</a
+              <a
+                href="mailto:hello@bingoals.app"
+                class="text-blue-600 hover:text-blue-700 underline">hello@bingoals.app</a
               >.
             </p>
           </section>
