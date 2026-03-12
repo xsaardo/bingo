@@ -15,15 +15,16 @@
   let loading = $state(false);
 
   async function handleExport() {
-    if (!exportElement) return;
+    if (!exportElement) {
+      toast.error('Export element not ready. Please try again.');
+      return;
+    }
 
     loading = true;
 
     try {
       await exportBoardAsImage(exportElement, boardName);
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') return;
-      console.error('Export failed:', err);
       toast.error('Export failed. Please try again.');
     } finally {
       loading = false;
