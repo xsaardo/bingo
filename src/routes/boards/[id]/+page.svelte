@@ -152,6 +152,7 @@
                   data-testid="share-url"
                   type="text"
                   readonly
+                  tabindex="-1"
                   value={shareUrl}
                   class="hidden sm:block text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 w-56 truncate"
                   onclick={(e) => (e.target as HTMLInputElement).select()}
