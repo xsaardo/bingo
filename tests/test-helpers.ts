@@ -110,7 +110,8 @@ export async function openFirstGoalModal(page: Page): Promise<void> {
 export async function expandGoalModal(page: Page): Promise<void> {
   const button = page.getByTestId('expand-modal-button');
   await button.waitFor({ state: 'visible' });
-  await button.click();
+  await button.waitFor({ state: 'attached' });
+  await button.click({ timeout: 10000 });
 }
 
 /**
