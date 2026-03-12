@@ -58,13 +58,13 @@
 
 <Dialog.Root open={true} onOpenChange={handleOpenChange}>
   <Dialog.Content
-    class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden p-0 border-0 gap-0"
+    class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90dvh] flex flex-col overflow-hidden p-0 border-0 gap-0"
     data-testid="goal-modal"
   >
     <!-- Header -->
     <div class="flex items-center justify-end px-6 pt-3 pb-1">
       <Dialog.Close
-        class="text-gray-500 hover:text-gray-700 text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200 transition-colors"
+        class="text-gray-500 hover:text-gray-700 text-2xl w-11 h-11 flex items-center justify-center rounded-lg hover:bg-gray-200 transition-colors"
         data-testid="close-modal-button"
       >
         ×
@@ -153,7 +153,7 @@
     <div class="flex items-center justify-end gap-2 px-6 pt-1 pb-3">
       <button
         onclick={() => (isExpanded = !isExpanded)}
-        class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        class="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium text-gray-500 hover:text-gray-700 border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
         aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
         data-testid="expand-modal-button"
       >
@@ -161,7 +161,7 @@
       </button>
       <button
         onclick={handleSave}
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+        class="px-4 py-2 min-h-[44px] bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
         data-testid="save-goal-button"
       >
         Save

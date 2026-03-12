@@ -28,7 +28,7 @@
   <title>{$currentBoard?.name || 'Shared Board'} - BINGOAL</title>
 </svelte:head>
 
-<div class="h-screen flex flex-col">
+<div class="h-dvh flex flex-col">
   <!-- Header -->
   <header class="bg-transparent">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
