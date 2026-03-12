@@ -194,8 +194,8 @@
                 >
               </Button>
 
-              <!-- Background selector -->
-              <BackgroundSelector />
+              <!-- Background selector (compact/inline for header toolbar) -->
+              <BackgroundSelector compact />
 
               <ShareButton boardName={$currentBoard.name} {exportElement} />
             {/if}

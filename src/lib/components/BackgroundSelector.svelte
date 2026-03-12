@@ -2,6 +2,12 @@
   import { themeStore, currentBackground } from '$lib/stores/theme';
   import type { BackgroundTheme } from '$lib/types';
 
+  interface Props {
+    compact?: boolean;
+  }
+
+  let { compact = false }: Props = $props();
+
   const backgrounds: { id: BackgroundTheme; label: string; preview: string }[] = [
     { id: 'horse', label: 'Horses', preview: '#c8b8a2' },
     {
@@ -23,13 +29,15 @@
   ];
 </script>
 
-<div class="mb-4">
-  <h2 class="text-sm font-semibold text-gray-700 mb-2">Background</h2>
+<div class={compact ? '' : 'mb-4'}>
+  {#if !compact}
+    <h2 class="text-sm font-semibold text-gray-700 mb-2">Background</h2>
+  {/if}
   <div class="flex gap-2 flex-wrap">
     {#each backgrounds as bg}
       <button
         onclick={() => themeStore.setBackground(bg.id)}
-        class="w-10 h-10 rounded-lg border-2 transition-all {$currentBackground === bg.id
+        class="w-8 h-8 rounded-lg border-2 transition-all {$currentBackground === bg.id
           ? 'border-blue-500 scale-110 shadow-md'
           : 'border-transparent hover:border-gray-300'}"
         style="background: {bg.preview};"
