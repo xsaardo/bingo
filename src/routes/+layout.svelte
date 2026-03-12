@@ -25,4 +25,4 @@
   {@render children()}
 </div>
 
-<Toaster richColors closeButton />
+<Toaster richColors closeButton toastOptions={{ style: "font-family: 'Geist Mono', monospace;" }} />

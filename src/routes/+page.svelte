@@ -91,12 +91,12 @@
   <!-- Landing page with inline board creation -->
   <div class="min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="bg-transparent">
+    <header class="bg-white border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo size="2.5rem" />
-            <h1 class="text-xl font-bold text-gray-900">BINGOAL</h1>
+            <h1 class="text-xl font-bold text-gray-900">BINGOALS</h1>
           </a>
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
@@ -104,7 +104,7 @@
                 href="/dashboard"
                 class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                Home
+                My Boards
               </a>
             {/if}
             <UserMenu />
@@ -115,7 +115,9 @@
 
     <div class="flex-1 flex items-center justify-center p-4">
       <div class="max-w-2xl w-full">
-        <div class="text-center mb-8">
+        <div
+          class="text-center mb-8 inline-block bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3 w-full"
+        >
           <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             Turn your 2026 goals into a bingo board
           </h1>
@@ -259,9 +261,9 @@
         </div>
       </div>
     </div>
-    <footer class="py-6 text-center text-sm text-gray-400">
+    <footer class="py-6 text-center text-sm text-gray-400 bg-white/70 backdrop-blur-sm">
       <p>
-        © {new Date().getFullYear()} Bingoal &middot;
+        © {new Date().getFullYear()} Bingoals &middot;
         <a href="/privacy" class="hover:text-gray-600 transition-colors">Privacy</a>
         &middot;
         <a href="/terms" class="hover:text-gray-600 transition-colors">Terms</a>

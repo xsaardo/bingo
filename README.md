@@ -1,4 +1,4 @@
-# BINGOAL
+# BINGOALS
 
 A web application for turning your goals into a bingo board. Built with SvelteKit, TypeScript, and Supabase.
 
