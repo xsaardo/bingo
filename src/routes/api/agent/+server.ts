@@ -21,8 +21,16 @@
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { executeTool, AGENT_TOOLS } from '$lib/agent/tools';
-import { supabase } from '$lib/supabaseClient';
+// TODO(#99): Re-enable these imports when the agent feature is ready to ship.
+// import { executeTool, AGENT_TOOLS } from '$lib/agent/tools';
+// import { supabase } from '$lib/supabaseClient';
+
+// ---------------------------------------------------------------------------
+// FEATURE GATE: Agent API is not being released yet (see issue #99 / #22).
+// Both handlers return 404 unconditionally so the endpoint is not reachable
+// in production. The implementation below is preserved for future use.
+// To re-enable: remove the early-return guards and restore the imports above.
+// ---------------------------------------------------------------------------
 
 /**
  * Extracts and validates the Bearer token from the Authorization header,
@@ -33,51 +41,28 @@ import { supabase } from '$lib/supabaseClient';
  * routes). Clients must include their access token in every request:
  *   Authorization: Bearer <supabase_access_token>
  */
-async function getAuthenticatedUser(request: Request) {
-  const authHeader = request.headers.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null;
-  }
-  const token = authHeader.slice(7).trim();
-  if (!token) return null;
+// TODO(#99): Restore this function when re-enabling the agent feature.
+// async function getAuthenticatedUser(request: Request) { ... }
 
-  const { data, error } = await supabase.auth.getUser(token);
-  if (error || !data.user) return null;
-  return data.user;
-}
+export const POST: RequestHandler = async () => {
+  // TODO(#99): Remove this guard when the agent feature is ready to ship.
+  return json({ error: 'Not found' }, { status: 404 });
 
-export const POST: RequestHandler = async ({ request }) => {
-  // Require an authenticated session via Bearer token.
-  const user = await getAuthenticatedUser(request);
-  if (!user) {
-    return json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  let body: { tool?: unknown; input?: unknown };
-  try {
-    body = await request.json();
-  } catch {
-    return json({ error: 'Invalid JSON body' }, { status: 400 });
-  }
-
-  const { tool, input } = body;
-
-  if (typeof tool !== 'string' || !tool) {
-    return json({ error: '`tool` must be a non-empty string' }, { status: 400 });
-  }
-
-  if (typeof input !== 'object' || input === null || Array.isArray(input)) {
-    return json({ error: '`input` must be a non-null object' }, { status: 400 });
-  }
-
-  try {
-    const result = await executeTool(tool, input as Record<string, unknown>, user.id);
-    return json({ result });
-  } catch (err) {
-    // Do not leak internal error details to the client.
-    console.error('[/api/agent] executeTool error:', err);
-    return json({ error: 'An internal error occurred' }, { status: 500 });
-  }
+  // Original implementation preserved below for future use:
+  // const user = await getAuthenticatedUser(request);
+  // if (!user) return json({ error: 'Unauthorized' }, { status: 401 });
+  // let body: { tool?: unknown; input?: unknown };
+  // try { body = await request.json(); } catch { return json({ error: 'Invalid JSON body' }, { status: 400 }); }
+  // const { tool, input } = body;
+  // if (typeof tool !== 'string' || !tool) return json({ error: '`tool` must be a non-empty string' }, { status: 400 });
+  // if (typeof input !== 'object' || input === null || Array.isArray(input)) return json({ error: '`input` must be a non-null object' }, { status: 400 });
+  // try {
+  //   const result = await executeTool(tool, input as Record<string, unknown>, user.id);
+  //   return json({ result });
+  // } catch (err) {
+  //   console.error('[/api/agent] executeTool error:', err);
+  //   return json({ error: 'An internal error occurred' }, { status: 500 });
+  // }
 };
 
 /**
@@ -86,10 +71,12 @@ export const POST: RequestHandler = async ({ request }) => {
  * Returns the list of available agent tools in Claude tool-use API format.
  * Requires authentication to prevent information disclosure.
  */
-export const GET: RequestHandler = async ({ request }) => {
-  const user = await getAuthenticatedUser(request);
-  if (!user) {
-    return json({ error: 'Unauthorized' }, { status: 401 });
-  }
-  return json({ tools: AGENT_TOOLS });
+export const GET: RequestHandler = async () => {
+  // TODO(#99): Remove this guard when the agent feature is ready to ship.
+  return json({ error: 'Not found' }, { status: 404 });
+
+  // Original implementation preserved below for future use:
+  // const user = await getAuthenticatedUser(request);
+  // if (!user) return json({ error: 'Unauthorized' }, { status: 401 });
+  // return json({ tools: AGENT_TOOLS });
 };
