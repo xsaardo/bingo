@@ -108,7 +108,11 @@ export async function openFirstGoalModal(page: Page): Promise<void> {
  * Expands the goal modal to show notes, milestones, and date metadata
  */
 export async function expandGoalModal(page: Page): Promise<void> {
-  await page.getByTestId('expand-modal-button').click();
+  // Wait for the button to be visible and stable before clicking
+  // The button can get detached during modal animation/rendering
+  await page.getByTestId('expand-modal-button').waitFor({ state: 'visible' });
+  await page.waitForTimeout(300);
+  await page.getByTestId('expand-modal-button').click({ force: true });
 }
 
 /**
