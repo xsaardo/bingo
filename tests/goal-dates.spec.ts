@@ -116,7 +116,10 @@ test.describe('Date metadata display', () => {
     // Edit title and save (saving sets startedAt on first edit)
     const titleInput = page.locator('input').first();
     await titleInput.fill('My Goal');
+    // Wait for handleSave to finish and close the modal before reopening,
+    // otherwise clearSelection() fires on the new modal after the Supabase call completes.
     await page.getByTestId('save-goal-button').click();
+    await expect(page.getByTestId('goal-modal')).not.toBeVisible({ timeout: 10000 });
 
     // Reopen and expand modal to see updated data
     await page.getByTestId('goal-square').first().click();
