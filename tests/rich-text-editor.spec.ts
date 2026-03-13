@@ -112,9 +112,11 @@ test.describe('RichTextEditor Component', () => {
     await page.keyboard.press('ControlOrMeta+A');
     await page.getByTestId('editor-bold-button').click();
 
-    // Save and close modal
+    // Save — handleSave closes the modal after the Supabase PATCH completes.
+    // We must wait for it here (not press Escape) to avoid a race where the save
+    // finishes and calls clearSelection() on the already-reopened modal.
     await page.getByTestId('save-goal-button').click();
-    await closeModal(page);
+    await expect(page.getByTestId('goal-modal')).not.toBeVisible({ timeout: 10000 });
 
     // Reopen modal
     await openFirstGoalModal(page);
