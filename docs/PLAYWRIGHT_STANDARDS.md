@@ -21,10 +21,10 @@
 
 Arbitrary sleeps are the single biggest cause of flaky tests. They either wait too long (slow CI) or not long enough (fast machines). Always wait for a concrete observable condition instead.
 
-| Instead of | Use |
-|---|---|
-| `page.waitForTimeout(1000)` | `await expect(locator).toBeVisible()` |
-| `page.waitForTimeout(500)` | `await page.waitForResponse(...)` |
+| Instead of                  | Use                                           |
+| --------------------------- | --------------------------------------------- |
+| `page.waitForTimeout(1000)` | `await expect(locator).toBeVisible()`         |
+| `page.waitForTimeout(500)`  | `await page.waitForResponse(...)`             |
 | `page.waitForTimeout(2000)` | `await locator.waitFor({ state: 'visible' })` |
 
 ### 2. Prefer semantic locators
@@ -119,7 +119,7 @@ expect(goal.title).toBe('My Goal');
 
 ### 8. Register console error listeners before any actions
 
-`page.on('console', ...)` only captures events that fire *after* the listener is registered. Register at the very start of the test — ideally in a fixture or at the top of `beforeEach` — not after navigating or clicking.
+`page.on('console', ...)` only captures events that fire _after_ the listener is registered. Register at the very start of the test — ideally in a fixture or at the top of `beforeEach` — not after navigating or clicking.
 
 ```ts
 // ❌ Too late — may miss errors from setup actions
@@ -357,30 +357,30 @@ expect(milestoneData[0].completed).toBe(false);
 
 Summary of anti-patterns found across the test suite (from issue #101 analysis):
 
-| File | Anti-Pattern | Details |
-|------|-------------|---------|
-| `tests/milestones.spec.ts` | `waitForTimeout` | Arbitrary sleep waits for animation/save |
-| `tests/milestones.spec.ts` | Non-semantic locators | CSS selectors instead of `getByRole` / `getByTestId` |
-| `tests/milestones.spec.ts` | Fragile parent traversal | `.locator('..')` to find milestone container |
-| `tests/milestones.spec.ts` | Weak assertions | Truthy-only checks on DB results |
-| `tests/sharing.spec.ts` | `waitForTimeout` | Arbitrary sleep after share action |
-| `tests/sharing.spec.ts` | Non-semantic locators | CSS selectors for share UI elements |
-| `tests/goal-dates.spec.ts` | `waitForTimeout` | Sleep instead of waiting for response/visibility |
-| `tests/goal-dates.spec.ts` | Fragile parent traversal | `.locator('..')` for date container |
-| `tests/goals.spec.ts` | Fragile CSS class assertions | Class-based completion checks |
-| `tests/goals.spec.ts` | Weak assertions | Broad existence checks |
-| `tests/goals.spec.ts` | Console listener too late | Registered after navigation |
-| `tests/rich-text-editor.spec.ts` | Fragile CSS class assertions | Checks editor active state via class |
-| `tests/rich-text-editor.spec.ts` | `editor.type()` deprecated | Uses old `ElementHandle.type()` API |
-| `tests/boards.spec.ts` | Module-level shared state | `let createdBoardId` at module scope |
-| `tests/boards.spec.ts` | Non-semantic locators | `button:has-text(...)` CSS selector |
-| `tests/boards.spec.ts` | Console listener too late | Registered mid-test after board creation |
-| `tests/boards.spec.ts` | `waitForSelector` | Used instead of `expect().toBeVisible()` |
-| `tests/test-helpers.ts` | Non-semantic locators | `click('button:has-text(...)')`, `fill('input[id=...]')` |
-| `tests/test-helpers.ts` | `waitForSelector` | Used in `createTestBoard` and `openFirstGoalModal` |
-| `tests/test-helpers.ts` | Duplicate helpers | `waitForAutoSave` ≡ `waitForCheckboxUpdate` |
-| `tests/test-helpers.ts` | CSS selector in `addMilestone` | `button.bg-blue-500:has-text("Add")` |
-| All spec files | `waitForSelector` | Should be replaced with `expect(locator).toBeVisible()` |
+| File                             | Anti-Pattern                   | Details                                                  |
+| -------------------------------- | ------------------------------ | -------------------------------------------------------- |
+| `tests/milestones.spec.ts`       | `waitForTimeout`               | Arbitrary sleep waits for animation/save                 |
+| `tests/milestones.spec.ts`       | Non-semantic locators          | CSS selectors instead of `getByRole` / `getByTestId`     |
+| `tests/milestones.spec.ts`       | Fragile parent traversal       | `.locator('..')` to find milestone container             |
+| `tests/milestones.spec.ts`       | Weak assertions                | Truthy-only checks on DB results                         |
+| `tests/sharing.spec.ts`          | `waitForTimeout`               | Arbitrary sleep after share action                       |
+| `tests/sharing.spec.ts`          | Non-semantic locators          | CSS selectors for share UI elements                      |
+| `tests/goal-dates.spec.ts`       | `waitForTimeout`               | Sleep instead of waiting for response/visibility         |
+| `tests/goal-dates.spec.ts`       | Fragile parent traversal       | `.locator('..')` for date container                      |
+| `tests/goals.spec.ts`            | Fragile CSS class assertions   | Class-based completion checks                            |
+| `tests/goals.spec.ts`            | Weak assertions                | Broad existence checks                                   |
+| `tests/goals.spec.ts`            | Console listener too late      | Registered after navigation                              |
+| `tests/rich-text-editor.spec.ts` | Fragile CSS class assertions   | Checks editor active state via class                     |
+| `tests/rich-text-editor.spec.ts` | `editor.type()` deprecated     | Uses old `ElementHandle.type()` API                      |
+| `tests/boards.spec.ts`           | Module-level shared state      | `let createdBoardId` at module scope                     |
+| `tests/boards.spec.ts`           | Non-semantic locators          | `button:has-text(...)` CSS selector                      |
+| `tests/boards.spec.ts`           | Console listener too late      | Registered mid-test after board creation                 |
+| `tests/boards.spec.ts`           | `waitForSelector`              | Used instead of `expect().toBeVisible()`                 |
+| `tests/test-helpers.ts`          | Non-semantic locators          | `click('button:has-text(...)')`, `fill('input[id=...]')` |
+| `tests/test-helpers.ts`          | `waitForSelector`              | Used in `createTestBoard` and `openFirstGoalModal`       |
+| `tests/test-helpers.ts`          | Duplicate helpers              | `waitForAutoSave` ≡ `waitForCheckboxUpdate`              |
+| `tests/test-helpers.ts`          | CSS selector in `addMilestone` | `button.bg-blue-500:has-text("Add")`                     |
+| All spec files                   | `waitForSelector`              | Should be replaced with `expect(locator).toBeVisible()`  |
 
 ---
 
@@ -389,45 +389,45 @@ Summary of anti-patterns found across the test suite (from issue #101 analysis):
 Work through these in priority order. Each item maps to one or more files above.
 
 - [ ] **P0 — Replace all `waitForTimeout` calls**
-  Files: `milestones.spec.ts`, `sharing.spec.ts`, `goal-dates.spec.ts`
-  Replace with `waitForResponse(...)` for saves, `expect(locator).toBeVisible()` for UI transitions.
+      Files: `milestones.spec.ts`, `sharing.spec.ts`, `goal-dates.spec.ts`
+      Replace with `waitForResponse(...)` for saves, `expect(locator).toBeVisible()` for UI transitions.
 
 - [ ] **P0 — Replace all `waitForSelector` calls**
-  Files: all spec files, `test-helpers.ts`
-  Replace with `await expect(page.getByTestId(...)).toBeVisible()` or `await expect(page.getByRole(...)).toBeVisible()`.
+      Files: all spec files, `test-helpers.ts`
+      Replace with `await expect(page.getByTestId(...)).toBeVisible()` or `await expect(page.getByRole(...)).toBeVisible()`.
 
 - [ ] **P1 — Fix module-level shared state**
-  File: `boards.spec.ts`
-  Move `createdBoardId` into `beforeEach` / `afterEach` local scope.
+      File: `boards.spec.ts`
+      Move `createdBoardId` into `beforeEach` / `afterEach` local scope.
 
 - [ ] **P1 — Move console error listeners to top of tests**
-  Files: `boards.spec.ts`, `goals.spec.ts`
-  Register `page.on('console', ...)` before any navigation or actions.
+      Files: `boards.spec.ts`, `goals.spec.ts`
+      Register `page.on('console', ...)` before any navigation or actions.
 
 - [ ] **P1 — Standardize locators to semantic APIs**
-  Files: `test-helpers.ts`, `boards.spec.ts`, `milestones.spec.ts`, `sharing.spec.ts`
-  Replace `page.click('button:has-text(...)')` → `page.getByRole('button', { name: '...' }).click()`
-  Replace `page.fill('input[id=...]', ...)` → `page.getByLabel('...')` or `page.getByTestId('...')`
-  Replace `page.fill('input[placeholder=...]', ...)` → `page.getByPlaceholder('...')`
+      Files: `test-helpers.ts`, `boards.spec.ts`, `milestones.spec.ts`, `sharing.spec.ts`
+      Replace `page.click('button:has-text(...)')` → `page.getByRole('button', { name: '...' }).click()`
+      Replace `page.fill('input[id=...]', ...)` → `page.getByLabel('...')` or `page.getByTestId('...')`
+      Replace `page.fill('input[placeholder=...]', ...)` → `page.getByPlaceholder('...')`
 
 - [ ] **P1 — Replace CSS class assertions with semantic assertions**
-  Files: `goals.spec.ts`, `rich-text-editor.spec.ts`
-  Use `toBeChecked()`, `toHaveAttribute('data-*', ...)`, or `toHaveAttribute('aria-*', ...)`.
+      Files: `goals.spec.ts`, `rich-text-editor.spec.ts`
+      Use `toBeChecked()`, `toHaveAttribute('data-*', ...)`, or `toHaveAttribute('aria-*', ...)`.
 
 - [ ] **P2 — Fix fragile parent-traversal locators**
-  Files: `milestones.spec.ts`, `goal-dates.spec.ts`
-  Add `data-testid` to the target elements in the component, then use `getByTestId(...)`.
+      Files: `milestones.spec.ts`, `goal-dates.spec.ts`
+      Add `data-testid` to the target elements in the component, then use `getByTestId(...)`.
 
 - [ ] **P2 — Strengthen weak assertions**
-  Files: `goals.spec.ts`, `milestones.spec.ts`
-  Replace truthy/existence checks with specific value assertions.
+      Files: `goals.spec.ts`, `milestones.spec.ts`
+      Replace truthy/existence checks with specific value assertions.
 
 - [ ] **P2 — Replace `editor.type()` with `pressSequentially()`**
-  File: `rich-text-editor.spec.ts`
+      File: `rich-text-editor.spec.ts`
 
 - [ ] **P3 — Deduplicate `waitForAutoSave` / `waitForCheckboxUpdate`**
-  File: `test-helpers.ts`
-  Merge into a single `waitForGoalPatch` function with a consistent name.
+      File: `test-helpers.ts`
+      Merge into a single `waitForGoalPatch` function with a consistent name.
 
 ---
 
