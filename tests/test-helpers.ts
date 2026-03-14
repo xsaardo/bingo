@@ -102,6 +102,11 @@ export async function getGoalData<T = any>(
 export async function openFirstGoalModal(page: Page): Promise<void> {
   await page.getByTestId('goal-square').first().click();
   await page.waitForSelector('[data-testid="goal-modal"]');
+  // Wait for the modal to be fully rendered and stable before returning.
+  // The title input is a reliable "modal is ready" indicator — it's always
+  // present and gets auto-focused, so waiting for it ensures the footer
+  // (including expand-modal-button) is also fully mounted.
+  await page.getByTestId('modal-title-input').waitFor({ state: 'visible' });
 }
 
 /**
