@@ -148,7 +148,7 @@ export const test = base.extend<{ boardId: string }>({
     const id = await createTestBoard(page);
     await use(id);
     await deleteTestBoard(page, id);
-  },
+  }
 });
 
 // my-spec.ts
@@ -167,11 +167,11 @@ Avoid hard-coding `{ timeout: 5000 }` in individual tests. Set `actionTimeout` a
 // playwright.config.ts
 export default defineConfig({
   use: {
-    actionTimeout: 5_000,
+    actionTimeout: 5_000
   },
   expect: {
-    timeout: 5_000,
-  },
+    timeout: 5_000
+  }
 });
 ```
 
