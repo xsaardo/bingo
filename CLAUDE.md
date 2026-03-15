@@ -114,6 +114,7 @@ actual purpose.
 
 ## Testing
 
+- When writing or reviewing Playwright E2E tests, YOU MUST follow the standards in @docs/PLAYWRIGHT_STANDARDS.md.
 - ALL TEST FAILURES ARE YOUR RESPONSIBILITY, even if they're not your fault. The Broken Windows theory is real.
 - Never delete a test because it's failing. Instead, raise the issue with Cuong.
 - Tests MUST comprehensively cover ALL functionality.
