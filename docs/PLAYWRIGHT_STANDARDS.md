@@ -135,7 +135,47 @@ page.on('console', (msg) => {
 createdBoardId = await createBoardWithSize(page);
 ```
 
-### 9. Use `pressSequentially()` instead of deprecated `editor.type()`
+### 9. Use `test.extend()` fixtures for reusable setup
+
+`beforeEach` scoping (Rule 6) is a good first step. The idiomatic Playwright pattern for reusable, composable setup is `test.extend()` fixtures, which enforce scoping at the type level and share cleanly across spec files.
+
+```ts
+// fixtures.ts
+import { test as base } from '@playwright/test';
+
+export const test = base.extend<{ boardId: string }>({
+  boardId: async ({ page }, use) => {
+    const id = await createTestBoard(page);
+    await use(id);
+    await deleteTestBoard(page, id);
+  },
+});
+
+// my-spec.ts
+import { test } from './fixtures';
+
+test('board has 25 squares', async ({ page, boardId }) => {
+  // boardId is always fresh, always cleaned up
+});
+```
+
+### 10. Centralise timeouts in `playwright.config.ts`
+
+Avoid hard-coding `{ timeout: 5000 }` in individual tests. Set `actionTimeout` and `expect.timeout` once in `playwright.config.ts` so they are tunable per environment (local vs CI) without touching every test file.
+
+```ts
+// playwright.config.ts
+export default defineConfig({
+  use: {
+    actionTimeout: 5_000,
+  },
+  expect: {
+    timeout: 5_000,
+  },
+});
+```
+
+### 11. Use `pressSequentially()` instead of deprecated `editor.type()`
 
 `ElementHandle.type()` is deprecated. Use `Locator.pressSequentially()` for typing character-by-character or `Locator.fill()` for setting a value directly.
 
@@ -149,7 +189,7 @@ await editor.pressSequentially('Hello world');
 await editor.fill('Hello world');
 ```
 
-### 10. Replace `waitForSelector` with web-first assertions
+### 12. Replace `waitForSelector` with web-first assertions
 
 `waitForSelector` is a lower-level Page API that doesn't integrate with Playwright's auto-retry logic as cleanly as locator-based assertions.
 
@@ -179,11 +219,13 @@ await expect(page.getByTestId('milestone-item')).toBeVisible();
 // ❌ Before
 await page.waitForTimeout(1000); // "wait for save"
 
-// ✅ After — wait for the PATCH to complete
-await page.waitForResponse(
+// ✅ After — register listener BEFORE the triggering action, then await
+const patchRequest = page.waitForResponse(
   (resp) => resp.url().includes('/milestones') && resp.request().method() === 'PATCH',
   { timeout: 5000 }
 );
+await triggerSaveAction(); // e.g. blur field, click save button
+await patchRequest;
 ```
 
 ### B. `waitForSelector` → `expect(locator).toBeVisible()`
