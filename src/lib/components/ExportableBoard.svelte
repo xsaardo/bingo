@@ -33,7 +33,6 @@
   let CARD_GRID_SIZE = $derived(CELL_SIZE * board.size + GAP * (board.size - 1));
   let CARD_WIDTH = $derived(CARD_GRID_SIZE + CARD_PADDING * 2);
   let BASE_FONT_SIZE = $derived(board.size === 5 ? 18 : board.size === 4 ? 22 : 28);
-  let FONT_SIZE = $derived(BASE_FONT_SIZE);
   let TITLE_FONT_SIZE = 48;
 
   const BACKGROUNDS: Record<string, string> = {
@@ -100,7 +99,7 @@
         <!-- Goal title -->
         <p
           style="
-            font-size: {FONT_SIZE}px;
+            font-size: {BASE_FONT_SIZE}px;
             font-weight: 600;
             color: {completed ? '#14532d' : '#111827'};
             text-align: center;

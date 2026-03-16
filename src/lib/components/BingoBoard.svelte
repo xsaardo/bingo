@@ -67,7 +67,7 @@
   <BoardLayout
     name={$currentBoard.name}
     size={$currentBoard.size}
-    gridClass="grid gap-2 sm:gap-3 flex-1 min-h-0"
+    gridClass="grid gap-2 sm:gap-3 flex-1 min-h-0 aspect-square self-center"
   >
     {#snippet cell(index)}
       <GoalSquare
