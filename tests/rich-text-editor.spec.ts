@@ -8,7 +8,6 @@ import {
   getFirstGoalId,
   openFirstGoalModal,
   expandGoalModal,
-  closeModal,
   getGoalData
 } from './test-helpers';
 
