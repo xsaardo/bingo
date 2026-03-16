@@ -33,8 +33,7 @@ test.describe('addMilestone', () => {
     await addMilestone(page, 'First Milestone');
 
     // Verify milestone appears in the list
-    const milestoneText = await page.locator('text=First Milestone').textContent();
-    expect(milestoneText).toBe('First Milestone');
+    await expect(page.getByTestId('milestone-title')).toHaveText('First Milestone');
 
     // Verify milestone is in database
     const milestoneData = await getMilestonesForGoal(page, firstGoalId);

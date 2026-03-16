@@ -8,7 +8,16 @@ import { type Page, expect } from '@playwright/test';
  * Returns the board ID for cleanup
  */
 export async function createTestBoard(page: Page): Promise<string> {
+  // Set up the response waiter before navigation so we don't miss the fast response.
+  // fetchBoards() (called on dashboard mount) can return stale data that overwrites the
+  // optimistic store update from createBoard() if both are in-flight simultaneously.
+  // Awaiting the initial GET here ensures the mount fetch is done before we create.
+  const initialFetch = page.waitForResponse(
+    (resp) => resp.url().includes('/boards') && resp.request().method() === 'GET',
+    { timeout: 10000 }
+  );
   await page.goto('/dashboard');
+  await initialFetch;
 
   // Create a new board
   await page.getByRole('button', { name: 'New Board' }).click();

@@ -8,7 +8,13 @@ async function createBoardWithSize(
   page: import('@playwright/test').Page,
   size?: '4x4' | '5x5'
 ): Promise<string> {
+  // Set up the response waiter before navigation — see createTestBoard for explanation.
+  const initialFetch = page.waitForResponse(
+    (resp) => resp.url().includes('/boards') && resp.request().method() === 'GET',
+    { timeout: 10000 }
+  );
   await page.goto('/dashboard');
+  await initialFetch;
   await page.getByRole('button', { name: 'New Board' }).click();
   await expect(page.getByLabel('Board Name', { exact: false })).toBeVisible();
 
