@@ -24,10 +24,10 @@ async function createBoardWithSize(
   }
 
   await page.getByRole('button', { name: 'Create Board' }).click();
-  await expect(page.getByLabel('Board Name', { exact: false })).not.toBeVisible();
+  await expect(page.getByRole('dialog')).not.toBeVisible();
 
-  await expect(page.getByText(boardName)).toBeVisible();
-  await page.getByText(boardName).click();
+  await expect(page.getByRole('heading', { name: boardName })).toBeVisible();
+  await page.getByRole('heading', { name: boardName }).click();
   await page.waitForURL(/\/boards\/.+/, { timeout: 10000 });
 
   const boardId = page.url().split('/').pop()!;

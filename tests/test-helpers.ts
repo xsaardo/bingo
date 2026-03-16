@@ -20,12 +20,12 @@ export async function createTestBoard(page: Page): Promise<string> {
   // Click the Create Board button in the modal
   await page.getByRole('button', { name: 'Create Board' }).click();
 
-  // Wait for modal to close
-  await expect(page.getByLabel('Board Name', { exact: false })).not.toBeVisible();
+  // Wait for the dialog to fully close before looking for the new board card
+  await expect(page.getByRole('dialog')).not.toBeVisible();
 
-  // Wait for the new board to appear and click it
-  await expect(page.getByText(boardName)).toBeVisible();
-  await page.getByText(boardName).click();
+  // Wait for the new board card to appear and click it
+  await expect(page.getByRole('heading', { name: boardName })).toBeVisible();
+  await page.getByRole('heading', { name: boardName }).click();
 
   // Wait for navigation to board page
   await page.waitForURL(/\/boards\/.+/, { timeout: 10000 });
@@ -141,13 +141,13 @@ export async function waitForGoalPatch(page: Page): Promise<void> {
  * Adds a milestone to the currently open (and expanded) goal modal
  */
 export async function addMilestone(page: Page, title: string): Promise<void> {
-  await page.getByRole('button', { name: '+ Add' }).click();
+  await page.getByRole('button', { name: '+ Add', exact: true }).click();
   await page.getByPlaceholder('New milestone...').fill(title);
   const saveRequest = page.waitForResponse(
     (resp) => resp.url().includes('/milestones') && resp.request().method() === 'POST',
     { timeout: 5000 }
   );
-  await page.getByRole('button', { name: 'Add' }).click();
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
   await saveRequest;
 }
 

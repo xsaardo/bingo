@@ -73,15 +73,10 @@ test.describe('Sharing toggle', () => {
     await shareBtn.click();
     await shareResponse;
 
-    // The share action may already copy the link automatically (per the code).
-    // If there is an explicit copy button, click it.
-    const copyBtn = page
-      .getByTestId('copy-share-url')
-      .or(page.locator('button[aria-label*="copy" i]'))
-      .or(page.locator('button:has-text("Copy")'));
-    if ((await copyBtn.count()) > 0) {
-      await copyBtn.click();
-    }
+    // Click the copy button in the popover (opened automatically after enabling sharing)
+    const copyBtn = page.getByRole('button', { name: 'Copy link' });
+    await expect(copyBtn).toBeVisible();
+    await copyBtn.click();
 
     const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
     expect(clipboardText).toContain(`/share/${testBoardId}`);
@@ -105,12 +100,12 @@ test.describe('Sharing toggle', () => {
     await shareBtn.click();
     await shareResponse;
 
-    // Disable (click again to toggle off)
+    // Disable via the "Disable sharing" button inside the popover (opened after enabling)
     shareResponse = page.waitForResponse(
       (resp) => resp.url().includes('/boards') && resp.request().method() === 'PATCH',
       { timeout: 5000 }
     );
-    await shareBtn.click();
+    await page.getByRole('button', { name: 'Disable sharing' }).click();
     await shareResponse;
 
     // Now visiting the share URL should show an error
