@@ -85,6 +85,7 @@
 
 <div
   data-testid="goal-square"
+  data-completed={goal.completed ? 'true' : 'false'}
   role="button"
   tabindex="0"
   onclick={readonly ? undefined : selectGoal}

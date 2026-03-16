@@ -95,7 +95,7 @@ test.describe('Date metadata display', () => {
   test('shows lastUpdatedAt for new goals', async ({ page }) => {
     // Open and expand goal modal
     await page.getByTestId('goal-square').first().click();
-    await page.waitForSelector('[data-testid="goal-modal"]');
+    await expect(page.getByTestId('goal-modal')).toBeVisible();
     await page.getByTestId('expand-modal-button').click();
 
     // Check that last updated is visible
@@ -106,7 +106,7 @@ test.describe('Date metadata display', () => {
   test('shows startedAt after first edit', async ({ page }) => {
     // Open and expand goal modal
     await page.getByTestId('goal-square').first().click();
-    await page.waitForSelector('[data-testid="goal-modal"]');
+    await expect(page.getByTestId('goal-modal')).toBeVisible();
     await page.getByTestId('expand-modal-button').click();
 
     // Initially, startedAt should not be visible
@@ -123,7 +123,7 @@ test.describe('Date metadata display', () => {
 
     // Reopen and expand modal to see updated data
     await page.getByTestId('goal-square').first().click();
-    await page.waitForSelector('[data-testid="goal-modal"]');
+    await expect(page.getByTestId('goal-modal')).toBeVisible();
     await page.getByTestId('expand-modal-button').click();
 
     // Now startedAt should be visible
@@ -131,53 +131,51 @@ test.describe('Date metadata display', () => {
     expect(startedAfter).toBe(1);
 
     // Verify the date format (MMM d, yyyy)
-    const startedText = await page
-      .locator('text=Started:')
-      .locator('..')
-      .locator('.font-medium')
-      .textContent();
+    const startedText = await page.getByTestId('date-started-value').textContent();
     expect(startedText).toMatch(/\w+ \d{1,2}, \d{4}/);
   });
 
   test('shows completedAt when goal is completed', async ({ page }) => {
-    // Mark goal as complete
+    // Mark goal as complete — gate on PATCH to confirm persistence before opening modal
+    const completionResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
-    await page.waitForTimeout(300);
+    await completionResponse;
 
     // Open and expand goal modal
     await page.getByTestId('goal-square').first().click();
-    await page.waitForSelector('[data-testid="goal-modal"]');
+    await expect(page.getByTestId('goal-modal')).toBeVisible();
     await page.getByTestId('expand-modal-button').click();
 
     // CompletedAt should be visible
     const completedCount = await page.locator('text=Completed:').count();
     expect(completedCount).toBe(1);
 
-    // Verify the date format and green color
-    const completedText = await page
-      .locator('text=Completed:')
-      .locator('..')
-      .locator('.font-medium')
-      .textContent();
-    expect(completedText).toMatch(/\w+ \d{1,2}, \d{4}/);
+    // Verify the date format
+    const completedText = await page.getByTestId('date-completed-value').textContent();
+    expect(completedText?.trim()).toMatch(/\w+ \d{1,2}, \d{4}/);
 
-    // Check for green text color
-    const completedElement = await page
-      .locator('text=Completed:')
-      .locator('..')
-      .locator('.font-medium');
-    const className = await completedElement.getAttribute('class');
-    expect(className).toContain('text-green-600');
+    // Verify semantic completed state
+    await expect(page.getByTestId('date-completed-value')).toHaveAttribute(
+      'data-state',
+      'completed'
+    );
   });
 
   test('hides completedAt when goal is uncompleted', async ({ page }) => {
     // Mark goal as complete
+    const firstResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
-    await page.waitForTimeout(300);
+    await firstResponse;
 
     // Open and expand goal modal
     await page.getByTestId('goal-square').first().click();
-    await page.waitForSelector('[data-testid="goal-modal"]');
+    await expect(page.getByTestId('goal-modal')).toBeVisible();
     await page.getByTestId('expand-modal-button').click();
 
     // CompletedAt should be visible
@@ -185,17 +183,20 @@ test.describe('Date metadata display', () => {
     expect(completedCount).toBe(1);
 
     // Unmark as complete via the checkbox in the modal
-    const modalCheckbox = page.locator('[data-testid="modal-checkbox"]');
-    await modalCheckbox.click();
-    await page.waitForTimeout(300);
+    const secondResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
+    await page.locator('[data-testid="modal-checkbox"]').click();
+    await secondResponse;
 
     // Close modal by clicking the close button
     await page.locator('[data-testid="close-modal-button"]').click();
-    await page.waitForTimeout(200);
+    await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
     // Reopen and expand modal
     await page.getByTestId('goal-square').first().click();
-    await page.waitForSelector('[data-testid="goal-modal"]');
+    await expect(page.getByTestId('goal-modal')).toBeVisible();
     await page.getByTestId('expand-modal-button').click();
 
     // CompletedAt should not be visible
@@ -206,15 +207,11 @@ test.describe('Date metadata display', () => {
   test('formats lastUpdatedAt as relative time', async ({ page }) => {
     // Open and expand goal modal
     await page.getByTestId('goal-square').first().click();
-    await page.waitForSelector('[data-testid="goal-modal"]');
+    await expect(page.getByTestId('goal-modal')).toBeVisible();
     await page.getByTestId('expand-modal-button').click();
 
     // Get the last updated text
-    const lastUpdatedText = await page
-      .locator('text=Last updated:')
-      .locator('..')
-      .locator('.font-medium')
-      .textContent();
+    const lastUpdatedText = await page.getByTestId('date-last-updated-value').textContent();
 
     // Should be in relative format (e.g., "10s ago", "2m ago", "1h ago")
     expect(lastUpdatedText).toMatch(/(s|m|h|d|mo|y) ago/);
@@ -244,7 +241,7 @@ test.describe('Goal date tracking', () => {
 
     // Reload the page
     await page.reload();
-    await page.waitForSelector('[data-testid="goal-square"]');
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
 
     const afterReloadData = await getGoalData<{
       last_updated_at: string;
@@ -272,14 +269,14 @@ test.describe('Goal date tracking', () => {
     test('is set on first title save', async ({ page }) => {
       // Open goal modal and edit title
       await page.getByTestId('goal-square').first().click();
-      await page.waitForSelector('[data-testid="goal-modal"]');
+      await expect(page.getByTestId('goal-modal')).toBeVisible();
 
       const titleInput = page.getByTestId('modal-title-input');
       await titleInput.fill('My First Goal');
 
       // Save and wait for modal to close (confirms async save completed)
       await page.getByTestId('save-goal-button').click();
-      await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+      await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
       const goalData = await getGoalData<{ started_at: string; title: string }>(
         page,
@@ -299,10 +296,8 @@ test.describe('Goal date tracking', () => {
     test('is set on first notes save', async ({ page }) => {
       // Open and expand goal modal
       await page.getByTestId('goal-square').first().click();
-      await page.waitForSelector('[data-testid="goal-modal"]');
+      await expect(page.getByTestId('goal-modal')).toBeVisible();
       await page.getByTestId('expand-modal-button').click();
-      // Wait for expand animation (200ms CSS transition) before interacting
-      await page.waitForTimeout(300);
 
       // Type into notes (title left empty)
       const richTextEditor = page.getByTestId('rich-text-editor');
@@ -313,7 +308,7 @@ test.describe('Goal date tracking', () => {
 
       // Save and wait for modal to close (confirms async save completed)
       await page.getByTestId('save-goal-button').click();
-      await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+      await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
       const goalData = await getGoalData<{ started_at: string; notes: string }>(
         page,
@@ -328,13 +323,13 @@ test.describe('Goal date tracking', () => {
     test('does not change on subsequent saves', async ({ page }) => {
       // First save — sets startedAt
       await page.getByTestId('goal-square').first().click();
-      await page.waitForSelector('[data-testid="goal-modal"]');
+      await expect(page.getByTestId('goal-modal')).toBeVisible();
 
       const titleInput = page.getByTestId('modal-title-input');
       await titleInput.fill('Initial Title');
 
       await page.getByTestId('save-goal-button').click();
-      await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+      await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
       const initialData = await getGoalData<{ started_at: string }>(
         page,
@@ -343,18 +338,15 @@ test.describe('Goal date tracking', () => {
       );
       expect(initialData?.started_at).not.toBe(null);
 
-      // Wait to ensure a subsequent timestamp would differ
-      await page.waitForTimeout(100);
-
       // Second save — startedAt must not change
       await page.getByTestId('goal-square').first().click();
-      await page.waitForSelector('[data-testid="goal-modal"]');
+      await expect(page.getByTestId('goal-modal')).toBeVisible();
 
       await titleInput.clear();
       await titleInput.fill('Updated Title');
 
       await page.getByTestId('save-goal-button').click();
-      await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+      await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
       const updatedData = await getGoalData<{ started_at: string }>(
         page,
@@ -367,9 +359,13 @@ test.describe('Goal date tracking', () => {
 
   test.describe('completedAt', () => {
     test('is set when goal is completed', async ({ page }) => {
-      // Mark goal as complete
+      // Mark goal as complete — gate on PATCH to confirm persistence before querying DB
+      const completionResponse = page.waitForResponse(
+        (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+        { timeout: 5000 }
+      );
       await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
-      await page.waitForTimeout(300);
+      await completionResponse;
 
       const goalData = await getGoalData<{ completed_at: string; completed: boolean }>(
         page,
@@ -390,8 +386,12 @@ test.describe('Goal date tracking', () => {
       const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
 
       // Complete the goal
+      const firstResponse = page.waitForResponse(
+        (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+        { timeout: 5000 }
+      );
       await checkbox.click();
-      await page.waitForTimeout(300);
+      await firstResponse;
 
       let goalData = await getGoalData<{ completed_at: string | null; completed: boolean }>(
         page,
@@ -402,8 +402,12 @@ test.describe('Goal date tracking', () => {
       expect(goalData?.completed_at).not.toBe(null);
 
       // Uncheck it
+      const secondResponse = page.waitForResponse(
+        (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+        { timeout: 5000 }
+      );
       await checkbox.click();
-      await page.waitForTimeout(300);
+      await secondResponse;
 
       goalData = await getGoalData<{ completed_at: string | null; completed: boolean }>(
         page,
@@ -418,8 +422,12 @@ test.describe('Goal date tracking', () => {
       const checkbox = page.getByTestId('goal-square').first().getByTestId('goal-checkbox');
 
       // First completion
+      const firstResponse = page.waitForResponse(
+        (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+        { timeout: 5000 }
+      );
       await checkbox.click();
-      await page.waitForTimeout(300);
+      await firstResponse;
 
       const firstData = await getGoalData<{ completed_at: string }>(
         page,
@@ -428,12 +436,21 @@ test.describe('Goal date tracking', () => {
       );
       expect(firstData?.completed_at).not.toBe(null);
 
-      // Uncomplete it, wait, then re-complete
+      // Uncomplete it
+      const secondResponse = page.waitForResponse(
+        (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+        { timeout: 5000 }
+      );
       await checkbox.click();
-      await page.waitForTimeout(300);
-      await page.waitForTimeout(100); // Ensure timestamp will differ
+      await secondResponse;
+
+      // Re-complete — network roundtrip ensures the new timestamp will differ
+      const thirdResponse = page.waitForResponse(
+        (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+        { timeout: 5000 }
+      );
       await checkbox.click();
-      await page.waitForTimeout(300);
+      await thirdResponse;
 
       const secondData = await getGoalData<{ completed_at: string }>(
         page,
@@ -454,18 +471,15 @@ test.describe('Goal date tracking', () => {
         'last_updated_at'
       );
 
-      // Wait to ensure time difference
-      await page.waitForTimeout(100);
-
       // Edit and save title
       await page.getByTestId('goal-square').first().click();
-      await page.waitForSelector('[data-testid="goal-modal"]');
+      await expect(page.getByTestId('goal-modal')).toBeVisible();
 
       const titleInput = page.getByTestId('modal-title-input');
       await titleInput.fill('Changed Title');
 
       await page.getByTestId('save-goal-button').click();
-      await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+      await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
       const updatedData = await getGoalData<{ last_updated_at: string }>(
         page,
@@ -488,15 +502,10 @@ test.describe('Goal date tracking', () => {
         'last_updated_at'
       );
 
-      // Wait to ensure time difference
-      await page.waitForTimeout(100);
-
       // Open and expand modal, then type in notes and save
       await page.getByTestId('goal-square').first().click();
-      await page.waitForSelector('[data-testid="goal-modal"]');
+      await expect(page.getByTestId('goal-modal')).toBeVisible();
       await page.getByTestId('expand-modal-button').click();
-      // Wait for expand animation (200ms CSS transition) before interacting
-      await page.waitForTimeout(300);
 
       const richTextEditor = page.getByTestId('rich-text-editor');
       await richTextEditor.click();
@@ -505,7 +514,7 @@ test.describe('Goal date tracking', () => {
       await expect(richTextEditor).toContainText('Updated notes');
 
       await page.getByTestId('save-goal-button').click();
-      await page.waitForSelector('[data-testid="goal-modal"]', { state: 'hidden' });
+      await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
       const updatedData = await getGoalData<{ last_updated_at: string }>(
         page,
@@ -523,12 +532,13 @@ test.describe('Goal date tracking', () => {
         'last_updated_at'
       );
 
-      // Wait to ensure time difference
-      await page.waitForTimeout(100);
-
-      // Toggle completion
+      // Toggle completion — gate on PATCH to confirm persistence before querying DB
+      const completionResponse = page.waitForResponse(
+        (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
+        { timeout: 5000 }
+      );
       await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
-      await page.waitForTimeout(300);
+      await completionResponse;
 
       const updatedData = await getGoalData<{ last_updated_at: string }>(
         page,

@@ -136,6 +136,7 @@
       testid="milestone-checkbox"
     />
     <span
+      data-testid="milestone-title"
       class="flex-1 text-sm"
       class:line-through={milestone.completed}
       class:text-gray-500={milestone.completed}

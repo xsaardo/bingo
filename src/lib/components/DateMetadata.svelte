@@ -17,14 +17,14 @@
     {#if startedAt}
       <div class="flex justify-between">
         <span>Started:</span>
-        <span class="font-medium">{format(new Date(startedAt), 'MMM d, yyyy')}</span>
+        <span class="font-medium" data-testid="date-started-value">{format(new Date(startedAt), 'MMM d, yyyy')}</span>
       </div>
     {/if}
 
     {#if completedAt}
       <div class="flex justify-between">
         <span>Completed:</span>
-        <span class="font-medium text-green-600">
+        <span class="font-medium text-green-600" data-testid="date-completed-value" data-state="completed">
           {format(new Date(completedAt), 'MMM d, yyyy')}
         </span>
       </div>
@@ -32,7 +32,7 @@
 
     <div class="flex justify-between">
       <span>Last updated:</span>
-      <span class="font-medium">{formatRelativeTime(lastUpdatedAt)}</span>
+      <span class="font-medium" data-testid="date-last-updated-value">{formatRelativeTime(lastUpdatedAt)}</span>
     </div>
   </div>
 </div>

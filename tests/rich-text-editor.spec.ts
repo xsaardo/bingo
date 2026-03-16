@@ -60,7 +60,7 @@ test.describe('RichTextEditor Component', () => {
 
         const editor = page.getByTestId('rich-text-editor');
         await editor.click();
-        await editor.type(text);
+        await editor.pressSequentially(text);
 
         // Select all text (use Meta on Mac, Control on others)
         await page.keyboard.press('ControlOrMeta+A');
@@ -108,7 +108,7 @@ test.describe('RichTextEditor Component', () => {
     // Add formatted text
     const editor = page.getByTestId('rich-text-editor');
     await editor.click();
-    await editor.type('This is bold');
+    await editor.pressSequentially('This is bold');
     await page.keyboard.press('ControlOrMeta+A');
     await page.getByTestId('editor-bold-button').click();
 
@@ -135,7 +135,7 @@ test.describe('RichTextEditor Component', () => {
     // Add formatted text
     const editor = page.getByTestId('rich-text-editor');
     await editor.click();
-    await editor.type('Database test');
+    await editor.pressSequentially('Database test');
     await page.keyboard.press('ControlOrMeta+A');
     await page.getByTestId('editor-bold-button').click();
 
@@ -155,7 +155,7 @@ test.describe('RichTextEditor Component', () => {
 
     const editor = page.getByTestId('rich-text-editor');
     await editor.click();
-    await editor.type('Keyboard shortcut');
+    await editor.pressSequentially('Keyboard shortcut');
     await page.keyboard.press('ControlOrMeta+A');
 
     // Test Cmd+B for bold
@@ -171,11 +171,11 @@ test.describe('RichTextEditor Component', () => {
 
     const editor = page.getByTestId('rich-text-editor');
     await editor.click();
-    await editor.type('Text');
+    await editor.pressSequentially('Text');
     await page.keyboard.press('ControlOrMeta+A');
     await page.getByTestId('editor-bold-button').click();
 
-    // Bold button should show active state
-    await expect(page.getByTestId('editor-bold-button')).toHaveClass(/bg-gray-200/);
+    // Bold button should reflect active state via aria-pressed
+    await expect(page.getByTestId('editor-bold-button')).toHaveAttribute('aria-pressed', 'true');
   });
 });

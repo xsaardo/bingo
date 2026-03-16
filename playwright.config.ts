@@ -38,6 +38,10 @@ export default defineConfig({
     reducedMotion: 'reduce'
   },
 
+  expect: {
+    timeout: 5_000
+  },
+
   /* Configure projects for major browsers */
   projects: [
     // Setup projects - run first to create auth states

@@ -4,25 +4,16 @@
 import { test, expect } from '@playwright/test';
 import { deleteTestBoard } from './test-helpers';
 
-let createdBoardId: string | null = null;
-
-test.afterEach(async ({ page }) => {
-  if (createdBoardId) {
-    await deleteTestBoard(page, createdBoardId);
-    createdBoardId = null;
-  }
-});
-
 async function createBoardWithSize(
   page: import('@playwright/test').Page,
   size?: '4x4' | '5x5'
 ): Promise<string> {
   await page.goto('/dashboard');
-  await page.click('button:has-text("New Board")');
-  await page.waitForSelector('input[id="board-name"]');
+  await page.getByRole('button', { name: 'New Board' }).click();
+  await expect(page.getByLabel('Board Name', { exact: false })).toBeVisible();
 
   const boardName = `Test Board ${size ?? 'default'} ${Date.now()}`;
-  await page.fill('input[id="board-name"]', boardName);
+  await page.getByLabel('Board Name', { exact: false }).fill(boardName);
 
   if (size) {
     // Select grid size if the option is present
@@ -32,11 +23,11 @@ async function createBoardWithSize(
     }
   }
 
-  await page.click('button[type="submit"]:has-text("Create Board")');
-  await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 10000 });
+  await page.getByRole('button', { name: 'Create Board' }).click();
+  await expect(page.getByLabel('Board Name', { exact: false })).not.toBeVisible();
 
-  await page.waitForSelector(`text=${boardName}`, { timeout: 10000 });
-  await page.click(`text=${boardName}`);
+  await expect(page.getByText(boardName)).toBeVisible();
+  await page.getByText(boardName).click();
   await page.waitForURL(/\/boards\/.+/, { timeout: 10000 });
 
   const boardId = page.url().split('/').pop()!;
@@ -44,15 +35,19 @@ async function createBoardWithSize(
 }
 
 test.describe('Board creation', () => {
+  let boardId: string;
+
+  test.afterEach(async ({ page }) => {
+    if (boardId) await deleteTestBoard(page, boardId);
+  });
+
   test('creates a new board with default size', async ({ page }) => {
-    createdBoardId = await createBoardWithSize(page);
+    boardId = await createBoardWithSize(page);
     await expect(page).toHaveURL(/\/boards\/.+/);
-    await expect(page.getByTestId('goal-square').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
   });
 
   test('default board has 25 goal squares with no console errors', async ({ page }) => {
-    createdBoardId = await createBoardWithSize(page);
-
     const consoleErrors: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'error') {
@@ -60,7 +55,8 @@ test.describe('Board creation', () => {
       }
     });
 
-    await page.waitForSelector('[data-testid="goal-square"]', { timeout: 10000 });
+    boardId = await createBoardWithSize(page);
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
     const goalCount = await page.getByTestId('goal-square').count();
     expect(goalCount).toBe(25); // 5x5 board (default size)
     expect(consoleErrors).toHaveLength(0);
@@ -68,27 +64,27 @@ test.describe('Board creation', () => {
 
   test('creates a 5x5 board', async ({ page }) => {
     await page.goto('/dashboard');
-    await page.click('button:has-text("New Board")');
-    await page.waitForSelector('input[id="board-name"]');
+    await page.getByRole('button', { name: 'New Board' }).click();
+    await expect(page.getByLabel('Board Name', { exact: false })).toBeVisible();
 
     const boardName = `5x5 Board ${Date.now()}`;
-    await page.fill('input[id="board-name"]', boardName);
+    await page.getByLabel('Board Name', { exact: false }).fill(boardName);
 
     const sizeSelect = page.locator('select[name="size"], [data-testid="board-size-select"]');
     if ((await sizeSelect.count()) > 0) {
       await sizeSelect.selectOption('5x5');
     }
 
-    await page.click('button[type="submit"]:has-text("Create Board")');
-    await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 10000 });
+    await page.getByRole('button', { name: 'Create Board' }).click();
+    await expect(page.getByLabel('Board Name', { exact: false })).not.toBeVisible();
 
-    await page.waitForSelector(`text=${boardName}`, { timeout: 10000 });
-    await page.click(`text=${boardName}`);
+    await expect(page.getByText(boardName)).toBeVisible();
+    await page.getByText(boardName).click();
     await page.waitForURL(/\/boards\/.+/, { timeout: 10000 });
-    createdBoardId = page.url().split('/').pop()!;
+    boardId = page.url().split('/').pop()!;
 
     // 5x5 = 25 goal squares
-    await page.waitForSelector('[data-testid="goal-square"]', { timeout: 10000 });
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
     const squares = await page.getByTestId('goal-square').count();
     expect(squares).toBeGreaterThanOrEqual(25);
   });
@@ -97,17 +93,17 @@ test.describe('Board creation', () => {
 test.describe('Board deletion', () => {
   test('deletes a board with confirmation', async ({ page }) => {
     await page.goto('/dashboard');
-    await page.click('button:has-text("New Board")');
-    await page.waitForSelector('input[id="board-name"]');
+    await page.getByRole('button', { name: 'New Board' }).click();
+    await expect(page.getByLabel('Board Name', { exact: false })).toBeVisible();
 
     const boardName = `Delete Me ${Date.now()}`;
-    await page.fill('input[id="board-name"]', boardName);
-    await page.click('button[type="submit"]:has-text("Create Board")');
-    await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 10000 });
+    await page.getByLabel('Board Name', { exact: false }).fill(boardName);
+    await page.getByRole('button', { name: 'Create Board' }).click();
+    await expect(page.getByLabel('Board Name', { exact: false })).not.toBeVisible();
 
     // Go back to dashboard
     await page.goto('/dashboard');
-    await page.waitForSelector(`text=${boardName}`, { timeout: 5000 });
+    await expect(page.getByText(boardName)).toBeVisible();
 
     // Click delete on that board card
     const boardCard = page.locator('[data-testid="board-card"]').filter({ hasText: boardName });
@@ -117,21 +113,24 @@ test.describe('Board deletion', () => {
     await deleteBtn.click();
 
     // Confirmation dialog should appear
-    await page.waitForSelector('[data-testid="confirm-delete-button"]');
+    await expect(page.getByTestId('confirm-delete-button')).toBeVisible();
     await page.getByTestId('confirm-delete-button').click();
 
     // Board card should disappear from the list
-    await expect(page.getByTestId('board-card').filter({ hasText: boardName })).not.toBeVisible({
-      timeout: 5000
-    });
+    await expect(page.getByTestId('board-card').filter({ hasText: boardName })).not.toBeVisible();
     // No cleanup needed — board was deleted
-    createdBoardId = null;
   });
 });
 
 test.describe('Board navigation', () => {
+  let boardId: string;
+
+  test.afterEach(async ({ page }) => {
+    if (boardId) await deleteTestBoard(page, boardId);
+  });
+
   test('navigates to a board from the dashboard', async ({ page }) => {
-    createdBoardId = await createBoardWithSize(page);
+    boardId = await createBoardWithSize(page);
 
     // Go back to dashboard and click the board card
     await page.goto('/dashboard');
@@ -140,6 +139,6 @@ test.describe('Board navigation', () => {
     await boardCards.first().click();
 
     await expect(page).toHaveURL(/\/boards\/.+/, { timeout: 10000 });
-    await expect(page.getByTestId('goal-square').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
   });
 });
