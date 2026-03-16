@@ -104,6 +104,7 @@
         type="button"
         onclick={() => editorState.editor?.chain().focus().toggleBold().run()}
         class={getButtonClass(editorState.editor.isActive('bold'))}
+        aria-pressed={editorState.editor.isActive('bold')}
         data-testid="editor-bold-button"
         title="Bold (Ctrl+B)"
       >

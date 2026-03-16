@@ -36,7 +36,7 @@ test.describe('Goal modal', () => {
 
     // Reload the page
     await page.reload();
-    await page.waitForSelector('[data-testid="goal-square"]');
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
 
     // Verify the title was saved
     const goal = await getGoalData(page, firstGoalId, 'title');
@@ -65,12 +65,11 @@ test.describe('Goal modal', () => {
     await expect(page.getByTestId('goal-modal')).not.toBeVisible();
 
     await page.reload();
-    await page.waitForSelector('[data-testid="goal-square"]');
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
 
     // Confirm persistence via DB
     const goal = await getGoalData(page, firstGoalId, 'notes');
-    // Notes may be stored as rich text (HTML) — just verify they exist
-    expect(goal).not.toBeNull();
+    expect(goal?.notes).toBeTruthy();
   });
 
   test('Save button closes the modal', async ({ page }) => {
@@ -135,12 +134,10 @@ test.describe('Goal completion', () => {
     });
 
     // Open sidebar for first goal
-    await page.getByTestId('goal-square').first().click();
-    await page.waitForSelector('[data-testid="goal-modal"]');
+    await openFirstGoalModal(page);
 
     // Edit title
-    const titleInput = page.locator('input').first();
-    await titleInput.fill('Test Goal Title');
+    await page.getByTestId('modal-title-input').fill('Test Goal Title');
 
     // Save and wait for modal to close
     await page.getByTestId('save-goal-button').click();
@@ -157,9 +154,9 @@ test.describe('Goal completion', () => {
     await page.getByTestId('goal-square').first().getByTestId('goal-checkbox').click();
     await completionResponse;
 
-    // Verify completed styling
+    // Verify completed state via data attribute
     const goalSquare = page.getByTestId('goal-square').first();
-    await expect(goalSquare).toHaveClass(/bg-green-50/);
+    await expect(goalSquare).toHaveAttribute('data-completed', 'true');
 
     // Verify no console errors occurred
     expect(consoleErrors).toHaveLength(0);
@@ -175,20 +172,12 @@ test.describe('Goal completion', () => {
 
     for (let i = 0; i < gridSize; i++) {
       await squares.nth(i).click();
-      await page.waitForSelector('[data-testid="goal-modal"]');
+      await expect(page.getByTestId('goal-modal')).toBeVisible();
       // Use click() instead of check() — checkbox is async/controlled; check() can't verify state change
       await page.getByTestId('modal-checkbox').click();
       await page.getByTestId('save-goal-button').click();
       await expect(page.getByTestId('goal-modal')).not.toBeVisible();
     }
-
-    // Confetti or bingo indicator should appear — wait for any matching element
-    await page
-      .waitForSelector(
-        '[data-testid="bingo-confetti"], [class*="confetti"], [data-testid="bingo-indicator"], [class*="bingo"]',
-        { timeout: 5000 }
-      )
-      .catch(() => {});
 
     // Either a visual confetti element appeared, or the board shows a bingo indicator
     const confetti = page

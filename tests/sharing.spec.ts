@@ -24,20 +24,26 @@ test.describe('Sharing toggle', () => {
   test('enabling sharing shows share URL in the header', async ({ page }) => {
     // Navigate to the board page
     await page.goto(`/boards/${testBoardId}`);
-    await page.waitForSelector('[data-testid="goal-square"]');
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
 
     // Click the share button (toggles public on)
     const shareBtn = page
       .getByTestId('share-button')
       .or(page.locator('button[aria-label*="share" i]'))
       .or(page.locator('button:has-text("Share")'));
+
+    const shareResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/boards') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await shareBtn.click();
+    await shareResponse;
 
     // Share URL input/text should appear
     const shareUrl = page
       .getByTestId('share-url')
       .or(page.locator('input[readonly][value*="/share/"]'));
-    await expect(shareUrl.first()).toBeVisible({ timeout: 5000 });
+    await expect(shareUrl.first()).toBeVisible();
   });
 
   test('copy button copies the correct share URL to clipboard', async ({
@@ -52,27 +58,25 @@ test.describe('Sharing toggle', () => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
 
     await page.goto(`/boards/${testBoardId}`);
-    await page.waitForSelector('[data-testid="goal-square"]');
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
 
     // Enable sharing
     const shareBtn = page
       .getByTestId('share-button')
       .or(page.locator('button[aria-label*="share" i]'))
       .or(page.locator('button:has-text("Share")'));
+
+    const shareResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/boards') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await shareBtn.click();
+    await shareResponse;
 
-    // Wait for share state to reflect
-    await page.waitForTimeout(500);
-
-    // The share action may already copy the link automatically (per the code).
-    // If there is an explicit copy button, click it.
-    const copyBtn = page
-      .getByTestId('copy-share-url')
-      .or(page.locator('button[aria-label*="copy" i]'))
-      .or(page.locator('button:has-text("Copy")'));
-    if ((await copyBtn.count()) > 0) {
-      await copyBtn.click();
-    }
+    // Click the copy button in the popover (opened automatically after enabling sharing)
+    const copyBtn = page.getByRole('button', { name: 'Copy link' });
+    await expect(copyBtn).toBeVisible();
+    await copyBtn.click();
 
     const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
     expect(clipboardText).toContain(`/share/${testBoardId}`);
@@ -81,7 +85,7 @@ test.describe('Sharing toggle', () => {
   test('disabling sharing makes /share/[id] return an error', async ({ page }) => {
     // First enable then disable sharing
     await page.goto(`/boards/${testBoardId}`);
-    await page.waitForSelector('[data-testid="goal-square"]');
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
 
     const shareBtn = page
       .getByTestId('share-button')
@@ -89,19 +93,27 @@ test.describe('Sharing toggle', () => {
       .or(page.locator('button:has-text("Share")'));
 
     // Enable
+    let shareResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/boards') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await shareBtn.click();
-    await page.waitForTimeout(300);
+    await shareResponse;
 
-    // Disable (click again to toggle off)
-    await shareBtn.click();
-    await page.waitForTimeout(300);
+    // Disable via the "Disable sharing" button inside the popover (opened after enabling)
+    shareResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/boards') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
+    await page.getByRole('button', { name: 'Disable sharing' }).click();
+    await shareResponse;
 
     // Now visiting the share URL should show an error
     await page.goto(`/share/${testBoardId}`);
     const errorMsg = page
       .getByTestId('share-error')
       .or(page.locator('text=/not found|not available|private|error/i'));
-    await expect(errorMsg.first()).toBeVisible({ timeout: 5000 });
+    await expect(errorMsg.first()).toBeVisible();
   });
 });
 
@@ -109,13 +121,18 @@ test.describe('Public share view', () => {
   test('/share/[id] is accessible without login', async ({ page, context }) => {
     // Enable sharing first (requires auth)
     await page.goto(`/boards/${testBoardId}`);
-    await page.waitForSelector('[data-testid="goal-square"]');
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
     const shareBtn = page
       .getByTestId('share-button')
       .or(page.locator('button[aria-label*="share" i]'))
       .or(page.locator('button:has-text("Share")'));
+
+    const shareResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/boards') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await shareBtn.click();
-    await page.waitForTimeout(300);
+    await shareResponse;
 
     // Now open an anonymous context
     const anonPage = await context.newPage();
@@ -138,13 +155,18 @@ test.describe('Public share view', () => {
   }) => {
     // Enable sharing
     await page.goto(`/boards/${testBoardId}`);
-    await page.waitForSelector('[data-testid="goal-square"]');
+    await expect(page.getByTestId('goal-square').first()).toBeVisible();
     const shareBtn = page
       .getByTestId('share-button')
       .or(page.locator('button[aria-label*="share" i]'))
       .or(page.locator('button:has-text("Share")'));
+
+    const shareResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/boards') && resp.request().method() === 'PATCH',
+      { timeout: 5000 }
+    );
     await shareBtn.click();
-    await page.waitForTimeout(300);
+    await shareResponse;
 
     // Open as anonymous user
     const anonPage = await context.newPage();
@@ -154,7 +176,6 @@ test.describe('Public share view', () => {
     // Click a goal square — modal should NOT open
     await anonPage.getByTestId('goal-square').first().click();
     const modal = anonPage.getByTestId('goal-modal');
-    await anonPage.waitForTimeout(500);
     await expect(modal).not.toBeVisible();
 
     await anonPage.close();

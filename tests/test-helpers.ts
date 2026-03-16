@@ -1,31 +1,40 @@
 // ABOUTME: Shared test utilities for reducing duplication across test files
 // ABOUTME: Provides board setup/teardown, Supabase queries, and common test actions
 
-import type { Page } from '@playwright/test';
+import { type Page, expect } from '@playwright/test';
 
 /**
  * Creates a new test board and navigates to it
  * Returns the board ID for cleanup
  */
 export async function createTestBoard(page: Page): Promise<string> {
+  // Set up the response waiter before navigation so we don't miss the fast response.
+  // fetchBoards() (called on dashboard mount) can return stale data that overwrites the
+  // optimistic store update from createBoard() if both are in-flight simultaneously.
+  // Awaiting the initial GET here ensures the mount fetch is done before we create.
+  const initialFetch = page.waitForResponse(
+    (resp) => resp.url().includes('/boards') && resp.request().method() === 'GET',
+    { timeout: 10000 }
+  );
   await page.goto('/dashboard');
+  await initialFetch;
 
   // Create a new board
-  await page.click('button:has-text("New Board")');
-  await page.waitForSelector('input[id="board-name"]');
+  await page.getByRole('button', { name: 'New Board' }).click();
+  await expect(page.getByLabel('Board Name', { exact: false })).toBeVisible();
 
   const boardName = `Test Board ${Date.now()}`;
-  await page.fill('input[id="board-name"]', boardName);
+  await page.getByLabel('Board Name', { exact: false }).fill(boardName);
 
   // Click the Create Board button in the modal
-  await page.click('button[type="submit"]:has-text("Create Board")');
+  await page.getByRole('button', { name: 'Create Board' }).click();
 
-  // Wait for modal to close
-  await page.waitForSelector('input[id="board-name"]', { state: 'hidden', timeout: 5000 });
+  // Wait for the dialog to fully close before looking for the new board card
+  await expect(page.getByRole('dialog')).not.toBeVisible();
 
-  // Wait for the new board to appear and click it
-  await page.waitForSelector(`text=${boardName}`, { timeout: 5000 });
-  await page.click(`text=${boardName}`);
+  // Wait for the new board card to appear and click it
+  await expect(page.getByRole('heading', { name: boardName })).toBeVisible();
+  await page.getByRole('heading', { name: boardName }).click();
 
   // Wait for navigation to board page
   await page.waitForURL(/\/boards\/.+/, { timeout: 10000 });
@@ -33,7 +42,7 @@ export async function createTestBoard(page: Page): Promise<string> {
   const boardId = url.split('/').pop()!;
 
   // Wait for board to load
-  await page.waitForSelector('[data-testid="goal-square"]');
+  await expect(page.getByTestId('goal-square').first()).toBeVisible();
 
   return boardId;
 }
@@ -101,7 +110,7 @@ export async function getGoalData<T = any>(
  */
 export async function openFirstGoalModal(page: Page): Promise<void> {
   await page.getByTestId('goal-square').first().click();
-  await page.waitForSelector('[data-testid="goal-modal"]');
+  await expect(page.getByTestId('goal-modal')).toBeVisible();
   // Wait for the modal to be fully rendered and stable before returning.
   // The title input is a reliable "modal is ready" indicator — it's always
   // present and gets auto-focused, so waiting for it ensures the footer
@@ -128,19 +137,9 @@ export async function closeModal(page: Page): Promise<void> {
 }
 
 /**
- * Wait for auto-save to complete by watching for the debounced PATCH request to /goals
+ * Wait for a goal PATCH request to complete (covers auto-save and checkbox updates)
  */
-export async function waitForAutoSave(page: Page): Promise<void> {
-  await page.waitForResponse(
-    (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
-    { timeout: 5000 }
-  );
-}
-
-/**
- * Wait for checkbox update to complete by watching for the PATCH request to /goals
- */
-export async function waitForCheckboxUpdate(page: Page): Promise<void> {
+export async function waitForGoalPatch(page: Page): Promise<void> {
   await page.waitForResponse(
     (resp) => resp.url().includes('/goals') && resp.request().method() === 'PATCH',
     { timeout: 5000 }
@@ -151,13 +150,13 @@ export async function waitForCheckboxUpdate(page: Page): Promise<void> {
  * Adds a milestone to the currently open (and expanded) goal modal
  */
 export async function addMilestone(page: Page, title: string): Promise<void> {
-  await page.click('text=+ Add');
-  await page.fill('input[placeholder="New milestone..."]', title);
+  await page.getByRole('button', { name: '+ Add', exact: true }).click();
+  await page.getByPlaceholder('New milestone...').fill(title);
   const saveRequest = page.waitForResponse(
     (resp) => resp.url().includes('/milestones') && resp.request().method() === 'POST',
     { timeout: 5000 }
   );
-  await page.click('button.bg-blue-500:has-text("Add")');
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
   await saveRequest;
 }
 

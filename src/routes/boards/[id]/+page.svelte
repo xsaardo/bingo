@@ -127,6 +127,7 @@
                       <Button
                         size="icon"
                         variant="outline"
+                        aria-label="Copy link"
                         onclick={async () => {
                           await navigator.clipboard.writeText(shareUrl);
                           toast.success('Link copied');
