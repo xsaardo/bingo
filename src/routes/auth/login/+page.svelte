@@ -19,7 +19,7 @@
 </script>
 
 <svelte:head>
-  <title>Sign In - Bingoal</title>
+  <title>Sign In - Bingoals</title>
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center p-4">
@@ -29,7 +29,7 @@
       <div class="inline-flex mb-4">
         <Logo size="4rem" />
       </div>
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome to BINGOAL</h1>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome to BINGOALS</h1>
       <p class="text-gray-600">Sign in to create and manage your bingo boards</p>
     </div>
 

@@ -5,4 +5,4 @@
   let { theme = 'light' as ToasterProps['theme'], ...restProps }: ToasterProps = $props();
 </script>
 
-<Sonner {theme} {...restProps} />
+<Sonner {theme} toastOptions={{ style: "font-family: 'Geist Mono', monospace;" }} {...restProps} />

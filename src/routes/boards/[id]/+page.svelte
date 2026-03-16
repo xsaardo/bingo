@@ -4,6 +4,7 @@
   import { toast } from 'svelte-sonner';
   import AuthGuard from '$lib/components/AuthGuard.svelte';
   import UserMenu from '$lib/components/UserMenu.svelte';
+  import Logo from '$lib/components/Logo.svelte';
   import BingoBoard from '$lib/components/BingoBoard.svelte';
   import ErrorAlert from '$lib/components/ErrorAlert.svelte';
   import ExportableBoard from '$lib/components/ExportableBoard.svelte';
@@ -18,10 +19,13 @@
   import ConversionPrompt from '$lib/components/ConversionPrompt.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+  import * as Popover from '$lib/components/ui/popover/index.js';
+  import { Input } from '$lib/components/ui/input/index.js';
   import { FONT_REGISTRY, type Font } from '$lib/fonts';
 
   let exportElement: HTMLDivElement | undefined = $state();
   let showShareConversionPrompt = $state(false);
+  let sharePopoverOpen = $state(false);
 
   const boardId = $derived($page.params.id!);
 
@@ -51,8 +55,7 @@
       toast('Sharing disabled');
     } else {
       await currentBoardStore.setPublic(boardId, true);
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success('Link copied to clipboard');
+      sharePopoverOpen = true;
     }
   }
 
@@ -73,110 +76,102 @@
 <AuthGuard>
   <div class="h-screen flex flex-col">
     <!-- Header -->
-    <header class="bg-transparent">
+    <header class="bg-white border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <svg
-                class="w-6 h-6"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect x="1" y="1" width="6" height="6" rx="1.5" fill="white" />
-                <polygon
-                  points="4,1.8 4.529,3.272 6.092,3.320 4.856,4.278 5.293,5.780 4,4.9 2.707,5.780 3.144,4.278 1.908,3.320 3.471,3.272"
-                  fill="#2563eb"
-                />
-                <rect x="8" y="1" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5" />
-                <rect
-                  x="15"
-                  y="1"
-                  width="6"
-                  height="6"
-                  rx="1.5"
-                  stroke="white"
-                  stroke-width="1.5"
-                />
-                <rect x="1" y="8" width="6" height="6" rx="1.5" stroke="white" stroke-width="1.5" />
-                <rect x="8" y="8" width="6" height="6" rx="1.5" fill="white" />
-                <polygon
-                  points="11,8.8 11.529,10.272 13.092,10.320 11.856,11.278 12.293,12.780 11,11.9 9.707,12.780 10.144,11.278 8.908,10.320 10.471,10.272"
-                  fill="#2563eb"
-                />
-                <rect
-                  x="15"
-                  y="8"
-                  width="6"
-                  height="6"
-                  rx="1.5"
-                  stroke="white"
-                  stroke-width="1.5"
-                />
-                <rect
-                  x="1"
-                  y="15"
-                  width="6"
-                  height="6"
-                  rx="1.5"
-                  stroke="white"
-                  stroke-width="1.5"
-                />
-                <rect
-                  x="8"
-                  y="15"
-                  width="6"
-                  height="6"
-                  rx="1.5"
-                  stroke="white"
-                  stroke-width="1.5"
-                />
-                <rect x="15" y="15" width="6" height="6" rx="1.5" fill="white" />
-                <polygon
-                  points="18,15.8 18.529,17.272 20.092,17.320 18.856,18.278 19.293,19.780 18,18.9 16.707,19.780 17.144,18.278 15.908,17.320 17.471,17.272"
-                  fill="#2563eb"
-                />
-              </svg>
-            </div>
-            <span class="text-xl font-bold text-gray-900">BINGOAL</span>
+            <Logo />
+            <span class="text-xl font-bold text-gray-900">BINGOALS</span>
           </a>
 
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
-              <Button variant="ghost" href="/dashboard">Home</Button>
+              <Button variant="ghost" href="/dashboard">My Boards</Button>
+              <div class="h-5 w-px bg-gray-200"></div>
             {/if}
 
             {#if $currentBoard}
               {#if $currentBoard.isPublic}
-                <input
-                  data-testid="share-url"
-                  type="text"
-                  readonly
-                  value={shareUrl}
-                  class="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 w-56 truncate"
-                  onclick={(e) => (e.target as HTMLInputElement).select()}
-                />
+                <Popover.Root bind:open={sharePopoverOpen}>
+                  <Popover.Trigger>
+                    {#snippet child({ props })}
+                      <Button
+                        {...props}
+                        variant="ghost"
+                        size="icon"
+                        data-testid="share-button"
+                        class="text-blue-600 bg-blue-50 hover:bg-blue-100"
+                        title="Sharing on — view link"
+                      >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                          />
+                        </svg>
+                      </Button>
+                    {/snippet}
+                  </Popover.Trigger>
+                  <Popover.Content class="w-80 bg-white" align="end">
+                    <p class="text-sm font-medium mb-2">Share link</p>
+                    <div class="flex gap-2">
+                      <Input
+                        data-testid="share-url"
+                        readonly
+                        value={shareUrl}
+                        onclick={(e) => (e.target as HTMLInputElement).select()}
+                        class="text-sm"
+                      />
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        onclick={async () => {
+                          await navigator.clipboard.writeText(shareUrl);
+                          toast.success('Link copied');
+                        }}
+                        title="Copy link"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </Button>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      class="mt-2 w-full text-gray-500"
+                      onclick={handleShare}
+                    >
+                      Disable sharing
+                    </Button>
+                  </Popover.Content>
+                </Popover.Root>
+              {:else}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  data-testid="share-button"
+                  onclick={handleShare}
+                  class="text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  title="Share board"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                    />
+                  </svg>
+                </Button>
               {/if}
-              <Button
-                variant="ghost"
-                size="icon"
-                data-testid="share-button"
-                onclick={handleShare}
-                class={$currentBoard.isPublic
-                  ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}
-                title={$currentBoard.isPublic ? 'Sharing on — click to stop' : 'Share board'}
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-                  />
-                </svg>
-              </Button>
               <!-- Font selector -->
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
@@ -230,19 +225,6 @@
 
     <!-- Main Content -->
     <main class="flex-1 min-h-0 flex flex-col items-center px-4 py-3 sm:py-4 overflow-hidden">
-      <!-- Board Title -->
-      <div class="shrink-0 mb-2 sm:mb-3 text-center w-full">
-        {#if $currentBoard}
-          <h1
-            class="text-3xl font-bold text-gray-900"
-            class:font-chanellie={$currentBoard.font === 'chanellie'}
-          >
-            {$currentBoard.name}
-          </h1>
-        {:else if !$currentBoardError}
-          <div class="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto"></div>
-        {/if}
-      </div>
       {#if $currentBoardLoading}
         <!-- Loading State -->
         <div
@@ -274,7 +256,7 @@
         >
           <div
             class:font-chanellie={$currentBoard.font === 'chanellie'}
-            style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);"
+            style="width: min(100cqh - 2rem, 100cqw, 56rem); height: min(100cqh - 2rem, 100cqw, 56rem);"
           >
             <BingoBoard />
           </div>

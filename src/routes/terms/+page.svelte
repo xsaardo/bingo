@@ -1,13 +1,13 @@
 <svelte:head>
-  <title>Terms of Service — Bingoal</title>
+  <title>Terms of Service — Bingoals</title>
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
   <!-- Header -->
-  <header class="bg-transparent border-b border-gray-100">
+  <header class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <a href="/" class="flex items-center space-x-2">
-        <span class="text-xl font-bold text-gray-900">BINGOAL</span>
+        <span class="text-xl font-bold text-gray-900">BINGOALS</span>
       </a>
     </div>
   </header>
@@ -23,14 +23,14 @@
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
             <p>
-              By using Bingoal ("the Service"), you agree to these Terms of Service. If you don't
+              By using Bingoals ("the Service"), you agree to these Terms of Service. If you don't
               agree, please don't use the Service.
             </p>
           </section>
 
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">2. Acceptable Use</h2>
-            <p>You agree to use Bingoal only for lawful purposes. You may not:</p>
+            <p>You agree to use Bingoals only for lawful purposes. You may not:</p>
             <ul class="list-disc pl-5 mt-2 space-y-1">
               <li>Use the Service to harass, abuse, or harm others</li>
               <li>Attempt to gain unauthorized access to other users' boards or our systems</li>
@@ -43,7 +43,7 @@
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">3. Your Content</h2>
             <p>
-              You own the content you create on Bingoal — your board names, goal descriptions, and
+              You own the content you create on Bingoals — your board names, goal descriptions, and
               any other input you provide. By using the Service, you grant us a limited license to
               store and display your content solely to operate the Service. We will never claim
               ownership of your content.
@@ -53,7 +53,7 @@
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">4. No Warranty — As-Is Service</h2>
             <p>
-              Bingoal is provided <strong>"as is"</strong> and <strong>"as available"</strong> without
+              Bingoals is provided <strong>"as is"</strong> and <strong>"as available"</strong> without
               warranties of any kind, express or implied. We don't guarantee that the Service will be
               uninterrupted, error-free, or that data will never be lost. Use it at your own risk.
             </p>
@@ -62,7 +62,7 @@
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">5. Limitation of Liability</h2>
             <p>
-              To the maximum extent permitted by law, Bingoal and its creators are not liable for
+              To the maximum extent permitted by law, Bingoals and its creators are not liable for
               any indirect, incidental, special, or consequential damages arising from your use (or
               inability to use) the Service, even if we have been advised of the possibility of such
               damages.
@@ -91,8 +91,9 @@
             <h2 class="text-lg font-semibold text-gray-900 mb-3">8. Contact</h2>
             <p>
               Questions about these Terms? Email us at
-              <a href="mailto:hello@bingoal.app" class="text-blue-600 hover:text-blue-700 underline"
-                >hello@bingoal.app</a
+              <a
+                href="mailto:hello@bingoals.app"
+                class="text-blue-600 hover:text-blue-700 underline">hello@bingoals.app</a
               >.
             </p>
           </section>
@@ -104,7 +105,7 @@
   <!-- Footer -->
   <footer class="py-6 text-center text-sm text-gray-400">
     <p>
-      © {new Date().getFullYear()} Bingoal &middot;
+      © {new Date().getFullYear()} Bingoals &middot;
       <a href="/privacy" class="hover:text-gray-600 transition-colors">Privacy</a>
       &middot;
       <a href="/terms" class="hover:text-gray-600 transition-colors">Terms</a>
