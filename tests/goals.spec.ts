@@ -111,6 +111,17 @@ test.describe('Goal modal', () => {
 });
 
 test.describe('Goal completion', () => {
+  test('clicking modal checkbox immediately updates its visual state', async ({ page }) => {
+    await openFirstGoalModal(page);
+
+    const checkbox = page.getByTestId('modal-checkbox');
+    await expect(checkbox).not.toBeChecked();
+
+    await checkbox.click();
+
+    await expect(checkbox).toBeChecked();
+  });
+
   test('toggling goal completion updates the checkbox state', async ({ page }) => {
     await openFirstGoalModal(page);
 
