@@ -86,7 +86,7 @@
         class="flex-1 min-h-0 w-full flex items-center justify-center"
         style="container-type: size;"
       >
-        <div style="width: min(100cqh, 100cqw, 56rem); height: min(100cqh, 100cqw, 56rem);">
+        <div style="width: min(100cqh - 8rem, 100cqw, 56rem);">
           <BingoBoard readonly={true} />
         </div>
       </div>
