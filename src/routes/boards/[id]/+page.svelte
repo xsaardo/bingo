@@ -257,7 +257,7 @@
         >
           <div
             class:font-chanellie={$currentBoard.font === 'chanellie'}
-            style="width: min(100cqh - 2rem, 100cqw, 56rem); height: min(100cqh - 2rem, 100cqw, 56rem);"
+            style="width: min(100cqh - 8rem, 100cqw, 56rem);"
           >
             <BingoBoard />
           </div>
