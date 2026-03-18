@@ -114,7 +114,10 @@
                       </Button>
                     {/snippet}
                   </Popover.Trigger>
-                  <Popover.Content class="w-80 bg-white" align="end">
+                  <Popover.Content
+                    class="w-80 rounded-lg border-gray-200 bg-white shadow-lg"
+                    align="end"
+                  >
                     <p class="text-sm font-medium mb-2">Share link</p>
                     <div class="flex gap-2">
                       <Input
