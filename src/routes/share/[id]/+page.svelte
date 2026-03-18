@@ -83,7 +83,7 @@
       </div>
     {:else if $currentBoard}
       <div
-        class="flex-1 min-h-0 w-full flex items-center justify-center"
+        class="flex-1 min-h-0 w-full flex items-start sm:items-center justify-center"
         style="container-type: size;"
       >
         <div style="width: min(100cqh - 8rem, 100cqw, 56rem);">
