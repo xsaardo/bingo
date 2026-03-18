@@ -94,9 +94,8 @@
               Test Auth (Debug)
             </a>
           </DropdownMenu.Item>
+          <DropdownMenu.Separator />
         {/if}
-
-        <DropdownMenu.Separator />
 
         <!-- Logout -->
         <DropdownMenu.Item
