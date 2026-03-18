@@ -1,3 +1,11 @@
+<script lang="ts">
+  import { env } from '$env/dynamic/public';
+  import Logo from '$lib/components/Logo.svelte';
+  import UserMenu from '$lib/components/UserMenu.svelte';
+
+  const bmcUrl = env.PUBLIC_BMC_URL;
+</script>
+
 <svelte:head>
   <title>About — Bingoals</title>
 </svelte:head>
@@ -6,9 +14,13 @@
   <!-- Header -->
   <header class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <a href="/" class="flex items-center space-x-2">
-        <span class="text-xl font-bold text-gray-900">BINGOALS</span>
-      </a>
+      <div class="flex items-center justify-between">
+        <a href="/" class="flex items-center space-x-3">
+          <Logo />
+          <h1 class="text-xl font-bold text-gray-900">BINGOALS</h1>
+        </a>
+        <UserMenu />
+      </div>
     </div>
   </header>
 
@@ -32,14 +44,29 @@
             </p>
           </section>
 
+          {#if bmcUrl}
+          <section>
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">Support</h2>
+            <p>
+              If you're enjoying Bingoals and want to say thanks, you can
+              <a
+                href={bmcUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-600 hover:text-blue-700 underline">buy me a coffee</a
+              >. It means a lot!
+            </p>
+          </section>
+          {/if}
+
           <section>
             <h2 class="text-lg font-semibold text-gray-900 mb-3">Feedback</h2>
             <p>
               Have a suggestion, found a bug, or just want to say hi? We'd love to hear from you.
               Reach out at
               <a
-                href="mailto:hello@bingoals.app"
-                class="text-blue-600 hover:text-blue-700 underline">hello@bingoals.app</a
+                href="mailto:hello@gobingoals.app"
+                class="text-blue-600 hover:text-blue-700 underline">hello@gobingoals.app</a
               >.
             </p>
           </section>
