@@ -255,7 +255,7 @@
       {:else if $currentBoard}
         <!-- BingoBoard Component -->
         <div
-          class="flex-1 min-h-0 w-full flex items-center justify-center"
+          class="flex-1 min-h-0 w-full flex items-start sm:items-center justify-center"
           style="container-type: size;"
         >
           <div
