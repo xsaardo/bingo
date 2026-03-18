@@ -549,7 +549,9 @@ export const currentBoardStore = {
   },
 
   /**
-   * Toggle whether this board is publicly visible
+   * Toggle whether this board is publicly visible.
+   * Ownership is enforced by RLS: the UPDATE policy requires auth.uid() = user_id,
+   * so non-owners will receive an error from Supabase regardless of the client call.
    */
   async setPublic(boardId: string, isPublic: boolean) {
     try {
@@ -578,7 +580,9 @@ export const currentBoardStore = {
   },
 
   /**
-   * Set the font preference for this board
+   * Set the font preference for this board.
+   * Ownership is enforced by RLS: the UPDATE policy requires auth.uid() = user_id,
+   * so non-owners will receive an error from Supabase regardless of the client call.
    */
   async setFont(boardId: string, font: Font) {
     let previousFont: Font = 'default';

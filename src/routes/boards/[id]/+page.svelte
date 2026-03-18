@@ -49,7 +49,7 @@
   }
 
   async function handleShare() {
-    if (!$currentBoard) return;
+    if (!$currentBoard || !isOwner) return;
     if ($isAnonymous) {
       showShareConversionPrompt = true;
       return;
@@ -68,7 +68,7 @@
   }
 
   async function handleSelectFont(font: Font) {
-    if (!$currentBoard) return;
+    if (!$currentBoard || !isOwner) return;
     await currentBoardStore.setFont(boardId, font);
   }
 </script>
