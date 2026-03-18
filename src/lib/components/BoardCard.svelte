@@ -132,7 +132,7 @@
               />
               <button
                 onclick={cancelEdit}
-                class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600 rounded transition-colors"
+                class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600 rounded-lg transition-colors"
                 title="Cancel"
                 type="button"
               >
@@ -162,7 +162,7 @@
             </h3>
             <button
               onclick={handleEditClick}
-              class="flex-shrink-0 p-1 text-gray-300 hover:text-blue-500 rounded opacity-100 sm:opacity-0 sm:group-hover/name:opacity-100 transition-all"
+              class="flex-shrink-0 p-1 text-gray-300 hover:text-blue-500 rounded-lg opacity-100 sm:opacity-0 sm:group-hover/name:opacity-100 transition-all"
               title="Rename board"
               type="button"
             >
