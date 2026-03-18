@@ -49,10 +49,14 @@ export const boardsStore = {
     boardsState.update((state) => ({ ...state, loading: true, error: null }));
 
     try {
-      // Get current user from Supabase
+      // Get current session from Supabase (reads from storage, no server round-trip).
+      // Using getSession() instead of getUser() avoids a race condition where the
+      // server-side JWT verification can return null immediately after anonymous
+      // sign-in before the session is fully propagated.
       const {
-        data: { user }
-      } = await supabase.auth.getUser();
+        data: { session }
+      } = await supabase.auth.getSession();
+      const user = session?.user;
 
       if (!user) {
         throw new Error('User not authenticated');
@@ -137,10 +141,14 @@ export const boardsStore = {
    */
   async createBoard(name: string, size: number) {
     try {
-      // Get current user
+      // Get current session from Supabase (reads from storage, no server round-trip).
+      // Using getSession() instead of getUser() avoids a race condition where the
+      // server-side JWT verification can return null immediately after anonymous
+      // sign-in before the session is fully propagated.
       const {
-        data: { user }
-      } = await supabase.auth.getUser();
+        data: { session }
+      } = await supabase.auth.getSession();
+      const user = session?.user;
 
       if (!user) {
         throw new Error('User not authenticated');
