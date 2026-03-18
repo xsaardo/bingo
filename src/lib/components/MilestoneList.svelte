@@ -118,7 +118,7 @@
       <Input
         bind:value={newMilestoneTitle}
         placeholder="New milestone..."
-        class="flex-1 px-3 py-2 h-auto text-sm"
+        class="flex-1 px-3 py-2 h-auto text-sm min-w-0"
         onkeydown={(e) => e.key === 'Enter' && handleAdd()}
       />
       <button
