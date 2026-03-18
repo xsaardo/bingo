@@ -35,6 +35,7 @@ export interface Board {
   font: Font;
   createdAt: string;
   updatedAt: string;
+  userId?: string; // Owner's user ID — present when loaded via loadBoard
 }
 
 export type BoardSize = 3 | 4 | 5;

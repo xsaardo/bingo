@@ -57,6 +57,7 @@ export const currentBoardStore = {
         .select(
           `
 					id,
+					user_id,
 					name,
 					size,
 					is_public,
@@ -100,6 +101,7 @@ export const currentBoardStore = {
       // Transform to Board type
       const board: Board = {
         id: data.id,
+        userId: data.user_id,
         name: data.name,
         size: data.size,
         isPublic: data.is_public ?? false,
@@ -547,7 +549,9 @@ export const currentBoardStore = {
   },
 
   /**
-   * Toggle whether this board is publicly visible
+   * Toggle whether this board is publicly visible.
+   * Ownership is enforced by RLS: the UPDATE policy requires auth.uid() = user_id,
+   * so non-owners will receive an error from Supabase regardless of the client call.
    */
   async setPublic(boardId: string, isPublic: boolean) {
     try {
@@ -576,7 +580,9 @@ export const currentBoardStore = {
   },
 
   /**
-   * Set the font preference for this board
+   * Set the font preference for this board.
+   * Ownership is enforced by RLS: the UPDATE policy requires auth.uid() = user_id,
+   * so non-owners will receive an error from Supabase regardless of the client call.
    */
   async setFont(boardId: string, font: Font) {
     let previousFont: Font = 'default';
