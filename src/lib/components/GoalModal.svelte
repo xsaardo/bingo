@@ -58,7 +58,7 @@
 
 <Dialog.Root open={true} onOpenChange={handleOpenChange}>
   <Dialog.Content
-    class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden p-0 border-0 gap-0"
+    class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden p-0 border-0 gap-0"
     data-testid="goal-modal"
   >
     <!-- Header -->
