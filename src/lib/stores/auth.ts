@@ -7,13 +7,8 @@
 
 import { writable, derived } from 'svelte/store';
 import type { User } from '@supabase/supabase-js';
-import {
-  getCurrentUser,
-  onAuthStateChange,
-  sendMagicLink,
-  signInAnonymously,
-  signOut
-} from '$lib/utils/auth';
+import { onAuthStateChange, sendMagicLink, signInAnonymously, signOut } from '$lib/utils/auth';
+import { supabase } from '$lib/supabaseClient';
 
 interface AuthState {
   user: User | null;
@@ -84,8 +79,14 @@ export const authStore = {
     }));
 
     try {
-      // Check for existing session
-      let user = await getCurrentUser();
+      // Check for existing session using getSession() (reads from storage, no server
+      // round-trip). Using getUser() here could cause a race condition where the
+      // server-side JWT verification fails transiently, making the app think there is
+      // no session and creating a duplicate anonymous user (losing existing boards).
+      const {
+        data: { session: existingSession }
+      } = await supabase.auth.getSession();
+      let user = existingSession?.user ?? null;
 
       // If no existing session, create anonymous session
       if (!user) {
