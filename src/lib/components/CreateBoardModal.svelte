@@ -66,11 +66,11 @@
     class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden p-0 border-0 gap-0"
   >
     <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5">
+    <div class="px-6 py-5 border-b border-gray-200">
       <div class="flex items-center justify-between">
-        <Dialog.Title class="text-xl font-bold text-white">Create New Board</Dialog.Title>
+        <Dialog.Title class="text-xl font-bold text-gray-900">Create New Board</Dialog.Title>
         <Dialog.Close
-          class="text-white hover:bg-white hover:bg-opacity-20 rounded-lg p-1 transition-colors"
+          class="text-gray-400 hover:text-gray-600 rounded-lg p-1 transition-colors"
           aria-label="Close modal"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
