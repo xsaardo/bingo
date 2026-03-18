@@ -26,6 +26,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? [['github'], ['html']] : [['list'], ['html']],
+  /* Global test timeout to prevent tests from hanging indefinitely */
+  timeout: 60_000,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
@@ -35,7 +37,13 @@ export default defineConfig({
     trace: 'on-first-retry',
 
     /* Disable CSS animations so dialog/modal transitions don't cause element instability */
-    reducedMotion: 'reduce'
+    reducedMotion: 'reduce',
+
+    /* Navigation timeout */
+    navigationTimeout: 30_000,
+
+    /* Action timeout */
+    actionTimeout: 10_000
   },
 
   expect: {
@@ -102,9 +110,15 @@ export default defineConfig({
     command: 'npm run dev',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    timeout: 120_000,
+    /* Ensure server shuts down even if tests fail */
+    stdout: 'pipe',
+    stderr: 'pipe',
     env: {
       DISABLE_RATE_LIMITING: 'true'
     }
-  }
+  },
+
+  /* Global timeout for the entire test run to prevent infinite hangs */
+  globalTimeout: process.env.CI ? 15 * 60 * 1000 : undefined // 15 minutes in CI
 });
