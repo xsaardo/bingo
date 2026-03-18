@@ -15,7 +15,7 @@
     currentBoardLoading,
     currentBoardError
   } from '$lib/stores/currentBoard';
-  import { isAnonymous } from '$lib/stores/auth';
+  import { isAnonymous, currentUser } from '$lib/stores/auth';
   import ConversionPrompt from '$lib/components/ConversionPrompt.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
@@ -30,6 +30,10 @@
   const boardId = $derived($page.params.id!);
 
   let shareUrl = $derived($currentBoard ? `${$page.url.origin}/share/${$currentBoard.id}` : '');
+  // Only the board owner may edit; treat missing userId as non-owner for safety
+  let isOwner = $derived(
+    !!$currentUser && !!$currentBoard?.userId && $currentUser.id === $currentBoard.userId
+  );
   // Load board when component mounts
   onMount(() => {
     currentBoardStore.loadBoard(boardId);
@@ -91,134 +95,143 @@
             {/if}
 
             {#if $currentBoard}
-              {#if $currentBoard.isPublic}
-                <Popover.Root bind:open={sharePopoverOpen}>
-                  <Popover.Trigger>
+              {#if isOwner}
+                {#if $currentBoard.isPublic}
+                  <Popover.Root bind:open={sharePopoverOpen}>
+                    <Popover.Trigger>
+                      {#snippet child({ props })}
+                        <Button
+                          {...props}
+                          variant="ghost"
+                          size="icon"
+                          data-testid="share-button"
+                          class="text-blue-600 bg-blue-50 hover:bg-blue-100"
+                          title="Sharing on — view link"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                            />
+                          </svg>
+                        </Button>
+                      {/snippet}
+                    </Popover.Trigger>
+                    <Popover.Content class="w-80 bg-white" align="end">
+                      <p class="text-sm font-medium mb-2">Share link</p>
+                      <div class="flex gap-2">
+                        <Input
+                          data-testid="share-url"
+                          readonly
+                          value={shareUrl}
+                          onclick={(e) => (e.target as HTMLInputElement).select()}
+                          class="text-sm"
+                        />
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          aria-label="Copy link"
+                          onclick={async () => {
+                            await navigator.clipboard.writeText(shareUrl);
+                            toast.success('Link copied');
+                          }}
+                          title="Copy link"
+                        >
+                          <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </Button>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        class="mt-2 w-full text-gray-500"
+                        onclick={handleShare}
+                      >
+                        Disable sharing
+                      </Button>
+                    </Popover.Content>
+                  </Popover.Root>
+                {:else}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    data-testid="share-button"
+                    onclick={handleShare}
+                    class="text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                    title="Share board"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                      />
+                    </svg>
+                  </Button>
+                {/if}
+                <!-- Font selector -->
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger>
                     {#snippet child({ props })}
                       <Button
                         {...props}
                         variant="ghost"
                         size="icon"
-                        data-testid="share-button"
-                        class="text-blue-600 bg-blue-50 hover:bg-blue-100"
-                        title="Sharing on — view link"
+                        data-testid="font-button"
+                        class={$currentBoard.font !== 'default'
+                          ? 'text-purple-600 bg-purple-50 hover:bg-purple-100'
+                          : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}
+                        title="Font"
                       >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-                          />
-                        </svg>
+                        <span class:font-chanellie={$currentBoard.font === 'chanellie'}>Aa</span>
                       </Button>
                     {/snippet}
-                  </Popover.Trigger>
-                  <Popover.Content
-                    class="w-80 rounded-lg border-gray-200 bg-white shadow-lg"
-                    align="end"
-                  >
-                    <p class="text-sm font-medium mb-2">Share link</p>
-                    <div class="flex gap-2">
-                      <Input
-                        data-testid="share-url"
-                        readonly
-                        value={shareUrl}
-                        onclick={(e) => (e.target as HTMLInputElement).select()}
-                        class="text-sm"
-                      />
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        aria-label="Copy link"
-                        onclick={async () => {
-                          await navigator.clipboard.writeText(shareUrl);
-                          toast.success('Link copied');
-                        }}
-                        title="Copy link"
-                      >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </Button>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      class="mt-2 w-full text-gray-500"
-                      onclick={handleShare}
-                    >
-                      Disable sharing
-                    </Button>
-                  </Popover.Content>
-                </Popover.Root>
-              {:else}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  data-testid="share-button"
-                  onclick={handleShare}
-                  class="text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-                  title="Share board"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-                    />
-                  </svg>
-                </Button>
-              {/if}
-              <!-- Font selector -->
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger>
-                  {#snippet child({ props })}
-                    <Button
-                      {...props}
-                      variant="ghost"
-                      size="icon"
-                      data-testid="font-button"
-                      class={$currentBoard.font !== 'default'
-                        ? 'text-purple-600 bg-purple-50 hover:bg-purple-100'
-                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}
-                      title="Font"
-                    >
-                      <span class:font-chanellie={$currentBoard.font === 'chanellie'}>Aa</span>
-                    </Button>
-                  {/snippet}
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Content align="end">
-                  {#each Object.entries(FONT_REGISTRY) as [key, { label }]}
-                    <DropdownMenu.Item onclick={() => handleSelectFont(key as Font)}>
-                      <span class:font-chanellie={key === 'chanellie'}>{label}</span>
-                      {#if $currentBoard.font === key}
-                        <svg
-                          class="ml-auto w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      {/if}
-                    </DropdownMenu.Item>
-                  {/each}
-                </DropdownMenu.Content>
-              </DropdownMenu.Root>
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Content align="end">
+                    {#each Object.entries(FONT_REGISTRY) as [key, { label }]}
+                      <DropdownMenu.Item onclick={() => handleSelectFont(key as Font)}>
+                        <span class:font-chanellie={key === 'chanellie'}>{label}</span>
+                        {#if $currentBoard.font === key}
+                          <svg
+                            class="ml-auto w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        {/if}
+                      </DropdownMenu.Item>
+                    {/each}
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
 
-              <ShareButton boardName={$currentBoard.name} {exportElement} />
+                <ShareButton boardName={$currentBoard.name} {exportElement} />
+              {/if}
             {/if}
 
             <UserMenu />
@@ -262,21 +275,23 @@
             class:font-chanellie={$currentBoard.font === 'chanellie'}
             style="width: min(100cqh - 8rem, 100cqw, 56rem);"
           >
-            <BingoBoard />
+            <BingoBoard readonly={!isOwner} />
           </div>
         </div>
       {/if}
     </main>
   </div>
-  <!-- Off-screen export board — always rendered when board is loaded so html-to-image can capture it -->
-  {#if $currentBoard}
+  <!-- Off-screen export board — only rendered for the owner so html-to-image can capture it -->
+  {#if $currentBoard && isOwner}
     <ExportableBoard board={$currentBoard} bind:exportRef={exportElement} />
   {/if}
 
-  <!-- Conversion Prompt for anonymous share attempt -->
-  <ConversionPrompt
-    trigger="share"
-    isOpen={showShareConversionPrompt}
-    onDismiss={handleShareConversionDismiss}
-  />
+  <!-- Conversion Prompt for anonymous share attempt — owner only -->
+  {#if isOwner}
+    <ConversionPrompt
+      trigger="share"
+      isOpen={showShareConversionPrompt}
+      onDismiss={handleShareConversionDismiss}
+    />
+  {/if}
 </AuthGuard>

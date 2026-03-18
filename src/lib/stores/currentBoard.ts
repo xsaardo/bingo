@@ -57,6 +57,7 @@ export const currentBoardStore = {
         .select(
           `
 					id,
+					user_id,
 					name,
 					size,
 					is_public,
@@ -100,6 +101,7 @@ export const currentBoardStore = {
       // Transform to Board type
       const board: Board = {
         id: data.id,
+        userId: data.user_id,
         name: data.name,
         size: data.size,
         isPublic: data.is_public ?? false,
