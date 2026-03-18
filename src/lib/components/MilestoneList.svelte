@@ -2,6 +2,7 @@
   import type { Milestone } from '$lib/types';
   import MilestoneItem from './MilestoneItem.svelte';
   import { Input } from '$lib/components/ui/input/index.js';
+  import { Button } from '$lib/components/ui/button/index.js';
   import { currentBoardStore } from '$lib/stores/currentBoard';
   import { currentUser } from '$lib/stores/auth';
   import { dndzone } from 'svelte-dnd-action';
@@ -105,12 +106,14 @@
       <span>✓</span>
       Milestones ({completedCount}/{totalCount} complete)
     </h3>
-    <button
+    <Button
+      variant="link"
+      size="sm"
       onclick={handleAddClick}
-      class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+      class="h-auto p-0 text-sm font-medium"
     >
       + Add
-    </button>
+    </Button>
   </div>
 
   {#if showAddInput}
