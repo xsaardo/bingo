@@ -1,3 +1,8 @@
+<script lang="ts">
+  import Logo from '$lib/components/Logo.svelte';
+  import UserMenu from '$lib/components/UserMenu.svelte';
+</script>
+
 <svelte:head>
   <title>Terms of Service — Bingoals</title>
 </svelte:head>
@@ -6,9 +11,13 @@
   <!-- Header -->
   <header class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <a href="/" class="flex items-center space-x-2">
-        <span class="text-xl font-bold text-gray-900">BINGOALS</span>
-      </a>
+      <div class="flex items-center justify-between">
+        <a href="/" class="flex items-center space-x-3">
+          <Logo />
+          <h1 class="text-xl font-bold text-gray-900">BINGOALS</h1>
+        </a>
+        <UserMenu />
+      </div>
     </div>
   </header>
 
@@ -106,6 +115,8 @@
   <footer class="py-6 text-center text-sm text-gray-400">
     <p>
       © {new Date().getFullYear()} Bingoals &middot;
+      <a href="/about" class="hover:text-gray-600 transition-colors">About</a>
+      &middot;
       <a href="/privacy" class="hover:text-gray-600 transition-colors">Privacy</a>
       &middot;
       <a href="/terms" class="hover:text-gray-600 transition-colors">Terms</a>
