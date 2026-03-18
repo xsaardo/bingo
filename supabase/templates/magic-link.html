@@ -4,13 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign in to Bingoals</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body
     style="
       margin: 0;
       padding: 0;
       background-color: #f3f4f6;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Geist Mono', 'Courier New', Courier, monospace;
     "
   >
     <table
@@ -34,7 +38,14 @@
           >
             <!-- Header -->
             <tr>
-              <td align="center" style="padding: 32px 40px 24px; background: #2563eb">
+              <td
+                align="center"
+                style="
+                  padding: 32px 40px 24px;
+                  background: #ffffff;
+                  border-bottom: 1px solid #e5e7eb;
+                "
+              >
                 <!--
                   Logo: matches the Logo.svelte component exactly.
                   - bg-blue-600 (#2563eb) background with rounded-2xl corners
@@ -129,7 +140,13 @@
                   />
                 </svg>
                 <div
-                  style="color: #ffffff; font-size: 20px; font-weight: 700; letter-spacing: 0.1em"
+                  style="
+                    color: #111827;
+                    font-size: 20px;
+                    font-weight: 700;
+                    letter-spacing: 0.1em;
+                    font-family: 'Geist Mono', 'Courier New', Courier, monospace;
+                  "
                 >
                   BINGOALS
                 </div>
@@ -146,14 +163,31 @@
                     font-weight: 700;
                     color: #111827;
                     line-height: 1.3;
+                    font-family: 'Geist Mono', 'Courier New', Courier, monospace;
                   "
                 >
                   Sign in to Bingoals
                 </h1>
-                <p style="margin: 0 0 8px; font-size: 16px; color: #4b5563; line-height: 1.6">
+                <p
+                  style="
+                    margin: 0 0 8px;
+                    font-size: 16px;
+                    color: #4b5563;
+                    line-height: 1.6;
+                    font-family: 'Geist Mono', 'Courier New', Courier, monospace;
+                  "
+                >
                   Click the button below to sign in to your account. No password needed.
                 </p>
-                <p style="margin: 0 0 28px; font-size: 14px; color: #6b7280; line-height: 1.6">
+                <p
+                  style="
+                    margin: 0 0 28px;
+                    font-size: 14px;
+                    color: #6b7280;
+                    line-height: 1.6;
+                    font-family: 'Geist Mono', 'Courier New', Courier, monospace;
+                  "
+                >
                   This link expires in 24 hours and can only be used once.
                 </p>
                 <!-- CTA Button -->
@@ -172,6 +206,7 @@
                           padding: 14px 32px;
                           border-radius: 8px;
                           letter-spacing: 0.01em;
+                          font-family: 'Geist Mono', 'Courier New', Courier, monospace;
                         "
                       >
                         Sign In to Bingoals
@@ -180,14 +215,30 @@
                   </tr>
                 </table>
                 <!-- Fallback link -->
-                <p style="margin: 0 0 24px; font-size: 13px; color: #9ca3af; line-height: 1.6">
+                <p
+                  style="
+                    margin: 0 0 24px;
+                    font-size: 13px;
+                    color: #9ca3af;
+                    line-height: 1.6;
+                    font-family: 'Geist Mono', 'Courier New', Courier, monospace;
+                  "
+                >
                   If the button doesn&#39;t work, copy and paste this link into your browser:<br />
                   <a href="{{ .ConfirmationURL }}" style="color: #2563eb; word-break: break-all"
                     >{{ .ConfirmationURL }}</a
                   >
                 </p>
                 <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0 0 24px" />
-                <p style="margin: 0 0 8px; font-size: 13px; color: #9ca3af; line-height: 1.5">
+                <p
+                  style="
+                    margin: 0 0 8px;
+                    font-size: 13px;
+                    color: #9ca3af;
+                    line-height: 1.5;
+                    font-family: 'Geist Mono', 'Courier New', Courier, monospace;
+                  "
+                >
                   Didn&#39;t request this? You can safely ignore this email.
                 </p>
               </td>
@@ -196,7 +247,15 @@
             <!-- Footer -->
             <tr>
               <td style="padding: 16px 40px 28px">
-                <p style="margin: 0; font-size: 12px; color: #d1d5db; text-align: center">
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 12px;
+                    color: #d1d5db;
+                    text-align: center;
+                    font-family: 'Geist Mono', 'Courier New', Courier, monospace;
+                  "
+                >
                   &#169; 2026 Bingoals &nbsp;&#183;&nbsp;
                   <a href="#" style="color: #d1d5db; text-decoration: none">Privacy</a>
                   &nbsp;&#183;&nbsp;
