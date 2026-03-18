@@ -45,18 +45,18 @@
           </section>
 
           {#if bmcUrl}
-          <section>
-            <h2 class="text-lg font-semibold text-gray-900 mb-3">Support</h2>
-            <p>
-              If you're enjoying Bingoals and want to say thanks, you can
-              <a
-                href={bmcUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-blue-600 hover:text-blue-700 underline">buy me a coffee</a
-              >. It means a lot!
-            </p>
-          </section>
+            <section>
+              <h2 class="text-lg font-semibold text-gray-900 mb-3">Support</h2>
+              <p>
+                If you're enjoying Bingoals and want to say thanks, you can
+                <a
+                  href={bmcUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-blue-600 hover:text-blue-700 underline">buy me a coffee</a
+                >. It means a lot!
+              </p>
+            </section>
           {/if}
 
           <section>
