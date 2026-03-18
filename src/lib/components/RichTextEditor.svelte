@@ -92,7 +92,7 @@
 
 <div
   class="border rounded-lg overflow-hidden transition-all {isFocused
-    ? 'border-blue-500 ring-2 ring-blue-500'
+    ? 'border-[var(--ring)] ring-1 ring-[var(--ring)]'
     : 'border-gray-300'}"
   data-testid="rich-text-editor-container"
 >
