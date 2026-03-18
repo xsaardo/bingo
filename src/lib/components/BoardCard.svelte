@@ -162,7 +162,7 @@
             </h3>
             <button
               onclick={handleEditClick}
-              class="flex-shrink-0 p-1 text-gray-300 hover:text-blue-500 rounded opacity-0 group-hover/name:opacity-100 transition-all"
+              class="flex-shrink-0 p-1 text-gray-300 hover:text-blue-500 rounded opacity-100 sm:opacity-0 sm:group-hover/name:opacity-100 transition-all"
               title="Rename board"
               type="button"
             >
