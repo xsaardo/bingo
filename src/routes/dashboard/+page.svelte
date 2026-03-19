@@ -63,6 +63,9 @@
 
 <svelte:head>
   <title>Dashboard - Bingo Board</title>
+  <meta property="og:title" content="Dashboard — Bingoals" />
+  <meta name="description" content="Manage all your Bingoals boards in one place." />
+  <meta property="og:description" content="Manage all your Bingoals boards in one place." />
 </svelte:head>
 
 <AuthGuard>

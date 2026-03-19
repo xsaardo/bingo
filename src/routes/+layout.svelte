@@ -19,6 +19,7 @@
 
 <svelte:head>
   <link rel="icon" href={favicon} />
+  <meta property="og:title" content="Bingoals" />
 </svelte:head>
 
 <div class="{themeClass} min-h-screen">
