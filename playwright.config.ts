@@ -16,6 +16,7 @@ dotenv.config({ path: resolve(__dirname, '.env.test') });
  */
 export default defineConfig({
   testDir: './tests',
+  globalTeardown: './tests/global-teardown.ts',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
