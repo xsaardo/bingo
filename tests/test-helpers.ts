@@ -26,8 +26,17 @@ export async function createTestBoard(page: Page): Promise<string> {
   const boardName = `Test Board ${Date.now()}`;
   await page.getByLabel('Board Name', { exact: false }).fill(boardName);
 
+  // Set up waiter for the board creation POST request before clicking Create Board
+  const createRequest = page.waitForResponse(
+    (resp) => resp.url().includes('/boards') && resp.request().method() === 'POST',
+    { timeout: 10000 }
+  );
+
   // Click the Create Board button in the modal
   await page.getByRole('button', { name: 'Create Board' }).click();
+
+  // Wait for the board creation to complete
+  await createRequest;
 
   // Wait for the dialog to fully close before looking for the new board card
   await expect(page.getByRole('dialog')).not.toBeVisible();
