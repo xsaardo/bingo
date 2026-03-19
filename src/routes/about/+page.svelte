@@ -8,6 +8,7 @@
 
 <svelte:head>
   <title>About — Bingoals</title>
+  <meta property="og:title" content="About — Bingoals" />
   <meta
     name="description"
     content="Learn about Bingoals — a simple tool for tracking goals as a bingo board."

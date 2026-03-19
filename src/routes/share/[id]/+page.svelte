@@ -27,15 +27,21 @@
 <svelte:head>
   <title>{$currentBoard?.name || 'Shared Board'} - BINGOALS</title>
   <meta
+    property="og:title"
+    content={$currentBoard?.name
+      ? `${$currentBoard.name} — Bingoals`
+      : 'Check out this board on Bingoals'}
+  />
+  <meta
     name="description"
     content={$currentBoard?.name
-      ? `Check out ${$currentBoard.name} on Bingoals`
+      ? `Check out ${$currentBoard.name} on Bingoals.`
       : 'Check out this board on Bingoals.'}
   />
   <meta
     property="og:description"
     content={$currentBoard?.name
-      ? `Check out ${$currentBoard.name} on Bingoals`
+      ? `Check out ${$currentBoard.name} on Bingoals.`
       : 'Check out this board on Bingoals.'}
   />
 </svelte:head>

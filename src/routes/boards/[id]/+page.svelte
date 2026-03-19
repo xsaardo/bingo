@@ -76,16 +76,20 @@
 <svelte:head>
   <title>{$currentBoard?.name || 'Board'} - Bingo Board</title>
   <meta
+    property="og:title"
+    content={$currentBoard?.name ? `${$currentBoard.name} — Bingoals` : 'Bingoals'}
+  />
+  <meta
     name="description"
     content={$currentBoard?.name
-      ? `${$currentBoard.name} — Bingoals`
-      : 'Track your goals on Bingoals.'}
+      ? `Track progress on ${$currentBoard.name} — your goal bingo board on Bingoals.`
+      : 'Track your goal bingo board on Bingoals.'}
   />
   <meta
     property="og:description"
     content={$currentBoard?.name
-      ? `${$currentBoard.name} — Bingoals`
-      : 'Track your goals on Bingoals.'}
+      ? `Track progress on ${$currentBoard.name} — your goal bingo board on Bingoals.`
+      : 'Track your goal bingo board on Bingoals.'}
   />
 </svelte:head>
 

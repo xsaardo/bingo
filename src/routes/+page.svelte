@@ -61,6 +61,7 @@
 
 <svelte:head>
   <title>Bingo Board - Turn your 2026 goals into a bingo board</title>
+  <meta property="og:title" content="Bingoals" />
   <meta
     name="description"
     content="Turn your goals into a bingo board. Track progress, celebrate wins, and stay motivated."
