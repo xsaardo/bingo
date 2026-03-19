@@ -65,17 +65,17 @@
 
 {#if !$isAuthInitialized}
   <!-- Loading state -->
-  <div class="min-h-screen flex items-center justify-center">
+  <main class="min-h-screen flex items-center justify-center">
     <div class="text-center">
       <div
         class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
       ></div>
       <p class="text-gray-600">Loading...</p>
     </div>
-  </div>
+  </main>
 {:else if $authError}
   <!-- Auth init failed -->
-  <div class="min-h-screen flex items-center justify-center">
+  <main class="min-h-screen flex items-center justify-center">
     <div class="text-center">
       <p data-testid="auth-error-message" class="text-red-600 mb-4">{$authError}</p>
       <button
@@ -86,7 +86,7 @@
         Try again
       </button>
     </div>
-  </div>
+  </main>
 {:else}
   <!-- Landing page with inline board creation -->
   <div class="min-h-screen flex flex-col">
@@ -113,7 +113,7 @@
       </div>
     </header>
 
-    <div class="flex-1 flex items-center justify-center p-4">
+    <main class="flex-1 flex items-center justify-center p-4">
       <div class="max-w-2xl w-full">
         <div
           class="text-center mb-8 inline-block bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3 w-full"
@@ -260,7 +260,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </main>
     <footer class="py-6 text-center text-sm text-gray-400 bg-white/70 backdrop-blur-sm">
       <p>
         © {new Date().getFullYear()} Bingoals &middot;

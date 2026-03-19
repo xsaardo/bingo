@@ -22,7 +22,7 @@
   <title>Sign In - Bingoals</title>
 </svelte:head>
 
-<div class="min-h-screen flex items-center justify-center p-4">
+<main class="min-h-screen flex items-center justify-center p-4">
   <div class="w-full max-w-md">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -54,4 +54,4 @@
       </div>
     {/if}
   </div>
-</div>
+</main>

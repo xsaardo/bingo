@@ -30,7 +30,7 @@
   <title>Signing Out - Bingo Board</title>
 </svelte:head>
 
-<div class="min-h-screen flex items-center justify-center p-4">
+<main class="min-h-screen flex items-center justify-center p-4">
   <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
     {#if status === 'loading'}
       <div class="space-y-4">
@@ -76,4 +76,4 @@
       </div>
     {/if}
   </div>
-</div>
+</main>
