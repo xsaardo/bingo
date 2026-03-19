@@ -26,6 +26,18 @@
 
 <svelte:head>
   <title>{$currentBoard?.name || 'Shared Board'} - BINGOALS</title>
+  <meta
+    name="description"
+    content={$currentBoard?.name
+      ? `Check out ${$currentBoard.name} on Bingoals`
+      : 'Check out this board on Bingoals.'}
+  />
+  <meta
+    property="og:description"
+    content={$currentBoard?.name
+      ? `Check out ${$currentBoard.name} on Bingoals`
+      : 'Check out this board on Bingoals.'}
+  />
 </svelte:head>
 
 <div class="h-screen flex flex-col">

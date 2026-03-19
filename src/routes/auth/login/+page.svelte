@@ -20,6 +20,8 @@
 
 <svelte:head>
   <title>Sign In - Bingoals</title>
+  <meta name="description" content="Sign in to Bingoals to access your goal boards." />
+  <meta property="og:description" content="Sign in to Bingoals to access your goal boards." />
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center p-4">

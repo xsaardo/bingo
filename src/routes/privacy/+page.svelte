@@ -5,6 +5,8 @@
 
 <svelte:head>
   <title>Privacy Policy — Bingoals</title>
+  <meta name="description" content="Bingoals privacy policy." />
+  <meta property="og:description" content="Bingoals privacy policy." />
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">

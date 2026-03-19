@@ -19,6 +19,14 @@
 
 <svelte:head>
   <link rel="icon" href={favicon} />
+  <meta
+    name="description"
+    content="Turn your goals into a bingo board. Track progress, celebrate wins, and stay motivated."
+  />
+  <meta
+    property="og:description"
+    content="Turn your goals into a bingo board. Track progress, celebrate wins, and stay motivated."
+  />
 </svelte:head>
 
 <div class="{themeClass} min-h-screen">

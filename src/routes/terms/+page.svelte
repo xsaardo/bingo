@@ -5,6 +5,8 @@
 
 <svelte:head>
   <title>Terms of Service — Bingoals</title>
+  <meta name="description" content="Bingoals terms of service." />
+  <meta property="og:description" content="Bingoals terms of service." />
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">

@@ -75,6 +75,18 @@
 
 <svelte:head>
   <title>{$currentBoard?.name || 'Board'} - Bingo Board</title>
+  <meta
+    name="description"
+    content={$currentBoard?.name
+      ? `${$currentBoard.name} — Bingoals`
+      : 'Track your goals on Bingoals.'}
+  />
+  <meta
+    property="og:description"
+    content={$currentBoard?.name
+      ? `${$currentBoard.name} — Bingoals`
+      : 'Track your goals on Bingoals.'}
+  />
 </svelte:head>
 
 <AuthGuard>
