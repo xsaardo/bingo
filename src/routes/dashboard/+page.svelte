@@ -82,9 +82,10 @@
           <div class="flex items-center gap-3">
             <button
               onclick={handleCreateBoard}
-              class="flex items-center px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+              aria-label="New Board"
+              class="flex items-center p-2 sm:px-4 sm:py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
             >
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -92,7 +93,7 @@
                   d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                 />
               </svg>
-              New Board
+              <span class="hidden sm:inline">New Board</span>
             </button>
             <UserMenu />
           </div>
