@@ -12,7 +12,7 @@
 <DropdownMenuPrimitive.Portal>
   <DropdownMenuPrimitive.Content
     {sideOffset}
-    class="z-50 min-w-[8rem] overflow-hidden rounded-lg border bg-white p-1 shadow-lg {className}"
+    class="z-50 min-w-[8rem] overflow-hidden rounded-lg border border-gray-200 bg-white p-1 shadow-lg {className}"
     {...restProps}
   >
     {@render children?.()}
