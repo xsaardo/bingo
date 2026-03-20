@@ -5,6 +5,7 @@
 
   let open = $state(false);
   let menuEl: HTMLDivElement | undefined = $state();
+  let dropdownEl: HTMLDivElement | undefined = $state();
 
   function toggle(e: MouseEvent) {
     e.stopPropagation();
@@ -21,12 +22,56 @@
     }
   }
 
-  function handleKeydown(e: KeyboardEvent) {
+  function handleWindowKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape') close();
   }
+
+  function getMenuItems(): HTMLElement[] {
+    if (!dropdownEl) return [];
+    return Array.from(dropdownEl.querySelectorAll<HTMLElement>('[role="menuitem"]')).filter(
+      (el) => !el.hasAttribute('disabled')
+    );
+  }
+
+  function handleMenuKeydown(e: KeyboardEvent) {
+    const items = getMenuItems();
+    if (items.length === 0) return;
+
+    const focused = document.activeElement as HTMLElement;
+    const currentIndex = items.indexOf(focused);
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+      items[next].focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+      items[prev].focus();
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      if (e.shiftKey) {
+        const prev = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+        items[prev].focus();
+      } else {
+        const next = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+        items[next].focus();
+      }
+    }
+  }
+
+  // Focus first menu item when menu opens
+  $effect(() => {
+    if (open && dropdownEl) {
+      setTimeout(() => {
+        const items = getMenuItems();
+        if (items.length > 0) items[0].focus();
+      }, 0);
+    }
+  });
 </script>
 
-<svelte:window onkeydown={handleKeydown} onclick={handleOutsideClick} />
+<svelte:window onkeydown={handleWindowKeydown} onclick={handleOutsideClick} />
 
 <div class="relative sm:hidden" bind:this={menuEl}>
   <button
@@ -60,11 +105,14 @@
   </button>
 
   {#if open}
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
       role="menu"
       aria-label="Navigation menu"
+      tabindex="-1"
+      onclick={close}
+      onkeydown={handleMenuKeydown}
+      bind:this={dropdownEl}
     >
       <div class="py-1 flex flex-col">
         {@render children?.()}

@@ -223,7 +223,7 @@
 
   <!-- Conversion Prompt for anonymous second board creation -->
   <ConversionPrompt
-    trigger="share"
+    trigger="create"
     isOpen={showCreateConversionPrompt}
     onDismiss={handleCreateConversionDismiss}
   />

@@ -64,6 +64,51 @@
     }
   }
 
+  /**
+   * Mobile-specific share handler. When the board is already public, shows
+   * the share URL via the native share sheet (navigator.share) or falls back
+   * to a prompt so the user can copy it. Disable sharing is a separate action.
+   */
+  async function handleMobileShare() {
+    if (!$currentBoard || !isOwner) return;
+    if ($isAnonymous) {
+      showShareConversionPrompt = true;
+      return;
+    }
+    if ($currentBoard.isPublic) {
+      // Show the URL — do NOT disable sharing on this tap
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        try {
+          await navigator.share({ url: shareUrl, title: 'My Bingo Board' });
+        } catch {
+          // User cancelled native share — fall back to copyable prompt
+          window.prompt('Copy share link:', shareUrl);
+        }
+      } else {
+        window.prompt('Copy share link:', shareUrl);
+      }
+    } else {
+      await currentBoardStore.setPublic(boardId, true);
+      // Enable sharing, then let the user grab the URL
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        try {
+          await navigator.share({ url: shareUrl, title: 'My Bingo Board' });
+        } catch {
+          window.prompt('Copy share link:', shareUrl);
+        }
+      } else {
+        window.prompt('Copy share link:', shareUrl);
+      }
+    }
+  }
+
+  /** Mobile-only: explicitly disable sharing (secondary action). */
+  async function handleMobileDisableShare() {
+    if (!$currentBoard || !isOwner) return;
+    await currentBoardStore.setPublic(boardId, false);
+    toast('Sharing disabled');
+  }
+
   function handleShareConversionDismiss() {
     showShareConversionPrompt = false;
   }
@@ -269,7 +314,7 @@
               {#if $currentBoard && isOwner}
                 <button
                   class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                  onclick={handleShare}
+                  onclick={handleMobileShare}
                   role="menuitem"
                 >
                   <svg
@@ -285,8 +330,26 @@
                       d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
                     />
                   </svg>
-                  {$currentBoard.isPublic ? 'Sharing on — manage' : 'Share board'}
+                  {$currentBoard.isPublic ? 'Sharing on — copy link' : 'Share board'}
                 </button>
+
+                {#if $currentBoard.isPublic}
+                  <button
+                    class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                    onclick={handleMobileDisableShare}
+                    role="menuitem"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                      />
+                    </svg>
+                    Disable sharing
+                  </button>
+                {/if}
 
                 <!-- Mobile font picker -->
                 <div class="px-4 py-2">
