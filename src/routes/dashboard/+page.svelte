@@ -12,6 +12,7 @@
   import { isAnonymous } from '$lib/stores/auth';
   import ConversionPrompt from '$lib/components/ConversionPrompt.svelte';
   import type { Board } from '$lib/types';
+  import MobileMenu from '$lib/components/MobileMenu.svelte';
 
   let showCreateModal = $state(false);
   let showCreateConversionPrompt = $state(false);
@@ -80,21 +81,50 @@
           </a>
 
           <div class="flex items-center gap-3">
-            <button
-              onclick={handleCreateBoard}
-              class="flex items-center px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
-            >
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-              New Board
-            </button>
-            <UserMenu />
+            <!-- Desktop nav (hidden on mobile) -->
+            <div class="hidden sm:flex items-center gap-3">
+              <button
+                onclick={handleCreateBoard}
+                class="flex items-center px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+              >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+                New Board
+              </button>
+              <UserMenu />
+            </div>
+
+            <!-- Mobile hamburger menu (hidden on sm+) -->
+            <MobileMenu>
+              <button
+                onclick={handleCreateBoard}
+                class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                role="menuitem"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+                New Board
+              </button>
+              <div class="h-px bg-gray-100 mx-2 my-1"></div>
+              <UserMenu flat />
+            </MobileMenu>
           </div>
         </div>
       </div>
@@ -196,7 +226,7 @@
 
   <!-- Conversion Prompt for anonymous second board creation -->
   <ConversionPrompt
-    trigger="share"
+    trigger="create"
     isOpen={showCreateConversionPrompt}
     onDismiss={handleCreateConversionDismiss}
   />

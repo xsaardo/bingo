@@ -7,7 +7,7 @@
   import * as Dialog from '$lib/components/ui/dialog/index.js';
 
   interface Props {
-    trigger: 'share' | 'notes' | 'milestones';
+    trigger: 'share' | 'notes' | 'milestones' | 'create';
     isOpen: boolean;
     onDismiss: () => void;
   }
@@ -21,15 +21,19 @@
   const heading = $derived(
     trigger === 'share'
       ? 'Sign up to share your board'
-      : trigger === 'notes'
-        ? 'Sign up to save detailed notes'
-        : 'Sign up to track milestones'
+      : trigger === 'create'
+        ? 'Sign up to create more boards'
+        : trigger === 'notes'
+          ? 'Sign up to save detailed notes'
+          : 'Sign up to track milestones'
   );
 
   const description = $derived(
     trigger === 'share'
       ? 'Create an account to share your board on TikTok, Instagram, and more. Your progress will be saved across all devices.'
-      : 'Create an account to save your progress notes and access your board from any device.'
+      : trigger === 'create'
+        ? 'Create an account to make unlimited bingo boards and access them from any device.'
+        : 'Create an account to save your progress notes and access your board from any device.'
   );
 
   function handleSignUp() {
@@ -60,6 +64,15 @@
               stroke-linejoin="round"
               stroke-width="2"
               d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+            />
+          </svg>
+        {:else if trigger === 'create'}
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
             />
           </svg>
         {:else}

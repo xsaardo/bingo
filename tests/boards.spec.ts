@@ -29,7 +29,17 @@ async function createBoardWithSize(
     }
   }
 
+  // Set up waiter for the board creation POST request before clicking Create Board
+  const createRequest = page.waitForResponse(
+    (resp) => resp.url().includes('/boards') && resp.request().method() === 'POST',
+    { timeout: 10000 }
+  );
+
   await page.getByRole('button', { name: 'Create Board' }).click();
+
+  // Wait for the board creation to complete
+  await createRequest;
+
   await expect(page.getByRole('dialog')).not.toBeVisible();
 
   await expect(page.getByRole('heading', { name: boardName })).toBeVisible();
