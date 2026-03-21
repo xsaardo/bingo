@@ -111,7 +111,7 @@
 <a
   href="/boards/{board.id}"
   data-testid="board-card"
-  class="block bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all duration-200 overflow-hidden group"
+  class="block bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-sm hover:border-[#2D25CC] transition-all duration-200 overflow-hidden group"
 >
   <!-- Header -->
   <div class="p-4 border-b border-gray-100">
@@ -127,7 +127,7 @@
                 onblur={saveName}
                 disabled={saving}
                 maxlength={100}
-                class="flex-1 text-lg font-semibold text-gray-900 border border-blue-400 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                class="flex-1 text-lg font-semibold text-gray-900 border border-[#2D25CC] rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-[#2D25CC] disabled:opacity-50"
                 use:focusOnMount
               />
               <button
@@ -156,13 +156,13 @@
         {:else}
           <div class="flex items-center gap-1 group/name">
             <h3
-              class="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors"
+              class="text-lg font-semibold text-gray-900 truncate group-hover:text-[#2D25CC] transition-colors"
             >
               {board.name}
             </h3>
             <button
               onclick={handleEditClick}
-              class="flex-shrink-0 p-1 text-gray-300 hover:text-blue-500 rounded-lg opacity-100 sm:opacity-0 sm:group-hover/name:opacity-100 transition-all"
+              class="flex-shrink-0 p-1 text-gray-300 hover:text-[#2D25CC] rounded-lg opacity-100 sm:opacity-0 sm:group-hover/name:opacity-100 transition-all"
               title="Rename board"
               type="button"
             >
@@ -207,11 +207,11 @@
     <div class="mb-3">
       <div class="flex items-center justify-between mb-2">
         <span class="text-sm font-medium text-gray-700">Progress</span>
-        <span class="text-sm font-semibold text-blue-600">{completionPercentage}%</span>
+        <span class="text-sm font-semibold text-[#2D25CC]">{completionPercentage}%</span>
       </div>
       <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
         <div
-          class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+          class="bg-[#2D25CC] h-2 rounded-full transition-all duration-300"
           style="width: {completionPercentage}%"
         ></div>
       </div>
@@ -224,7 +224,7 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-2">
         {#if !hasContent}
-          <Badge variant="secondary">
+          <Badge variant="secondary" class="rounded-full">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -236,7 +236,7 @@
             Empty
           </Badge>
         {:else if completedGoals === totalGoals}
-          <Badge variant="outline" class="border-green-500 bg-green-50 text-green-700">
+          <Badge variant="outline" class="border-green-500 bg-green-50 text-green-700 rounded-full">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -248,7 +248,7 @@
             Complete
           </Badge>
         {:else if completedGoals > 0}
-          <Badge variant="outline" class="border-blue-400 bg-blue-50 text-blue-700">
+          <Badge variant="outline" class="border-[#2D25CC] bg-[#E8E9F0] text-[#2D25CC] rounded-full">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -260,7 +260,7 @@
             In Progress
           </Badge>
         {:else}
-          <Badge variant="outline" class="border-yellow-400 bg-yellow-50 text-yellow-700">
+          <Badge variant="outline" class="border-yellow-400 bg-yellow-50 text-yellow-700 rounded-full">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"

@@ -66,7 +66,7 @@
 
     <button
       onclick={resetForm}
-      class="w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium"
+      class="w-full text-center text-sm text-[#2D25CC] hover:text-[#1D1AAA] font-medium"
     >
       Try a different email
     </button>
@@ -120,7 +120,7 @@
     <button
       type="submit"
       disabled={loading}
-      class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+      class="w-full bg-[#2D25CC] hover:bg-[#1D1AAA] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-full transition-colors duration-200 flex items-center justify-center"
     >
       {#if loading}
         <svg
@@ -162,7 +162,7 @@
     <div class="space-y-2 text-sm text-gray-600">
       <div class="flex items-start">
         <svg
-          class="w-5 h-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5"
+          class="w-5 h-5 text-[#2D25CC] mr-2 flex-shrink-0 mt-0.5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -178,7 +178,7 @@
       </div>
       <div class="flex items-start">
         <svg
-          class="w-5 h-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5"
+          class="w-5 h-5 text-[#2D25CC] mr-2 flex-shrink-0 mt-0.5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -194,7 +194,7 @@
       </div>
       <div class="flex items-start">
         <svg
-          class="w-5 h-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5"
+          class="w-5 h-5 text-[#2D25CC] mr-2 flex-shrink-0 mt-0.5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

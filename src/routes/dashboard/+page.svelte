@@ -69,7 +69,7 @@
 </svelte:head>
 
 <AuthGuard>
-  <div class="min-h-screen">
+  <div class="min-h-screen bg-[#E8E9F0]">
     <!-- Header -->
     <header class="bg-white border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -82,7 +82,7 @@
           <div class="flex items-center gap-3">
             <button
               onclick={handleCreateBoard}
-              class="flex items-center px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+              class="flex items-center px-4 py-2 text-sm bg-[#2D25CC] hover:bg-[#1D1AAA] text-white font-medium rounded-full transition-colors shadow-sm hover:shadow-md"
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -101,7 +101,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="dot-grid max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Page Header -->
       <div class="mb-8 inline-block bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3">
         <h2 class="text-3xl font-bold text-gray-900">My Boards</h2>
@@ -115,7 +115,7 @@
           <div class="flex justify-center">
             <button
               onclick={handleRetryFetch}
-              class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+              class="px-6 py-2.5 bg-[#2D25CC] hover:bg-[#1D1AAA] text-white font-medium rounded-full transition-colors shadow-sm hover:shadow-md"
             >
               Retry
             </button>
@@ -138,10 +138,10 @@
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
           <div class="max-w-md mx-auto">
             <div
-              class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6"
+              class="inline-flex items-center justify-center w-20 h-20 bg-[#E8E9F0] rounded-full mb-6"
             >
               <svg
-                class="w-10 h-10 text-blue-600"
+                class="w-10 h-10 text-[#2D25CC]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -160,7 +160,7 @@
             </p>
             <button
               onclick={handleCreateBoard}
-              class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-xl"
+              class="inline-flex items-center px-6 py-3 bg-[#2D25CC] hover:bg-[#1D1AAA] text-white font-semibold rounded-full transition-colors shadow-lg hover:shadow-xl"
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path

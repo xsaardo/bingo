@@ -144,7 +144,7 @@
         <button
           type="submit"
           disabled={loading}
-          class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center"
+          class="px-5 py-2.5 bg-[#2D25CC] hover:bg-[#1D1AAA] text-white rounded-full font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
         >
           {#if loading}
             <svg
