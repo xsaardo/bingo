@@ -52,9 +52,9 @@
   <Dialog.Content class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 border-0 gap-0">
     <!-- Icon -->
     <div class="flex justify-center mb-4">
-      <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+      <div class="w-16 h-16 bg-[#E8E9F0] rounded-full flex items-center justify-center">
         {#if trigger === 'share'}
-          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 text-[#2D25CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -63,7 +63,7 @@
             />
           </svg>
         {:else}
-          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 text-[#2D25CC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -87,7 +87,7 @@
     <div class="flex flex-col sm:flex-row gap-3">
       <button
         onclick={handleSignUp}
-        class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+        class="flex-1 py-3 bg-[#2D25CC] hover:bg-[#1D1AAA] text-white font-semibold rounded-full transition-colors"
       >
         Sign Up with Email
       </button>
@@ -101,7 +101,7 @@
 
     <p class="text-xs text-gray-500 text-center mt-4">
       Already have an account?
-      <a href="/auth/login" class="text-blue-600 hover:text-blue-700 font-medium">Sign in</a>
+      <a href="/auth/login" class="text-[#2D25CC] hover:text-[#1D1AAA] font-medium">Sign in</a>
     </p>
   </Dialog.Content>
 </Dialog.Root>

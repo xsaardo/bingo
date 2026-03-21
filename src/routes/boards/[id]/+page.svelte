@@ -121,7 +121,7 @@
                           variant="ghost"
                           size="icon"
                           data-testid="share-button"
-                          class="text-blue-600 bg-blue-50 hover:bg-blue-100"
+                          class="text-[#2D25CC] bg-[#E8E9F0] hover:bg-[#E8E9F0]"
                           title="Sharing on — view link"
                         >
                           <svg
@@ -265,7 +265,7 @@
           aria-busy="true"
         >
           <div
-            class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
+            class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#2D25CC] mx-auto mb-4"
             aria-label="Loading board"
           ></div>
           <p class="text-gray-600">Loading board...</p>

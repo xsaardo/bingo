@@ -115,7 +115,7 @@
                   </p>
                   <a
                     href="/auth/login"
-                    class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                    class="inline-block px-4 py-2 bg-[#2D25CC] hover:bg-[#1D1AAA] text-white text-sm font-medium rounded-full transition-colors"
                   >
                     Sign in
                   </a>
@@ -163,7 +163,7 @@
       </button>
       <button
         onclick={handleSave}
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+        class="px-4 py-2 bg-[#2D25CC] hover:bg-[#1D1AAA] text-white text-sm font-medium rounded-full transition-colors"
         data-testid="save-goal-button"
       >
         Save

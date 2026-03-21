@@ -77,7 +77,7 @@
   <main class="min-h-screen flex items-center justify-center">
     <div class="text-center">
       <div
-        class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
+        class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#2D25CC] mx-auto mb-4"
       ></div>
       <p class="text-gray-600">Loading...</p>
     </div>
@@ -90,7 +90,7 @@
       <button
         data-testid="auth-retry-button"
         onclick={retryAuth}
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        class="px-4 py-2 bg-[#2D25CC] text-white rounded-full hover:bg-[#1D1AAA]"
       >
         Try again
       </button>
@@ -186,11 +186,11 @@
                 data-testid="create-board-button"
                 onclick={handleCreateBoard}
                 disabled={creating}
-                class="w-full py-4 bg-white hover:bg-blue-50 text-blue-700 text-lg font-semibold rounded-lg transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+                class="w-full py-4 bg-white hover:bg-[#E8E9F0] text-[#2D25CC] text-lg font-semibold rounded-lg transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {#if creating}
                   <svg
-                    class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-700"
+                    class="animate-spin -ml-1 mr-3 h-5 w-5 text-[#2D25CC]"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -254,7 +254,7 @@
                     width={buttonWidth + 6}
                     height={buttonHeight + 6}
                     fill="none"
-                    stroke="#1d4ed8"
+                    stroke="#2D25CC"
                     stroke-width="2.5"
                     rx="12"
                     filter="url(#hand-drawn)"
