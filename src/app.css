@@ -3,59 +3,120 @@
 
 @theme {
   --font-sans: 'Geist Mono', monospace;
+  /* Retro-organic editorial palette */
+  --color-chartreuse: #c8d400;
+  --color-beige: #ede8df;
+  --color-forest: #1e2a1a;
 }
 
 /*
-  shadcn-svelte CSS variables (oklch format)
-  Primary color mapped to blue-600
+  Retro-organic editorial design system
+  3-color palette: chartreuse (#C8D400) · beige (#EDE8DF) · forest green (#1E2A1A)
+  Inspired by Graza DTC aesthetic — flat 2D, high contrast, cheeky
 */
 body {
   font-family: 'Geist Mono', monospace;
+  background-color: #ede8df;
+  color: #1e2a1a;
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.511 0.262 264.052); /* blue-600 */
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.967 0.003 264.542);
-  --secondary-foreground: oklch(0.21 0.034 264.665);
-  --muted: oklch(0.967 0.003 264.542);
-  --muted-foreground: oklch(0.551 0.027 264.364);
-  --accent: oklch(0.967 0.003 264.542);
-  --accent-foreground: oklch(0.21 0.034 264.665);
+  --radius: 1rem; /* rounder = more organic */
+  --background: #ede8df; /* warm sand beige */
+  --foreground: #1e2a1a; /* forest green */
+  --card: #ede8df;
+  --card-foreground: #1e2a1a;
+  --popover: #ede8df;
+  --popover-foreground: #1e2a1a;
+  --primary: #1e2a1a; /* forest green — primary actions */
+  --primary-foreground: #c8d400; /* chartreuse on dark */
+  --secondary: #c8d400; /* chartreuse */
+  --secondary-foreground: #1e2a1a;
+  --muted: #d8d2c8; /* muted beige */
+  --muted-foreground: #3d4e38; /* mid-forest */
+  --accent: #c8d400; /* chartreuse accent */
+  --accent-foreground: #1e2a1a;
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.928 0.006 264.531);
-  --input: oklch(0.928 0.006 264.531);
-  --ring: oklch(0.511 0.262 264.052); /* blue-600 */
+  --destructive-foreground: #ede8df;
+  --border: #1e2a1a; /* forest green borders */
+  --input: #cdc8be; /* slightly darker beige for inputs */
+  --ring: #c8d400; /* chartreuse focus ring */
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.546 0.245 262.881); /* blue-500 for dark mode */
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: #1e2a1a;
+  --foreground: #ede8df;
+  --card: #253121;
+  --card-foreground: #ede8df;
+  --popover: #253121;
+  --popover-foreground: #ede8df;
+  --primary: #c8d400;
+  --primary-foreground: #1e2a1a;
+  --secondary: #2d3e27;
+  --secondary-foreground: #ede8df;
+  --muted: #2d3e27;
+  --muted-foreground: #a0a890;
+  --accent: #c8d400;
+  --accent-foreground: #1e2a1a;
   --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.546 0.245 262.881);
+  --destructive-foreground: #ede8df;
+  --border: #c8d400;
+  --input: #2d3e27;
+  --ring: #c8d400;
+}
+
+/* =====================================================
+   Retro-organic hero / header
+   Full-bleed chartreuse header block
+   ===================================================== */
+.hero-chartreuse {
+  background-color: #c8d400;
+  color: #1e2a1a;
+  border-bottom: 2px solid #1e2a1a;
+}
+
+/* =====================================================
+   Retro-organic card — flat 2D, no shadow, slight blob rounding
+   ===================================================== */
+.card-organic {
+  background-color: #ede8df;
+  border: 2px solid #1e2a1a;
+  border-radius: 1.25rem;
+  box-shadow: none;
+}
+
+/* =====================================================
+   Pill CTA button — sticker-like, dashed border
+   ===================================================== */
+.btn-retro {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #c8d400;
+  color: #1e2a1a;
+  font-weight: 700;
+  border-radius: 9999px;
+  border: 2.5px dashed #1e2a1a;
+  padding: 0.75rem 2rem;
+  transition: background-color 0.15s;
+  box-shadow: none;
+}
+.btn-retro:hover {
+  background-color: #d4e000;
+}
+.btn-retro:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   Retro divider — thin hand-drawn style accent line
+   ===================================================== */
+.divider-organic {
+  border: none;
+  border-top: 2px dashed #1e2a1a;
+  opacity: 0.35;
+  margin: 1.5rem 0;
 }
 
 .theme-horse {

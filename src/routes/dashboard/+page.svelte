@@ -69,20 +69,23 @@
 </svelte:head>
 
 <AuthGuard>
-  <div class="min-h-screen">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200">
+  <div class="min-h-screen" style="background:#EDE8DF">
+    <!-- Full-bleed chartreuse hero header -->
+    <header class="hero-chartreuse">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo />
-            <h1 class="text-xl font-bold text-gray-900">BINGOALS</h1>
+            <h1 class="text-xl font-bold tracking-tight uppercase" style="color:#1E2A1A">
+              BINGOALS
+            </h1>
           </a>
 
           <div class="flex items-center gap-3">
             <button
               onclick={handleCreateBoard}
-              class="flex items-center px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+              class="flex items-center px-4 py-2 text-sm font-bold rounded-full border-2 border-dashed transition-colors"
+              style="background:#1E2A1A;color:#C8D400;border-color:#C8D400"
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -103,9 +106,12 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Page Header -->
-      <div class="mb-8 inline-block bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3">
-        <h2 class="text-3xl font-bold text-gray-900">My Boards</h2>
-        <p class="text-gray-600 mt-1">Create and manage your bingo boards</p>
+      <div
+        class="mb-8 inline-block rounded-2xl px-5 py-3"
+        style="background:#C8D400;border:2px solid #1E2A1A"
+      >
+        <h2 class="text-3xl font-bold uppercase tracking-tight" style="color:#1E2A1A">My Boards</h2>
+        <p class="mt-1" style="color:#1E2A1A;opacity:0.75">Create and manage your bingo boards</p>
       </div>
 
       <!-- Error State -->
@@ -113,35 +119,35 @@
         <div class="space-y-4 max-w-2xl mx-auto">
           <ErrorAlert error={$boardsError} />
           <div class="flex justify-center">
-            <button
-              onclick={handleRetryFetch}
-              class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
-            >
-              Retry
-            </button>
+            <button onclick={handleRetryFetch} class="btn-retro"> Retry </button>
           </div>
         </div>
       {:else if $boardsLoading}
         <!-- Loading State -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-busy="true">
           {#each Array(3) as _}
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 animate-pulse">
-              <div class="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-              <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-              <div class="h-2 bg-gray-200 rounded w-full mb-2"></div>
-              <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+            <div
+              class="rounded-2xl border-2 p-6 animate-pulse"
+              style="background:#EDE8DF;border-color:#1E2A1A"
+            >
+              <div class="h-6 rounded w-3/4 mb-4" style="background:#d8d2c8"></div>
+              <div class="h-4 rounded w-1/2 mb-4" style="background:#d8d2c8"></div>
+              <div class="h-2 rounded w-full mb-2" style="background:#d8d2c8"></div>
+              <div class="h-4 rounded w-1/4" style="background:#d8d2c8"></div>
             </div>
           {/each}
         </div>
       {:else if !$hasBoards}
         <!-- Empty State -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
+        <div class="card-organic p-12 text-center">
           <div class="max-w-md mx-auto">
             <div
-              class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6"
+              class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6"
+              style="background:#C8D400;border:2px solid #1E2A1A"
             >
               <svg
-                class="w-10 h-10 text-blue-600"
+                class="w-10 h-10"
+                style="color:#1E2A1A"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -154,14 +160,13 @@
                 />
               </svg>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">No boards yet</h3>
-            <p class="text-gray-600 mb-6">
+            <h3 class="text-2xl font-bold mb-2 uppercase tracking-tight" style="color:#1E2A1A">
+              No boards yet
+            </h3>
+            <p class="mb-6" style="color:#1E2A1A;opacity:0.7">
               Create your first bingo board to start tracking your goals and achievements!
             </p>
-            <button
-              onclick={handleCreateBoard}
-              class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-xl"
-            >
+            <button onclick={handleCreateBoard} class="btn-retro inline-flex items-center">
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"

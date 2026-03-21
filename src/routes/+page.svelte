@@ -74,44 +74,44 @@
 
 {#if !$isAuthInitialized}
   <!-- Loading state -->
-  <main class="min-h-screen flex items-center justify-center">
+  <main class="min-h-screen flex items-center justify-center" style="background:#EDE8DF">
     <div class="text-center">
       <div
-        class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
+        class="animate-spin rounded-full h-12 w-12 border-b-4 mx-auto mb-4"
+        style="border-color:#1E2A1A"
       ></div>
-      <p class="text-gray-600">Loading...</p>
+      <p style="color:#1E2A1A">Loading...</p>
     </div>
   </main>
 {:else if $authError}
   <!-- Auth init failed -->
-  <main class="min-h-screen flex items-center justify-center">
+  <main class="min-h-screen flex items-center justify-center" style="background:#EDE8DF">
     <div class="text-center">
       <p data-testid="auth-error-message" class="text-red-600 mb-4">{$authError}</p>
-      <button
-        data-testid="auth-retry-button"
-        onclick={retryAuth}
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-      >
+      <button data-testid="auth-retry-button" onclick={retryAuth} class="btn-retro">
         Try again
       </button>
     </div>
   </main>
 {:else}
   <!-- Landing page with inline board creation -->
-  <div class="min-h-screen flex flex-col">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200">
+  <div class="min-h-screen flex flex-col" style="background:#EDE8DF">
+    <!-- Full-bleed chartreuse hero header -->
+    <header class="hero-chartreuse">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo size="2.5rem" />
-            <h1 class="text-xl font-bold text-gray-900">BINGOALS</h1>
+            <h1 class="text-xl font-bold tracking-tight uppercase" style="color:#1E2A1A">
+              BINGOALS
+            </h1>
           </a>
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
               <a
                 href="/dashboard"
-                class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                class="px-4 py-2 text-sm font-semibold rounded-full border-2 border-dashed transition-colors"
+                style="color:#1E2A1A;border-color:#1E2A1A;background:transparent"
               >
                 My Boards
               </a>
@@ -125,21 +125,27 @@
     <main class="flex-1 flex items-center justify-center p-4">
       <div class="max-w-2xl w-full">
         <div
-          class="text-center mb-8 inline-block bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3 w-full"
+          class="text-center mb-8 inline-block rounded-2xl px-5 py-3 w-full"
+          style="background:#C8D400;border:2px solid #1E2A1A"
         >
-          <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+          <h1
+            class="text-4xl sm:text-5xl font-bold mb-4 uppercase tracking-tight"
+            style="color:#1E2A1A"
+          >
             Turn your 2026 goals into a bingo board
           </h1>
-          <p class="text-lg sm:text-xl text-gray-600">
+          <p class="text-lg sm:text-xl" style="color:#1E2A1A">
             Track visually. Share progress. Celebrate bingos.
           </p>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+        <div class="card-organic p-6 sm:p-8">
           <div class="space-y-6">
             <!-- Board Name -->
             <div>
-              <Label for="board-name" class="block mb-2">What's your board called?</Label>
+              <Label for="board-name" class="block mb-2 font-semibold" style="color:#1E2A1A"
+                >What's your board called?</Label
+              >
               <Input
                 bind:ref={nameInput}
                 id="board-name"
@@ -150,6 +156,7 @@
                 placeholder="My 2026 Goals"
                 disabled={creating}
                 class="w-full px-4 py-3 h-auto"
+                style="border:2px solid #1E2A1A;border-radius:0.75rem;background:#EDE8DF;color:#1E2A1A"
               />
             </div>
 
@@ -157,7 +164,8 @@
             {#if error}
               <div
                 role="alert"
-                class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start"
+                class="border rounded-lg p-3 flex items-start"
+                style="background:#fef2f2;border-color:#ef4444"
               >
                 <svg
                   class="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5"
@@ -176,7 +184,7 @@
               </div>
             {/if}
 
-            <!-- Create Button -->
+            <!-- Create Button — retro pill with dashed border -->
             <div
               class="relative wiggle-on-hover"
               bind:clientWidth={buttonWidth}
@@ -186,11 +194,13 @@
                 data-testid="create-board-button"
                 onclick={handleCreateBoard}
                 disabled={creating}
-                class="w-full py-4 bg-white hover:bg-blue-50 text-blue-700 text-lg font-semibold rounded-lg transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+                class="w-full py-4 text-lg font-bold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                style="background:#C8D400;color:#1E2A1A;border:2.5px dashed #1E2A1A"
               >
                 {#if creating}
                   <svg
-                    class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-700"
+                    class="animate-spin -ml-1 mr-3 h-5 w-5"
+                    style="color:#1E2A1A"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -254,30 +264,30 @@
                     width={buttonWidth + 6}
                     height={buttonHeight + 6}
                     fill="none"
-                    stroke="#1d4ed8"
+                    stroke="#1E2A1A"
                     stroke-width="2.5"
-                    rx="12"
+                    rx="9999"
                     filter="url(#hand-drawn)"
                   />
                 </svg>
               {/if}
             </div>
 
-            <p class="text-xs text-gray-500 text-center">
+            <p class="text-xs text-center" style="color:#1E2A1A;opacity:0.6">
               No sign-up required. Your board is saved automatically.
             </p>
           </div>
         </div>
       </div>
     </main>
-    <footer class="py-6 text-center text-sm text-gray-400 bg-white/70 backdrop-blur-sm">
+    <footer class="py-6 text-center text-sm" style="color:#1E2A1A;opacity:0.6;background:#EDE8DF">
       <p>
         © {new Date().getFullYear()} Bingoals &middot;
-        <a href="/about" class="hover:text-gray-600 transition-colors">About</a>
+        <a href="/about" class="hover:opacity-100 transition-opacity">About</a>
         &middot;
-        <a href="/privacy" class="hover:text-gray-600 transition-colors">Privacy</a>
+        <a href="/privacy" class="hover:opacity-100 transition-opacity">Privacy</a>
         &middot;
-        <a href="/terms" class="hover:text-gray-600 transition-colors">Terms</a>
+        <a href="/terms" class="hover:opacity-100 transition-opacity">Terms</a>
       </p>
     </footer>
   </div>

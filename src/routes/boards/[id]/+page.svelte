@@ -95,19 +95,23 @@
 
 <AuthGuard>
   <div class="h-screen flex flex-col">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200">
+    <!-- Full-bleed chartreuse hero header -->
+    <header class="hero-chartreuse">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo />
-            <span class="text-xl font-bold text-gray-900">BINGOALS</span>
+            <span class="text-xl font-bold tracking-tight uppercase" style="color:#1E2A1A"
+              >BINGOALS</span
+            >
           </a>
 
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
-              <Button variant="ghost" href="/dashboard">My Boards</Button>
-              <div class="h-5 w-px bg-gray-200"></div>
+              <Button variant="ghost" href="/dashboard" style="color:#1E2A1A;font-weight:600"
+                >My Boards</Button
+              >
+              <div class="h-5 w-px" style="background:#1E2A1A;opacity:0.3"></div>
             {/if}
 
             {#if $currentBoard}
@@ -121,7 +125,7 @@
                           variant="ghost"
                           size="icon"
                           data-testid="share-button"
-                          class="text-blue-600 bg-blue-50 hover:bg-blue-100"
+                          style="color:#1E2A1A;background:#C8D400;border:2px solid #1E2A1A"
                           title="Sharing on — view link"
                         >
                           <svg
