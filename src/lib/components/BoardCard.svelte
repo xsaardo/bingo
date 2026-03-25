@@ -111,10 +111,10 @@
 <a
   href="/boards/{board.id}"
   data-testid="board-card"
-  class="block bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all duration-200 overflow-hidden group"
+  class="block bg-card rounded-2xl shadow-sm border border-border hover:shadow-md hover:border-primary/40 transition-all duration-200 overflow-hidden group"
 >
   <!-- Header -->
-  <div class="p-4 border-b border-gray-100">
+  <div class="p-4 border-b border-border">
     <div class="flex items-start justify-between">
       <div class="flex-1 min-w-0">
         {#if isEditing}
@@ -127,12 +127,12 @@
                 onblur={saveName}
                 disabled={saving}
                 maxlength={100}
-                class="flex-1 text-lg font-semibold text-gray-900 border border-blue-400 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                class="flex-1 text-lg font-semibold text-foreground border border-primary rounded-full px-3 py-0.5 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 use:focusOnMount
               />
               <button
                 onclick={cancelEdit}
-                class="flex-shrink-0 p-1 text-gray-400 hover:text-gray-600 rounded-lg transition-colors"
+                class="flex-shrink-0 p-1 text-muted-foreground hover:text-foreground rounded-full transition-colors"
                 title="Cancel"
                 type="button"
               >
@@ -147,22 +147,22 @@
               </button>
             </div>
             {#if saveError}
-              <p class="text-xs text-red-500">{saveError}</p>
+              <p class="text-xs text-destructive">{saveError}</p>
             {/if}
             {#if saving}
-              <p class="text-xs text-gray-400">Saving...</p>
+              <p class="text-xs text-muted-foreground">Saving...</p>
             {/if}
           </div>
         {:else}
           <div class="flex items-center gap-1 group/name">
             <h3
-              class="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors"
+              class="text-lg font-semibold text-foreground truncate group-hover:text-primary transition-colors"
             >
               {board.name}
             </h3>
             <button
               onclick={handleEditClick}
-              class="flex-shrink-0 p-1 text-gray-300 hover:text-blue-500 rounded-lg opacity-100 sm:opacity-0 sm:group-hover/name:opacity-100 transition-all"
+              class="flex-shrink-0 p-1 text-muted-foreground hover:text-primary rounded-full opacity-100 sm:opacity-0 sm:group-hover/name:opacity-100 transition-all"
               title="Rename board"
               type="button"
             >
@@ -183,7 +183,7 @@
       {#if onDelete}
         <button
           onclick={handleDeleteClick}
-          class="flex-shrink-0 ml-2 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          class="flex-shrink-0 ml-2 p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-colors"
           title="Delete board"
           aria-label="Delete board"
           data-testid="delete-board-button"
@@ -206,16 +206,16 @@
     <!-- Progress Bar -->
     <div class="mb-3">
       <div class="flex items-center justify-between mb-2">
-        <span class="text-sm font-medium text-gray-700">Progress</span>
-        <span class="text-sm font-semibold text-blue-600">{completionPercentage}%</span>
+        <span class="text-sm font-medium text-foreground">Progress</span>
+        <span class="text-sm font-semibold text-primary">{completionPercentage}%</span>
       </div>
-      <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+      <div class="w-full bg-muted rounded-full h-2 overflow-hidden">
         <div
-          class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+          class="bg-primary h-2 rounded-full transition-all duration-300"
           style="width: {completionPercentage}%"
         ></div>
       </div>
-      <p class="text-xs text-gray-500 mt-1">
+      <p class="text-xs text-muted-foreground mt-1">
         {completedGoals} of {totalGoals} goals completed
       </p>
     </div>
@@ -248,7 +248,7 @@
             Complete
           </Badge>
         {:else if completedGoals > 0}
-          <Badge variant="outline" class="border-blue-400 bg-blue-50 text-blue-700">
+          <Badge variant="outline" class="border-primary/60 bg-blue-50 text-primary">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -274,7 +274,7 @@
         {/if}
       </div>
 
-      <span class="text-xs text-gray-400">Created {formatDate(board.createdAt)}</span>
+      <span class="text-xs text-muted-foreground">Created {formatDate(board.createdAt)}</span>
     </div>
   </div>
 </a>

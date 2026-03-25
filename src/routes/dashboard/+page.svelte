@@ -71,18 +71,18 @@
 <AuthGuard>
   <div class="min-h-screen">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200">
+    <header class="bg-card border-b border-border">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo />
-            <h1 class="text-xl font-bold text-gray-900">BINGOALS</h1>
+            <h1 class="text-xl font-bold text-foreground">BINGOALS</h1>
           </a>
 
           <div class="flex items-center gap-3">
             <button
               onclick={handleCreateBoard}
-              class="flex items-center px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+              class="flex items-center px-4 py-2 text-sm bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-full transition-colors shadow"
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -103,9 +103,9 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Page Header -->
-      <div class="mb-8 inline-block bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3">
-        <h2 class="text-3xl font-bold text-gray-900">My Boards</h2>
-        <p class="text-gray-600 mt-1">Create and manage your bingo boards</p>
+      <div class="mb-8 inline-block bg-card/70 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-sm">
+        <h2 class="text-3xl font-bold text-foreground">My Boards</h2>
+        <p class="text-muted-foreground mt-1">Create and manage your bingo boards</p>
       </div>
 
       <!-- Error State -->
@@ -115,7 +115,7 @@
           <div class="flex justify-center">
             <button
               onclick={handleRetryFetch}
-              class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+              class="px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-full transition-colors shadow"
             >
               Retry
             </button>
@@ -125,23 +125,23 @@
         <!-- Loading State -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-busy="true">
           {#each Array(3) as _}
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 animate-pulse">
-              <div class="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-              <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-              <div class="h-2 bg-gray-200 rounded w-full mb-2"></div>
-              <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+            <div class="bg-card rounded-2xl shadow-sm border border-border p-6 animate-pulse">
+              <div class="h-6 bg-muted rounded-full w-3/4 mb-4"></div>
+              <div class="h-4 bg-muted rounded-full w-1/2 mb-4"></div>
+              <div class="h-2 bg-muted rounded-full w-full mb-2"></div>
+              <div class="h-4 bg-muted rounded-full w-1/4"></div>
             </div>
           {/each}
         </div>
       {:else if !$hasBoards}
         <!-- Empty State -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
+        <div class="bg-card rounded-2xl shadow-sm border border-border p-12 text-center">
           <div class="max-w-md mx-auto">
             <div
-              class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6"
+              class="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-full mb-6"
             >
               <svg
-                class="w-10 h-10 text-blue-600"
+                class="w-10 h-10 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -154,13 +154,13 @@
                 />
               </svg>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">No boards yet</h3>
-            <p class="text-gray-600 mb-6">
+            <h3 class="text-2xl font-bold text-foreground mb-2">No boards yet</h3>
+            <p class="text-muted-foreground mb-6">
               Create your first bingo board to start tracking your goals and achievements!
             </p>
             <button
               onclick={handleCreateBoard}
-              class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-xl"
+              class="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full transition-colors shadow"
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path

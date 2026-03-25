@@ -58,9 +58,14 @@
 body {
   font-family: 'Geist Mono', monospace;
   /* Pale lavender-gray base with dot-grid bullet-journal texture */
-  background-color: oklch(0.932 0.01 267); /* ≈ #E8E9F0 */
+  background-color: var(--background);
   background-image: radial-gradient(circle, oklch(0.82 0.018 267) 1.2px, transparent 1.2px);
   background-size: 22px 22px;
+}
+
+.dark body {
+  background-color: var(--background);
+  background-image: none; /* remove dot-grid in dark mode — dots are light-hued and will glare */
 }
 
 :root {

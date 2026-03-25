@@ -96,18 +96,18 @@
 <AuthGuard>
   <div class="h-screen flex flex-col">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200">
+    <header class="bg-card border-b border-border">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo />
-            <span class="text-xl font-bold text-gray-900">BINGOALS</span>
+            <span class="text-xl font-bold text-foreground">BINGOALS</span>
           </a>
 
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
               <Button variant="ghost" href="/dashboard">My Boards</Button>
-              <div class="h-5 w-px bg-gray-200"></div>
+              <div class="h-5 w-px bg-border"></div>
             {/if}
 
             {#if $currentBoard}
@@ -261,18 +261,18 @@
       {#if $currentBoardLoading}
         <!-- Loading State -->
         <div
-          class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center"
+          class="bg-card rounded-2xl shadow-sm border border-border p-12 text-center"
           aria-busy="true"
         >
           <div
-            class="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"
+            class="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4"
             aria-label="Loading board"
           ></div>
-          <p class="text-gray-600">Loading board...</p>
+          <p class="text-muted-foreground">Loading board...</p>
         </div>
       {:else if $currentBoardError}
         <!-- Error State -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div class="bg-card rounded-2xl shadow-sm border border-border p-8">
           <div class="max-w-md mx-auto space-y-4">
             <ErrorAlert error={$currentBoardError} />
             <div class="flex justify-center space-x-3">
