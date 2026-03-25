@@ -25,17 +25,17 @@
   <meta property="og:description" content="Sign in to Bingoals to access your goal boards." />
 </svelte:head>
 
-<main class="min-h-screen flex items-center justify-center p-4" style="background:#EDE8DF">
+<main class="min-h-screen flex items-center justify-center p-4 bg-background">
   <div class="w-full max-w-md">
     <!-- Header -->
     <div class="text-center mb-8">
       <div class="inline-flex mb-4">
         <Logo size="4rem" />
       </div>
-      <h1 class="text-3xl font-bold mb-2 uppercase tracking-tight" style="color:#1E2A1A">
+      <h1 class="text-3xl font-bold mb-2 uppercase tracking-tight text-primary">
         Welcome to BINGOALS
       </h1>
-      <p style="color:#1E2A1A;opacity:0.7">Sign in to create and manage your bingo boards</p>
+      <p class="text-primary opacity-70">Sign in to create and manage your bingo boards</p>
     </div>
 
     <!-- Login Form Card -->
@@ -45,7 +45,7 @@
 
     <!-- Footer -->
     <div class="mt-8 text-center">
-      <p class="text-sm" style="color:#1E2A1A;opacity:0.6">
+      <p class="text-sm text-primary opacity-60">
         New to Bingo Board? Don't worry, we'll create your account automatically when you sign in.
       </p>
     </div>

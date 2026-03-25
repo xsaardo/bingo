@@ -101,17 +101,15 @@
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo />
-            <span class="text-xl font-bold tracking-tight uppercase" style="color:#1E2A1A"
-              >BINGOALS</span
-            >
+            <span class="text-xl font-bold tracking-tight uppercase text-primary">BINGOALS</span>
           </a>
 
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
-              <Button variant="ghost" href="/dashboard" style="color:#1E2A1A;font-weight:600"
+              <Button variant="ghost" href="/dashboard" class="text-primary font-semibold"
                 >My Boards</Button
               >
-              <div class="h-5 w-px" style="background:#1E2A1A;opacity:0.3"></div>
+              <div class="h-5 w-px bg-primary opacity-30"></div>
             {/if}
 
             {#if $currentBoard}
@@ -125,7 +123,7 @@
                           variant="ghost"
                           size="icon"
                           data-testid="share-button"
-                          style="color:#1E2A1A;background:#C8D400;border:2px solid #1E2A1A"
+                          class="text-primary bg-accent border-2 border-primary"
                           title="Sharing on — view link"
                         >
                           <svg

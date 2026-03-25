@@ -74,18 +74,15 @@
 
 {#if !$isAuthInitialized}
   <!-- Loading state -->
-  <main class="min-h-screen flex items-center justify-center" style="background:#EDE8DF">
+  <main class="min-h-screen flex items-center justify-center bg-background">
     <div class="text-center">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-4 mx-auto mb-4"
-        style="border-color:#1E2A1A"
-      ></div>
-      <p style="color:#1E2A1A">Loading...</p>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-4 mx-auto mb-4 border-primary"></div>
+      <p class="text-primary">Loading...</p>
     </div>
   </main>
 {:else if $authError}
   <!-- Auth init failed -->
-  <main class="min-h-screen flex items-center justify-center" style="background:#EDE8DF">
+  <main class="min-h-screen flex items-center justify-center bg-background">
     <div class="text-center">
       <p data-testid="auth-error-message" class="text-red-600 mb-4">{$authError}</p>
       <button data-testid="auth-retry-button" onclick={retryAuth} class="btn-retro">
@@ -95,23 +92,20 @@
   </main>
 {:else}
   <!-- Landing page with inline board creation -->
-  <div class="min-h-screen flex flex-col" style="background:#EDE8DF">
+  <div class="min-h-screen flex flex-col bg-background">
     <!-- Full-bleed chartreuse hero header -->
     <header class="hero-chartreuse">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo size="2.5rem" />
-            <h1 class="text-xl font-bold tracking-tight uppercase" style="color:#1E2A1A">
-              BINGOALS
-            </h1>
+            <h1 class="text-xl font-bold tracking-tight uppercase text-primary">BINGOALS</h1>
           </a>
           <div class="flex items-center gap-3">
             {#if !$isAnonymous}
               <a
                 href="/dashboard"
-                class="px-4 py-2 text-sm font-semibold rounded-full border-2 border-dashed transition-colors"
-                style="color:#1E2A1A;border-color:#1E2A1A;background:transparent"
+                class="px-4 py-2 text-sm font-semibold rounded-full border-2 border-dashed transition-colors text-primary border-primary bg-transparent"
               >
                 My Boards
               </a>
@@ -125,16 +119,12 @@
     <main class="flex-1 flex items-center justify-center p-4">
       <div class="max-w-2xl w-full">
         <div
-          class="text-center mb-8 inline-block rounded-2xl px-5 py-3 w-full"
-          style="background:#C8D400;border:2px solid #1E2A1A"
+          class="text-center mb-8 inline-block rounded-2xl px-5 py-3 w-full bg-accent border-2 border-primary"
         >
-          <h1
-            class="text-4xl sm:text-5xl font-bold mb-4 uppercase tracking-tight"
-            style="color:#1E2A1A"
-          >
+          <h1 class="text-4xl sm:text-5xl font-bold mb-4 uppercase tracking-tight text-primary">
             Turn your 2026 goals into a bingo board
           </h1>
-          <p class="text-lg sm:text-xl" style="color:#1E2A1A">
+          <p class="text-lg sm:text-xl text-primary">
             Track visually. Share progress. Celebrate bingos.
           </p>
         </div>
@@ -143,7 +133,7 @@
           <div class="space-y-6">
             <!-- Board Name -->
             <div>
-              <Label for="board-name" class="block mb-2 font-semibold" style="color:#1E2A1A"
+              <Label for="board-name" class="block mb-2 font-semibold text-primary"
                 >What's your board called?</Label
               >
               <Input
@@ -155,8 +145,7 @@
                 onkeydown={handleKeyDown}
                 placeholder="My 2026 Goals"
                 disabled={creating}
-                class="w-full px-4 py-3 h-auto"
-                style="border:2px solid #1E2A1A;border-radius:0.75rem;background:#EDE8DF;color:#1E2A1A"
+                class="w-full px-4 py-3 h-auto border-2 border-primary rounded-xl bg-background text-primary"
               />
             </div>
 
@@ -164,8 +153,7 @@
             {#if error}
               <div
                 role="alert"
-                class="border rounded-lg p-3 flex items-start"
-                style="background:#fef2f2;border-color:#ef4444"
+                class="border rounded-lg p-3 flex items-start bg-red-50 border-red-400"
               >
                 <svg
                   class="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5"
@@ -186,7 +174,7 @@
 
             <!-- Create Button — retro pill with dashed border -->
             <div
-              class="relative wiggle-on-hover"
+              class="relative wiggle-on-hover btn-with-svg-border"
               bind:clientWidth={buttonWidth}
               bind:clientHeight={buttonHeight}
             >
@@ -194,13 +182,11 @@
                 data-testid="create-board-button"
                 onclick={handleCreateBoard}
                 disabled={creating}
-                class="w-full py-4 text-lg font-bold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                style="background:#C8D400;color:#1E2A1A;border:2.5px dashed #1E2A1A"
+                class="w-full py-4 text-lg font-bold rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-accent text-primary"
               >
                 {#if creating}
                   <svg
-                    class="animate-spin -ml-1 mr-3 h-5 w-5"
-                    style="color:#1E2A1A"
+                    class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -273,14 +259,14 @@
               {/if}
             </div>
 
-            <p class="text-xs text-center" style="color:#1E2A1A;opacity:0.6">
+            <p class="text-xs text-center text-primary opacity-60">
               No sign-up required. Your board is saved automatically.
             </p>
           </div>
         </div>
       </div>
     </main>
-    <footer class="py-6 text-center text-sm" style="color:#1E2A1A;opacity:0.6;background:#EDE8DF">
+    <footer class="py-6 text-center text-sm text-primary opacity-60 bg-background">
       <p>
         © {new Date().getFullYear()} Bingoals &middot;
         <a href="/about" class="hover:opacity-100 transition-opacity">About</a>
@@ -312,5 +298,10 @@
 
   .wiggle-on-hover:hover {
     animation: wiggle 0.35s ease-in-out;
+  }
+
+  /* CSS fallback border for button — prevents flash on initial render */
+  .btn-with-svg-border button {
+    border: 2.5px dashed #1e2a1a;
   }
 </style>

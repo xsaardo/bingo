@@ -109,6 +109,28 @@ body {
   cursor: not-allowed;
 }
 
+/* Inverted variant — forest background, chartreuse text */
+.btn-retro-inverted {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1e2a1a;
+  color: #c8d400;
+  font-weight: 700;
+  border-radius: 9999px;
+  border: 2px dashed #c8d400;
+  padding: 0.75rem 2rem;
+  transition: background-color 0.15s;
+  box-shadow: none;
+}
+.btn-retro-inverted:hover {
+  background-color: #2d3e27;
+}
+.btn-retro-inverted:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* =====================================================
    Retro divider — thin hand-drawn style accent line
    ===================================================== */

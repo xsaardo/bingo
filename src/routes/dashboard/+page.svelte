@@ -69,23 +69,20 @@
 </svelte:head>
 
 <AuthGuard>
-  <div class="min-h-screen" style="background:#EDE8DF">
+  <div class="min-h-screen bg-background">
     <!-- Full-bleed chartreuse hero header -->
     <header class="hero-chartreuse">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center space-x-3">
             <Logo />
-            <h1 class="text-xl font-bold tracking-tight uppercase" style="color:#1E2A1A">
-              BINGOALS
-            </h1>
+            <h1 class="text-xl font-bold tracking-tight uppercase text-primary">BINGOALS</h1>
           </a>
 
           <div class="flex items-center gap-3">
             <button
               onclick={handleCreateBoard}
-              class="flex items-center px-4 py-2 text-sm font-bold rounded-full border-2 border-dashed transition-colors"
-              style="background:#1E2A1A;color:#C8D400;border-color:#C8D400"
+              class="flex items-center px-4 py-2 text-sm font-bold rounded-full border-2 border-dashed transition-colors btn-retro-inverted"
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -106,12 +103,9 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Page Header -->
-      <div
-        class="mb-8 inline-block rounded-2xl px-5 py-3"
-        style="background:#C8D400;border:2px solid #1E2A1A"
-      >
-        <h2 class="text-3xl font-bold uppercase tracking-tight" style="color:#1E2A1A">My Boards</h2>
-        <p class="mt-1" style="color:#1E2A1A;opacity:0.75">Create and manage your bingo boards</p>
+      <div class="mb-8 inline-block rounded-2xl px-5 py-3 bg-accent border-2 border-primary">
+        <h2 class="text-3xl font-bold uppercase tracking-tight text-primary">My Boards</h2>
+        <p class="mt-1 text-primary opacity-75">Create and manage your bingo boards</p>
       </div>
 
       <!-- Error State -->
@@ -126,14 +120,11 @@
         <!-- Loading State -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-busy="true">
           {#each Array(3) as _}
-            <div
-              class="rounded-2xl border-2 p-6 animate-pulse"
-              style="background:#EDE8DF;border-color:#1E2A1A"
-            >
-              <div class="h-6 rounded w-3/4 mb-4" style="background:#d8d2c8"></div>
-              <div class="h-4 rounded w-1/2 mb-4" style="background:#d8d2c8"></div>
-              <div class="h-2 rounded w-full mb-2" style="background:#d8d2c8"></div>
-              <div class="h-4 rounded w-1/4" style="background:#d8d2c8"></div>
+            <div class="rounded-2xl border-2 p-6 animate-pulse bg-background border-primary">
+              <div class="h-6 rounded w-3/4 mb-4 bg-muted"></div>
+              <div class="h-4 rounded w-1/2 mb-4 bg-muted"></div>
+              <div class="h-2 rounded w-full mb-2 bg-muted"></div>
+              <div class="h-4 rounded w-1/4 bg-muted"></div>
             </div>
           {/each}
         </div>
@@ -142,12 +133,10 @@
         <div class="card-organic p-12 text-center">
           <div class="max-w-md mx-auto">
             <div
-              class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6"
-              style="background:#C8D400;border:2px solid #1E2A1A"
+              class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 bg-accent border-2 border-primary"
             >
               <svg
-                class="w-10 h-10"
-                style="color:#1E2A1A"
+                class="w-10 h-10 text-primary"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -160,10 +149,10 @@
                 />
               </svg>
             </div>
-            <h3 class="text-2xl font-bold mb-2 uppercase tracking-tight" style="color:#1E2A1A">
+            <h3 class="text-2xl font-bold mb-2 uppercase tracking-tight text-primary">
               No boards yet
             </h3>
-            <p class="mb-6" style="color:#1E2A1A;opacity:0.7">
+            <p class="mb-6 text-primary opacity-70">
               Create your first bingo board to start tracking your goals and achievements!
             </p>
             <button onclick={handleCreateBoard} class="btn-retro inline-flex items-center">

@@ -111,10 +111,10 @@
 <a
   href="/boards/{board.id}"
   data-testid="board-card"
-  class="block bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all duration-200 overflow-hidden group"
+  class="block card-organic hover:shadow-none transition-all duration-200 overflow-hidden group"
 >
   <!-- Header -->
-  <div class="p-4 border-b border-gray-100">
+  <div class="p-4 border-b-2 border-dashed border-primary opacity-30">
     <div class="flex items-start justify-between">
       <div class="flex-1 min-w-0">
         {#if isEditing}
@@ -127,7 +127,7 @@
                 onblur={saveName}
                 disabled={saving}
                 maxlength={100}
-                class="flex-1 text-lg font-semibold text-gray-900 border border-blue-400 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                class="flex-1 text-lg font-semibold text-primary border-2 border-accent rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50"
                 use:focusOnMount
               />
               <button
@@ -156,13 +156,13 @@
         {:else}
           <div class="flex items-center gap-1 group/name">
             <h3
-              class="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors"
+              class="text-lg font-semibold text-primary truncate group-hover:text-accent transition-colors uppercase tracking-tight"
             >
               {board.name}
             </h3>
             <button
               onclick={handleEditClick}
-              class="flex-shrink-0 p-1 text-gray-300 hover:text-blue-500 rounded-lg opacity-100 sm:opacity-0 sm:group-hover/name:opacity-100 transition-all"
+              class="flex-shrink-0 p-1 text-muted-foreground hover:text-accent rounded-lg opacity-100 sm:opacity-0 sm:group-hover/name:opacity-100 transition-all"
               title="Rename board"
               type="button"
             >
@@ -206,16 +206,16 @@
     <!-- Progress Bar -->
     <div class="mb-3">
       <div class="flex items-center justify-between mb-2">
-        <span class="text-sm font-medium text-gray-700">Progress</span>
-        <span class="text-sm font-semibold text-blue-600">{completionPercentage}%</span>
+        <span class="text-sm font-semibold text-primary uppercase">Progress</span>
+        <span class="text-sm font-bold text-accent">{completionPercentage}%</span>
       </div>
-      <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+      <div class="w-full bg-muted rounded-full h-2 overflow-hidden border border-primary">
         <div
-          class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+          class="bg-accent h-2 rounded-full transition-all duration-300"
           style="width: {completionPercentage}%"
         ></div>
       </div>
-      <p class="text-xs text-gray-500 mt-1">
+      <p class="text-xs text-muted-foreground mt-1">
         {completedGoals} of {totalGoals} goals completed
       </p>
     </div>
@@ -274,7 +274,7 @@
         {/if}
       </div>
 
-      <span class="text-xs text-gray-400">Created {formatDate(board.createdAt)}</span>
+      <span class="text-xs text-muted-foreground">Created {formatDate(board.createdAt)}</span>
     </div>
   </div>
 </a>

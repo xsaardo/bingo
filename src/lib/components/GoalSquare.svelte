@@ -90,28 +90,28 @@
   tabindex="0"
   onclick={readonly ? undefined : selectGoal}
   onkeydown={readonly ? undefined : (e) => e.key === 'Enter' && selectGoal()}
-  class="border-2 rounded-lg p-1 sm:p-2 md:p-3 lg:p-4 overflow-hidden transition-all duration-200 {readonly
+  class="border-2 rounded-xl p-1 sm:p-2 md:p-3 lg:p-4 overflow-hidden transition-all duration-200 {readonly
     ? 'cursor-default'
-    : 'cursor-pointer hover:shadow-md active:scale-95'} {isInBingo && goal.completed
-    ? 'bingo-winner bg-yellow-50 border-yellow-500 shadow-lg ring-2 ring-yellow-400 ring-offset-2'
+    : 'cursor-pointer active:scale-95'} {isInBingo && goal.completed
+    ? 'bingo-winner bg-accent border-primary shadow-none ring-2 ring-accent'
     : goal.completed
-      ? 'bg-green-50 border-green-500'
+      ? 'bg-accent/20 border-accent'
       : readonly
-        ? 'bg-white border-gray-200'
-        : 'bg-white border-gray-300 hover:border-blue-400'}"
+        ? 'bg-background border-primary'
+        : 'bg-background border-primary hover:border-accent'}"
 >
   <div class="h-full flex flex-col justify-between min-h-0">
     <div class="flex-1 flex items-center justify-center text-center px-1 overflow-hidden min-h-0">
       {#if goal.title}
         <p
-          class="{titleTextClass} font-medium line-clamp-3 {goal.completed
-            ? 'text-green-900'
-            : 'text-gray-900'}"
+          class="{titleTextClass} font-semibold line-clamp-3 {goal.completed
+            ? 'text-primary'
+            : 'text-primary'}"
         >
           {goal.title}
         </p>
       {:else if !readonly}
-        <p class="{placeholderTextClass} text-gray-400 italic">Click to add</p>
+        <p class="{placeholderTextClass} text-muted-foreground italic">Click to add</p>
       {/if}
     </div>
 
@@ -152,15 +152,9 @@
     0%,
     100% {
       transform: scale(1);
-      box-shadow:
-        0 0 0 0 rgba(234, 179, 8, 0.4),
-        0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
     50% {
       transform: scale(1.04);
-      box-shadow:
-        0 0 0 6px rgba(234, 179, 8, 0.2),
-        0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
   }
 
