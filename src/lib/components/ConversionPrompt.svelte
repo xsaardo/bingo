@@ -49,7 +49,7 @@
 </script>
 
 <Dialog.Root open={isOpen && isAnonymous} onOpenChange={handleOpenChange}>
-  <Dialog.Content class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 border-0 gap-0">
+  <Dialog.Content class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border-0 gap-0">
     <!-- Icon -->
     <div class="flex justify-center mb-4">
       <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
