@@ -3,37 +3,87 @@
 
 @theme {
   --font-sans: 'Geist Mono', monospace;
+
+  /* =====================================================
+     Journaling palette — royal blue-indigo + lavender-gray
+     Override Tailwind's built-in blue scale so that all
+     hardcoded `bg-blue-600`, `text-blue-700` etc. cascade
+     to the new royal blue-indigo hue (#2D25CC).
+     ===================================================== */
+  --color-blue-50: oklch(0.96 0.018 268);
+  --color-blue-100: oklch(0.92 0.03 268);
+  --color-blue-200: oklch(0.86 0.055 268);
+  --color-blue-300: oklch(0.77 0.1 268);
+  --color-blue-400: oklch(0.66 0.16 268);
+  --color-blue-500: oklch(0.54 0.23 268);
+  --color-blue-600: oklch(0.43 0.27 268); /* ≈ #2D25CC royal blue-indigo */
+  --color-blue-700: oklch(0.37 0.255 268);
+  --color-blue-800: oklch(0.3 0.22 268);
+  --color-blue-900: oklch(0.23 0.18 268);
+  --color-blue-950: oklch(0.17 0.14 268);
+
+  /* Warm lavender-gray neutrals — replaces pure grays
+     so `text-gray-900`, `bg-gray-200` etc. carry the palette hue */
+  --color-gray-50: oklch(0.975 0.006 267);
+  --color-gray-100: oklch(0.955 0.008 267);
+  --color-gray-200: oklch(0.922 0.01 267); /* ≈ border-gray-200 soft lavender */
+  --color-gray-300: oklch(0.88 0.012 267);
+  --color-gray-400: oklch(0.78 0.012 267);
+  --color-gray-500: oklch(0.66 0.012 267);
+  --color-gray-600: oklch(0.53 0.012 267);
+  --color-gray-700: oklch(0.42 0.01 267);
+  --color-gray-800: oklch(0.31 0.008 267);
+  --color-gray-900: oklch(0.22 0.006 267);
+  --color-gray-950: oklch(0.15 0.004 267);
+
+  /* =====================================================
+     Flat 2D rendering — eliminate all box shadows
+     so shadow-sm, shadow, shadow-md, shadow-lg, shadow-xl
+     all collapse to a very subtle border instead of depth.
+     ===================================================== */
+  --shadow-xs: 0 0 0 1px oklch(0.9 0.012 267 / 0.6);
+  --shadow-sm: 0 0 0 1px oklch(0.9 0.012 267 / 0.6);
+  --shadow: 0 0 0 1px oklch(0.88 0.015 267 / 0.7);
+  --shadow-md: 0 0 0 1px oklch(0.86 0.015 267 / 0.8);
+  --shadow-lg: 0 0 0 1px oklch(0.84 0.018 267 / 0.8);
+  --shadow-xl: 0 0 0 1px oklch(0.82 0.02 267 / 0.9);
+  --shadow-2xl: 0 0 0 1px oklch(0.8 0.022 267);
 }
 
 /*
   shadcn-svelte CSS variables (oklch format)
-  Primary color mapped to blue-600
+  Primary mapped to royal blue-indigo (#2D25CC)
+  Background mapped to pale lavender-gray (#E8E9F0)
 */
 body {
   font-family: 'Geist Mono', monospace;
+  /* Pale lavender-gray base with dot-grid bullet-journal texture */
+  background-color: oklch(0.932 0.01 267); /* ≈ #E8E9F0 */
+  background-image: radial-gradient(circle, oklch(0.82 0.018 267) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.511 0.262 264.052); /* blue-600 */
+  --radius: 0.75rem;
+  --background: oklch(0.932 0.01 267); /* pale lavender-gray ≈ #E8E9F0 */
+  --foreground: oklch(0.22 0.006 267);
+  --card: oklch(1 0 0); /* flat white cards */
+  --card-foreground: oklch(0.22 0.006 267);
+  --popover: oklch(1 0 0); /* flat white popovers */
+  --popover-foreground: oklch(0.22 0.006 267);
+  --primary: oklch(0.43 0.27 268); /* deep royal blue-indigo ≈ #2D25CC */
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.967 0.003 264.542);
-  --secondary-foreground: oklch(0.21 0.034 264.665);
-  --muted: oklch(0.967 0.003 264.542);
-  --muted-foreground: oklch(0.551 0.027 264.364);
-  --accent: oklch(0.967 0.003 264.542);
-  --accent-foreground: oklch(0.21 0.034 264.665);
+  --secondary: oklch(0.955 0.008 267);
+  --secondary-foreground: oklch(0.31 0.008 267);
+  --muted: oklch(0.955 0.008 267);
+  --muted-foreground: oklch(0.53 0.012 267);
+  --accent: oklch(0.955 0.008 267);
+  --accent-foreground: oklch(0.31 0.008 267);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.928 0.006 264.531);
-  --input: oklch(0.928 0.006 264.531);
-  --ring: oklch(0.511 0.262 264.052); /* blue-600 */
+  --border: oklch(0.922 0.01 267); /* soft lavender-gray border */
+  --input: oklch(0.922 0.01 267);
+  --ring: oklch(0.43 0.27 268); /* matches primary */
 }
 
 .dark {
@@ -43,7 +93,7 @@ body {
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.546 0.245 262.881); /* blue-500 for dark mode */
+  --primary: oklch(0.54 0.23 268); /* slightly lighter for dark mode */
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -55,7 +105,7 @@ body {
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.546 0.245 262.881);
+  --ring: oklch(0.54 0.23 268);
 }
 
 .theme-horse {
