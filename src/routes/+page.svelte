@@ -250,7 +250,7 @@
                     width={buttonWidth + 6}
                     height={buttonHeight + 6}
                     fill="none"
-                    stroke="#1E2A1A"
+                    style="stroke: var(--foreground)"
                     stroke-width="2.5"
                     rx="9999"
                     filter="url(#hand-drawn)"
@@ -302,6 +302,6 @@
 
   /* CSS fallback border for button — prevents flash on initial render */
   .btn-with-svg-border button {
-    border: 2.5px dashed #1e2a1a;
+    border: 2.5px dashed var(--foreground);
   }
 </style>
