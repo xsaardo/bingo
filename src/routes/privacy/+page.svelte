@@ -1,13 +1,23 @@
 <script lang="ts">
   import Logo from '$lib/components/Logo.svelte';
   import UserMenu from '$lib/components/UserMenu.svelte';
+  import { OG_IMAGE, canonical } from '$lib/seo';
+
+  const title = 'Privacy Policy — Bingoals';
+  const description = 'How Bingoals handles your data, what we collect, and what we never do.';
+  const url = canonical('/privacy');
 </script>
 
 <svelte:head>
-  <title>Privacy Policy — Bingoals</title>
-  <meta property="og:title" content="Privacy Policy — Bingoals" />
-  <meta name="description" content="Bingoals privacy policy." />
-  <meta property="og:description" content="Bingoals privacy policy." />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={url} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={url} />
+  <meta property="og:image" content={OG_IMAGE} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
 </svelte:head>
 
 <div class="min-h-screen flex flex-col">
@@ -15,9 +25,9 @@
   <header class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
-        <a href="/" class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-3" aria-label="Bingoals home">
           <Logo />
-          <h1 class="text-xl font-bold text-gray-900">BINGOALS</h1>
+          <span class="text-xl font-bold text-gray-900">BINGOALS</span>
         </a>
         <UserMenu />
       </div>

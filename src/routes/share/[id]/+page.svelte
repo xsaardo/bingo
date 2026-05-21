@@ -1,8 +1,7 @@
 <!-- ABOUTME: Public read-only view of a shared bingo board -->
-<!-- ABOUTME: Accessible without authentication via the board owner's share link -->
+<!-- ABOUTME: Server-loaded so crawlers see real board content; store is seeded on mount. -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
   import BingoBoard from '$lib/components/BingoBoard.svelte';
   import ErrorAlert from '$lib/components/ErrorAlert.svelte';
   import Logo from '$lib/components/Logo.svelte';
@@ -12,11 +11,33 @@
     currentBoardLoading,
     currentBoardError
   } from '$lib/stores/currentBoard';
+  import { OG_IMAGE, SITE_URL, canonical } from '$lib/seo';
+  import type { PageData } from './$types';
 
-  const boardId = $derived($page.params.id!);
+  let { data }: { data: PageData } = $props();
+
+  const title = $derived(`${data.board.name} — Bingoals`);
+  const description = $derived(
+    `${data.board.name}: a goal bingo board on Bingoals. ${data.board.completedCount} of ${data.board.totalCount} goals completed.`
+  );
+  const url = $derived(canonical(`/share/${data.board.id}`));
+
+  const boardJsonLd = $derived(
+    JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      name: data.board.name,
+      url,
+      description,
+      dateCreated: data.board.createdAt,
+      dateModified: data.board.updatedAt,
+      isAccessibleForFree: true,
+      isPartOf: { '@type': 'WebSite', name: 'Bingoals', url: SITE_URL }
+    })
+  );
 
   onMount(() => {
-    currentBoardStore.loadPublicBoard(boardId);
+    currentBoardStore.loadPublicBoard(data.board.id);
 
     return () => {
       currentBoardStore.clear();
@@ -25,25 +46,16 @@
 </script>
 
 <svelte:head>
-  <title>{$currentBoard?.name || 'Shared Board'} - BINGOALS</title>
-  <meta
-    property="og:title"
-    content={$currentBoard?.name
-      ? `${$currentBoard.name} — Bingoals`
-      : 'Check out this board on Bingoals'}
-  />
-  <meta
-    name="description"
-    content={$currentBoard?.name
-      ? `Check out ${$currentBoard.name} on Bingoals.`
-      : 'Check out this board on Bingoals.'}
-  />
-  <meta
-    property="og:description"
-    content={$currentBoard?.name
-      ? `Check out ${$currentBoard.name} on Bingoals.`
-      : 'Check out this board on Bingoals.'}
-  />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={url} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={url} />
+  <meta property="og:image" content={OG_IMAGE} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  {@html `<script type="application/ld+json">${boardJsonLd}</script>`}
 </svelte:head>
 
 <div class="h-screen flex flex-col">
@@ -51,7 +63,7 @@
   <header class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
-        <a href="/" class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-3" aria-label="Bingoals home">
           <Logo />
           <span class="text-xl font-bold text-gray-900">BINGOALS</span>
         </a>
@@ -68,7 +80,16 @@
 
   <!-- Main Content -->
   <main class="flex-1 min-h-0 flex flex-col items-center px-4 py-3 sm:py-4 overflow-hidden">
-    {#if $currentBoardLoading}
+    <!-- Server-rendered content for crawlers; hidden from sighted users (the interactive
+         board renders below once the store is populated). -->
+    <h1 class="sr-only">{data.board.name}</h1>
+    <ul class="sr-only">
+      {#each data.board.goals as goal}
+        <li>{goal.title}{goal.completed ? ' — completed' : ''}</li>
+      {/each}
+    </ul>
+
+    {#if $currentBoardLoading || (!$currentBoard && !$currentBoardError)}
       <div
         class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center"
         aria-busy="true"

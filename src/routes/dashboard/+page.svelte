@@ -62,10 +62,8 @@
 </script>
 
 <svelte:head>
-  <title>Dashboard - Bingo Board</title>
-  <meta property="og:title" content="Dashboard — Bingoals" />
-  <meta name="description" content="Manage all your Bingoals boards in one place." />
-  <meta property="og:description" content="Manage all your Bingoals boards in one place." />
+  <title>Dashboard — Bingoals</title>
+  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <AuthGuard>
@@ -74,9 +72,9 @@
     <header class="bg-white border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
-          <a href="/" class="flex items-center space-x-3">
+          <a href="/" class="flex items-center space-x-3" aria-label="Bingoals home">
             <Logo />
-            <h1 class="text-xl font-bold text-gray-900">BINGOALS</h1>
+            <span class="text-xl font-bold text-gray-900">BINGOALS</span>
           </a>
 
           <div class="flex items-center gap-3">

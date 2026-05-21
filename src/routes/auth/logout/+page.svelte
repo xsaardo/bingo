@@ -27,7 +27,8 @@
 </script>
 
 <svelte:head>
-  <title>Signing Out - Bingo Board</title>
+  <title>Signing Out — Bingoals</title>
+  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <main class="min-h-screen flex items-center justify-center p-4">

@@ -19,10 +19,8 @@
 </script>
 
 <svelte:head>
-  <title>Sign In - Bingoals</title>
-  <meta property="og:title" content="Sign In — Bingoals" />
-  <meta name="description" content="Sign in to Bingoals to access your goal boards." />
-  <meta property="og:description" content="Sign in to Bingoals to access your goal boards." />
+  <title>Sign In — Bingoals</title>
+  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <main class="min-h-screen flex items-center justify-center p-4">

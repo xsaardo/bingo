@@ -1,3 +1,10 @@
-# allow crawling everything by default
 User-agent: *
-Disallow:
+Allow: /
+
+# Private/authenticated areas — keep out of search results
+Disallow: /dashboard
+Disallow: /boards/
+Disallow: /auth/
+Disallow: /api/
+
+Sitemap: https://gobingoals.app/sitemap.xml
